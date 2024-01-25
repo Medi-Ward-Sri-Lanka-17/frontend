@@ -7,7 +7,7 @@ const HomePage = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <SideBar />
-      <div className="header" style={{ width: '100%' }}>
+      <div className="PageContent" style={{ width: '100%' }}>
         <Header title="LEAVE APPROVE" />
       </div>
     </Box>
