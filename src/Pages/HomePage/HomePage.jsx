@@ -1,11 +1,16 @@
 import React from 'react'
 import Header from '../../Component/Header'
+import { Box } from '@mui/material'
+import SideBar from '../../Component/SideBar'
 
 const HomePage = () => {
   return (
-    <div>
-      <Header title="HOME" />
-    </div>
+    <Box sx={{ display: 'flex' }}>
+      <SideBar />
+      <div className="PageContent" style={{ width: '100%' }}>
+        <Header title="LEAVE APPROVE" />
+      </div>
+    </Box>
   )
 }
 
