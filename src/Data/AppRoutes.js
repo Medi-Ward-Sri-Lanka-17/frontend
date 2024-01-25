@@ -1,30 +1,43 @@
-import AddWardDetails from '../Pages/AddWardDetails/AddWardDetails'
-import LeaveApprove from '../Pages/LeaveApprove/LeaveApprove'
-import Login from '../Pages/LoginPage/Login'
+import CreateSchedul from '../Pages/DutyScheduling/CreateSchedul'
+import ViewSchedule from '../Pages/DutyScheduling/ViewSchedule'
+import HomePage from '../Pages/HomePage/HomePage'
+import RequestLeave from '../Pages/LeaveManagement/RequestLeave'
+import LeaveApprove from '../Pages/LeaveManagement/LeaveApprove'
+import AddWardDetails from '../Pages/WardDetails/AddWardDetails'
+import ViewWardDetails from '../Pages/WardDetails/ViewWardDetails'
 import AddNews from '../Pages/News/AddNews'
 import ViewNews from '../Pages/News/ViewNews'
-import RequestLeave from '../Pages/RequestLeave/RequestLeave'
-import Sheduling from '../Pages/Scheduling/Sheduling'
-import ViewSchedule from '../Pages/ViewSchedule/ViewSchedule'
-import ViewWardDetails from '../Pages/ViewWardDetails/ViewWardDetails'
+import Profile from '../Pages/Profile/Profile'
+import Login from '../Pages/LoginPage/Login'
 
 export const AppRoutes = {
+  loginpath: { path: '/login', component: <Login /> },
+  login: { path: '/', component: <Login /> },
   // Home page routes
-  home: { path: '/home', component: Login },
+  home: { path: '/home', component: <HomePage /> },
 
   // Scheduling related routes
-  scheduling: { path: '/scheduling/add', component: Sheduling },
-  scheduling_view: { path: '/scheduling/view', component: ViewSchedule },
+  Create_Schedule: { path: '/scheduling/create', component: <CreateSchedul /> },
+  scheduling_view: { path: '/scheduling/view', component: <ViewSchedule /> },
 
   // Leave related routes
-  leave_request: { path: '/leave/request', component: RequestLeave },
-  leave_approve: { path: '/leave/approve', component: LeaveApprove },
+  leave_request: { path: '/leave/request', component: <RequestLeave /> },
+  leave_approve: { path: '/leave/approve', component: <LeaveApprove /> },
 
   // Ward details related routes
-  add_ward_details: { path: '/ward_details/add', component: AddWardDetails },
-  view_ward_details: { path: '/ward_details/view', component: ViewWardDetails },
+  add_ward_details: {
+    path: '/ward_details/add',
+    component: <AddWardDetails />,
+  },
+  view_ward_details: {
+    path: '/ward_details/view',
+    component: <ViewWardDetails />,
+  },
 
   // News Section
-  add_news: { path: '/news/add', component: AddNews },
-  view_news: { path: '/news/view', component: ViewNews },
+  add_news: { path: '/news/add', component: <AddNews /> },
+  view_news: { path: '/news/view', component: <ViewNews /> },
+
+  //Prpfile
+  profile: { path: '/profile', component: <Profile /> },
 }
