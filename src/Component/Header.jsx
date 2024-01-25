@@ -5,15 +5,15 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 import { useNavigate } from 'react-router-dom'
 
 const Header = (props) => {
-  //   const navigate = useNavigate()
+  const navigate = useNavigate()
   //   //for set the number of notifications
   //   // const [numberOfNotifications, setNumberOfNotifications] = useState(0)
 
   //   //get auth context and get details from authContext
 
-  //   const handleOnClick = (event) => {
-  //     navigate('/profile')
-  //   }
+  const handleOnClick = (event) => {
+    navigate('/profile')
+  }
 
   return (
     <div>
@@ -54,7 +54,7 @@ const Header = (props) => {
             <Avatar
               sx={{ bgcolor: deepOrange[500], cursor: 'pointer' }}
               //navigate to the profile page
-              //   onClick={handleOnClick}
+              onClick={handleOnClick}
             >
               DW
             </Avatar>

@@ -4,7 +4,7 @@ import Header from '../../Component/Header'
 const Profile = () => {
   return (
     <div>
-      <Header title="Profile" />
+      <Header title="PROFILE" />
     </div>
   )
 }
