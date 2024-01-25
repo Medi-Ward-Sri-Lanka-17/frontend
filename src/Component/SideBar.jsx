@@ -13,10 +13,12 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import { menus } from '../Data/SideBarData'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { auto } from '@popperjs/core'
+import { useNavigate } from 'react-router-dom'
 
 const drawerWidth = 260
 
 const SideBar = () => {
+  const naviagate = useNavigate()
   const [openMenus, setOpenMenus] = useState({})
 
   const handleClick = (menuName) => {
@@ -24,6 +26,10 @@ const SideBar = () => {
       ...prevOpenMenus,
       [menuName]: !prevOpenMenus[menuName],
     }))
+  }
+
+  const handleClickForNavigate = (path) => {
+    naviagate(path)
   }
 
   return (
@@ -58,7 +64,11 @@ const SideBar = () => {
           <React.Fragment key={menu.name}>
             <ListItem disablePadding>
               <ListItemButton
-                onClick={() => handleClick(menu.name)}
+                onClick={
+                  menu.subMenu
+                    ? () => handleClick(menu.name)
+                    : () => handleClickForNavigate(menu.path)
+                }
                 selected={openMenus[menu.name]}
               >
                 <ListItemIcon style={{ color: 'white' }}>
@@ -78,7 +88,9 @@ const SideBar = () => {
                       sx={{ backgroundColor: '#2A4C62' }}
                       disablePadding
                     >
-                      <ListItemButton>
+                      <ListItemButton
+                        onClick={() => handleClickForNavigate(subItem.path)}
+                      >
                         <ListItemText primary={subItem.name} />
                       </ListItemButton>
                     </ListItem>
@@ -91,7 +103,7 @@ const SideBar = () => {
       </List>
       <List sx={{ marginTop: 'auto' }}>
         <ListItem>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleClickForNavigate('/login')}>
             <ListItemText primary="Logout" />
             <ListItemIcon style={{ color: 'white' }}>
               <LogoutRoundedIcon />

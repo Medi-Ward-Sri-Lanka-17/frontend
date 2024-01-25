@@ -8,7 +8,7 @@ const ViewWardDetails = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <div className="PageContent" style={{ width: '100%' }}>
-        <Header title="Ward Details" />
+        <Header title="WARD DETAILS" />
       </div>
     </Box>
   )

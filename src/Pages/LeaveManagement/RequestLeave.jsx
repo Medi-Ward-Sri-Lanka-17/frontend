@@ -7,7 +7,7 @@ const RequestLeave = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <SideBar />
-      <div>
+      <div className="PageContent" style={{ width: '100%' }}>
         <Header title="LEAVE REQUEST" />
       </div>
     </Box>
