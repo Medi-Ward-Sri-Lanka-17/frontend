@@ -8,7 +8,7 @@ const HomePage = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <div className="PageContent" style={{ width: '100%' }}>
-        <Header title="LEAVE APPROVE" />
+        <Header title="HOME" />
       </div>
     </Box>
   )

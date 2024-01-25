@@ -12,13 +12,6 @@ function App() {
         })}
       </Routes>
     </BrowserRouter>
-    // <Router>
-    //   <Routes>
-    //     {routes.map((route, i) => {
-    //       return <Route key={i} path={route.path} element={route.component} />
-    //     })}
-    //   </Routes>
-    // </Router>
   )
 }
 

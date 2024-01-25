@@ -1,7 +1,6 @@
 import { Avatar, Badge, Box, Grid, IconButton } from '@mui/material'
 import { deepOrange } from '@mui/material/colors'
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
-// import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const Header = (props) => {
