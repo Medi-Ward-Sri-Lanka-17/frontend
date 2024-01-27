@@ -26,7 +26,7 @@ const ModelStack=styled(Stack)(({})=>({
 export const BtnTypography=styled(Typography)(({theme})=>({
     fontSize:"18px",
     [theme.breakpoints.down("md")]:{
-        fontSize:"16px",
+        fontSize:"14px",
 
     },
 
@@ -116,22 +116,22 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
         }}>
         <ModelStack sx={{
             backgroundColor:theme.palette.background.paper,
-            marginTop:"7em",
+            marginTop:"3em",
             width:500,
-            height:"70vh",
+            height:"80vh",
             borderRadius:theme.shape.borderRadius,
             overflow:"hidden",
             overflowY:"auto",
             [theme.breakpoints.down("md")]:{
                 width:400,
-                height:"70vh",
+                height:"80vh",
             },
             }}>
             <Stack display="flex" direction="row" justifyContent='end'>
                 <Button
                     variant="contained" 
                     onClick={()=>setRecoveryModel(false)}
-                ><Typography variant='h6'>X</Typography>
+                ><Typography sx={{fontSize:"1rem"}}>X</Typography>
                 </Button>
             </Stack>
 
@@ -177,7 +177,15 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                     {email&&<Typography variant='subtitle2'>We will send a OTP code for given email address to recover account</Typography>}
                     {mobile&&<Typography variant='subtitle2'>We will send a OTP code for given mobile number to recover account</Typography>}
                 </Styledstack>
-
+                <form>
+                <Stack spacing={1.5} sx={{
+                        width:500,
+                        alignItems:"center",
+                        width:"80%",
+                        [theme.breakpoints.down("md")]:{
+                            width:"65%",
+                        },
+                }}>    
                 <Styledstack>
                 {email&&<TextField id="email" name="email" variant="outlined" size='small' placeholder="Enter your email"
                                         helperText={emailError}
@@ -231,6 +239,8 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                     >
                         <BtnTypography>Send OTP</BtnTypography></Button>
                 </Styledstack>
+                </Stack>
+                </form>
 
                 <Stack spacing={2} textAlign="left" sx={{
                     width:"80%",

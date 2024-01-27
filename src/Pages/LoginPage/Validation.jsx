@@ -1,24 +1,12 @@
 import React, { useState } from 'react'
+import * as Yup from 'yup'
 
-export const Validation = (username,password) => {
+export const validationSchema=Yup.object({
 
-    let error={}
-
-    if(username==""){
-        error.uname="Username Required*"
-    }
-    else if(username.length<5){
-        error.uname="Username at least 6 characters length"
-    }
-
-    if(password==""){
-        error.password="Password Required*"
-    }
-    else if(password.length<8){
-        error.password="Password must be at least 8 characters"
-    }
-  return error;
-}
+    username:Yup.string().required("Required*"),
+    password:Yup.string().required("Required*").max(10,"Maximum 10 characters").min(8,"At least 8 characters require")
+  
+  })
 
 export const otpEmailValidate=(otpEmail)=>{
 
