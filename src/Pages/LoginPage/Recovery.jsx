@@ -2,9 +2,9 @@ import {Button, ButtonGroup,Stack, TextField, Typography, styled } from '@mui/ma
 import React, { useState } from 'react'
 import Theme from '../../Component/Theme';
 import ReactDOM from 'react-dom'
-import { otpEmailValidate } from './Validation';
-import { otpMobilelValidate } from './Validation';
-import { validateOtp } from './Validation';
+import { useFormik } from 'formik';
+import {validationSchemaRecoveryEmail} from './Validation';
+import { validationSchemaOtp } from './Validation';
 
 const theme=Theme();
 
@@ -35,8 +35,7 @@ export const BtnTypography=styled(Typography)(({theme})=>({
 
 
 const UserTitleBox=styled(Stack)(({theme})=>({
-    marginTop:"50px",
-    marginBottom:"30px",
+    marginBottom:"0.5em",
     width:"65%",
     [theme.breakpoints.down("md")]:{
         width:"65%",
@@ -75,38 +74,50 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
         setMobile(true);
     }
 
-    //validation for email/mobile
-
-    const [otpEmail,setOtpEmail]=useState("");
-    const [emailError,setEmailError]=useState("");
 
 
 
-    //Mobile
-    const [otpMobile,setOtpMobile]=useState("");
-    const [mobileError,setMobileError]=useState("");
-    
-
-    const sendOTPHandle=()=>{
-        setEmailError(otpEmailValidate(otpEmail));
-        setMobileError(otpMobilelValidate(otpMobile));
+    //define initial values
+    const initialValuesEmail={
+        email:"",
+        mobileNo:"",
 
     }
 
-    //Otp field
-    const [otp,setOtp]=useState("");
-    const [otpError,setOtpError]=useState("");
-    const [go,setGo]=useState(false);
+    //define onsubmit on send Otp
+    const onSubmitEmail=(values)=>{
+        console.log(values)
 
-    const recoveryHandle=()=>{
-        setOtpError(validateOtp(otp));
-
-        if(otp==""||otp.length<6){
-
-        }else{
-            resetPasswordModelOn();
-        }
     }
+
+    //formik define send OTP
+    const formik=useFormik({
+        initialValues:initialValuesEmail,
+        onSubmit:onSubmitEmail,
+        validationSchema:validationSchemaRecoveryEmail
+    })
+
+
+
+    //Define initial values of OTP
+
+    const initialValuesOtp={
+        otp:"",
+    }
+
+    //Define onsubmit function of Recovery password
+    const onSubmitOtp=(values)=>{
+        console.log(values)
+        resetPasswordModelOn();
+        
+    }
+
+    //Define formik of Control Recovery password 
+    const formik2=useFormik({
+        initialValues:initialValuesOtp,
+        onSubmit:onSubmitOtp,
+        validationSchema:validationSchemaOtp,
+    })
 
 
   return ReactDOM.createPortal(
@@ -177,21 +188,25 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                     {email&&<Typography variant='subtitle2'>We will send a OTP code for given email address to recover account</Typography>}
                     {mobile&&<Typography variant='subtitle2'>We will send a OTP code for given mobile number to recover account</Typography>}
                 </Styledstack>
-                <form>
+                <form onSubmit={formik.handleSubmit}>
                 <Stack spacing={1.5} sx={{
-                        width:500,
+                    width:500,
                         alignItems:"center",
-                        width:"80%",
-                        [theme.breakpoints.down("md")]:{
-                            width:"65%",
-                        },
                 }}>    
-                <Styledstack>
+                <Stack
+                sx={{ 
+                    width:"80%",
+                    [theme.breakpoints.down("md")]:{
+                    width:"50%",
+                    }
+            }}
+                >
                 {email&&<TextField id="email" name="email" variant="outlined" size='small' placeholder="Enter your email"
-                                        helperText={emailError}
+                                        helperText={formik.errors.email}
                                         FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
-                                        value={otpEmail}
-                                        onChange={(event)=>setOtpEmail(event.target.value)}
+                                        value={formik.values.email}
+                                        onChange={formik.handleChange}
+                            
 
                                         type="text"
                                         sx={{
@@ -204,12 +219,13 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                                             }}
                                         />}
                 
-                {mobile&&<TextField id="mobile-no" name="mobile-no" variant="outlined" size='small' placeholder="Enter your mobile number"
-                                        helperText={mobileError}
+                {mobile&&<TextField id="mobile-no" name="mobileNo" variant="outlined" size='small' placeholder="Enter your mobile number"
+                                        helperText={formik.errors.mobileNo}
                                         FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
 
-                                        value={otpMobile}
-                                        onChange={(event)=>setOtpMobile(event.target.value)}
+                                        value={formik.values.mobileNo}
+                                        onChange={formik.handleChange}
+                                
 
                                         type="text"
                                         sx={{
@@ -221,12 +237,17 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                                             }
                                             }}
                                         />}
-                </Styledstack>
+                </Stack>
 
-                <Styledstack>
+                <Stack sx={{
+                                        width:"80%",
+                    [theme.breakpoints.down("md")]:{
+                    width:"50%",
+                    }
+                }}>
                     <Button 
                     variant="contained" 
-                    onClick={sendOTPHandle}
+                    type='submit'
                     sx=
                     {{
                         width:"100%",
@@ -238,7 +259,7 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                     
                     >
                         <BtnTypography>Send OTP</BtnTypography></Button>
-                </Styledstack>
+                </Stack>
                 </Stack>
                 </form>
 
@@ -251,44 +272,75 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
 
 
                     >
-                        <Typography variant='h6'>Enter OTP</Typography>
-                </Stack>
-
-                <Styledstack>
-                <TextField id="otp" name="otp" variant="outlined" size='small' placeholder="xxx-xxx"
-
-                                        type="text"
-                                        helperText={otpError}
-                                        FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
-                                        value={otp}
-                                        onChange={(event)=>setOtp(event.target.value)}
-                                        sx={{
-                                            size:'small',
-                                            width:"100%",
-                                            borderRadius:theme.shape.borderRadius,
-                                            "&:hover":{
-                                                borderBlockColor:theme.palette.success.main
-                                            }
-                                            }}
-                                        />
-                </Styledstack>
-
-                <Styledstack sx={{
-                }}>
-                    <Button
-                        variant="contained" 
-                        sx={{
-                        width:"100%",
-                        "&:hover":{
-                            backgroundColor:theme.palette.secondary.main,
-                        }
-                        }}
-                        onClick={()=>recoveryHandle()}
+                        <Typography variant='h6'
+                            sx={{
+                                [theme.breakpoints.down('md')]: {
+                                    fontSize: '1rem',
+                                },
+                            }}
                         >
-                            <BtnTypography>Recovery Password</BtnTypography>
-                        </Button>
-            
-                </Styledstack>
+                            Enter OTP
+                        </Typography>
+                </Stack>
+                
+                <form onSubmit={formik2.handleSubmit}>
+                    <Stack spacing={1.5} sx={{
+                         width:500,
+                        alignItems:"center",
+                    }}>
+                        <Stack sx={{ 
+                            width:"80%",
+                            [theme.breakpoints.down("md")]:{
+                            width:"50%",
+                            }
+                            }} 
+                        >
+                            
+                            <TextField id="otp" name="otp" variant="outlined" size='small' placeholder="xxx-xxx"
+
+                                                    type="text"
+                                                    helperText={formik2.errors.otp}
+                                                    FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
+                                                    value={formik2.values.otp}
+                                                    onChange={formik2.handleChange}
+                                                    sx={{
+                                                        size:'small',
+                                                        width:"100%",
+                                                        borderRadius:theme.shape.borderRadius,
+                                                        "&:hover":{
+                                                            borderBlockColor:theme.palette.success.main
+                                                        }
+                                                        }}
+                                                    />
+                        </Stack>
+
+                        <Stack 
+                            sx={{ 
+                                width:"80%",
+                                [theme.breakpoints.down("md")]:{
+                                width:"50%",
+                                }
+                                }} 
+                        >
+                            <Button
+                                variant="contained" 
+                                type='submit'
+                                sx={{
+                                width:"100%",
+                                "&:hover":{
+                                    backgroundColor:theme.palette.secondary.main,
+                                }
+                                }}
+                                
+                                >
+                                    <BtnTypography>
+                                        Recovery Password
+                                    </BtnTypography>
+                                </Button>
+                    
+                        </Stack>
+                    </Stack>
+                </form>
             </Stack>
 
 

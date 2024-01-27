@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
 import * as Yup from 'yup'
 
+//Login form validation
 export const validationSchema=Yup.object({
 
     username:Yup.string().required("Required*"),
@@ -8,40 +8,28 @@ export const validationSchema=Yup.object({
   
   })
 
-export const otpEmailValidate=(otpEmail)=>{
+      //Recovery Password email/Mobile No field validation using Yup
 
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    export  const validationSchemaRecoveryEmail=Yup.object({
+        email: Yup.string().email('Invalid email address').required('Email is required'),
+        mobile: Yup
+        .string()
+        .matches(/^[0-9]+$/, 'Mobile number must only contain digits')
+        .min(10, 'Mobile number must be at least 10 digits')
+        .max(10, 'Mobile number must not exceed 10 digits')
+        .required('Mobile number is required'),
+        })
 
-    if(otpEmail==""){
-        return "Recovery Email is required*";
-    }
-    else if(!(emailPattern.test(otpEmail))){
-        return "Email is in incorrect format"
-    }
-}
+    
+    //Recover Password button control validation
 
-export const otpMobilelValidate=(otpMobile)=>{
-
-    const mobileNumberPattern = /^\d{10}$/;
-
-    if(otpMobile==""){
-        return "Recovery Mobile no is required*";
-    }
-    else if(!(mobileNumberPattern.test(otpMobile))){
-        return "Mobile number is in incorrect format"
-    }
-}
+    export const validationSchemaOtp=Yup.object({
+        otp: Yup.string().matches(/^\d{6}$/, 'OTP must be a 6-digit number').required('OTP is required')
+    })
 
 
-export const validateOtp=(otp)=>{
 
-    if(otp==""){
-        return "OTP code is required*";
-    }
-    else if(otp.length<6){
-        return "OTP at least 6 digits code"
-    }
-}
+
 
 export const validateNewPassword=(values)=>{
 
