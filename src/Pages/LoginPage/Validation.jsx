@@ -28,7 +28,18 @@ export const validationSchema=Yup.object({
     })
 
 
+    //Reset Password validation
 
+    export const validationSchemaResetPwd=Yup.object({
+        newpassword: Yup
+        .string()
+        .min(8, 'Password must be at least 8 characters')
+        .required('Password is required'),
+        confirmpassword:Yup
+        .string()
+        .oneOf([Yup.ref('newpassword'), null], 'Passwords must match')
+        .required('Password confirmation is required'),
+    })
 
 
 export const validateNewPassword=(values)=>{
