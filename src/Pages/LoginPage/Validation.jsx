@@ -41,6 +41,15 @@ export const validationSchema=Yup.object({
         .required('Password confirmation is required'),
     })
 
+    //Customer Support page validation
+
+    export const validationSchemaCustonerSupport=Yup.object({
+        name:Yup.string().required("Required*"),
+        username:Yup.string().required("Required*"),
+        email:Yup.string().email('Invalid email address').required('Email is required'),
+        description:Yup.string().required("Required*"),
+    })
+
 
 export const validateNewPassword=(values)=>{
 
