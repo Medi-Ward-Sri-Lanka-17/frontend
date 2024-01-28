@@ -19,15 +19,22 @@ import Recovery from './Recovery'
 import Reset from './Reset'
 import SuccessAlert from '../../Component/SuccessAlert'
 import CustomerSup from './CustomerSup'
-import { Validation } from './Validation'
+import { validationSchema } from './Validation'
+import axios from 'axios'
+import { useFormik } from 'formik'
+import { useNavigate } from 'react-router-dom'
 
 const img1 = require('../../Assest/mainlogo.png')
+
+//calling Theme function
 const theme = Theme()
+
+
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
   marginTop: '1em',
   width: 900,
-  height: '80vh',
+  height: "80vh",
   textAlign: 'center',
   borderRadius: theme.shape.borderRadius * 6,
   [theme.breakpoints.down('md')]: {
@@ -41,8 +48,8 @@ const DemoPaper = styled(Paper)(({ theme }) => ({
 }))
 
 const UserTitleBox = styled(Stack)(({ theme }) => ({
-  marginTop: '3em',
-  marginBottom: '3em',
+  marginTop: '2.5em',
+  marginBottom: '2.5em',
   width: 350,
   [theme.breakpoints.down('md')]: {
     width: 250,
@@ -66,7 +73,33 @@ const UserInputBox = styled(Stack)(({ theme }) => ({
   },
 }))
 
+
+
 const Login = () => {
+
+   //using useNavigate hook
+
+ const navigate=useNavigate();
+
+  //formik initialValue
+
+const initialValues={
+  username:"",
+  password:"",
+}
+
+//formik onsubmit function
+const onSubmit=(values)=>{
+  console.log(values)
+  navigate("/home")
+  
+ 
+}
+
+//formik validate function
+
+
+
   const [showPassword, setShowPassword] = useState(false)
 
   const [recoveryModel, setRecoveryModel] = useState(false)
@@ -80,6 +113,8 @@ const Login = () => {
   const [custom, setCustom] = useState(false)
 
   const [responseAlert, setResponseAlert] = useState(false)
+
+ 
 
   const resetPasswordModelOn = () => {
     setReset(true)
@@ -102,15 +137,12 @@ const Login = () => {
     setCustom(false)
   }
 
-  //validatios
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState({})
-
-  const loginHandle = () => {
-    setError(Validation(username, password))
-  }
+  //validations
+  const formik=useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema,   
+  })
 
   return (
     <ThemeProvider theme={theme}>
@@ -138,6 +170,7 @@ const Login = () => {
               },
             }}
           >
+            
             <Box
               flex="45%"
               sx={{
@@ -180,13 +213,18 @@ const Login = () => {
                 borderBottomRightRadius: theme.shape.borderRadius * 6,
                 backgroundColor: theme.palette.background.normal,
                 borderBottomLeftRadius: { xs: theme.shape.borderRadius * 6 },
+                [theme.breakpoints.down('md')]: {
+                  height: '70vh',
+                },
+
               }}
             >
+              <form onSubmit={formik.handleSubmit}> 
               <Stack display="flex" direction="column" alignItems="center">
                 <UserTitleBox>
                   <Typography
-                    variant="h3"
                     sx={{
+                      fontSize:"2.5rem",
                       [theme.breakpoints.down('md')]: {
                         fontSize: '2rem',
                       },
@@ -197,9 +235,10 @@ const Login = () => {
                 </UserTitleBox>
 
                 <Stack display="flex" direction="column" spacing={2}>
+                  
                   <UserText>
                     <Typography
-                      variant="h5"
+                      variant="h6"
                       sx={{
                         [theme.breakpoints.down('md')]: {
                           fontSize: '1rem',
@@ -217,14 +256,13 @@ const Login = () => {
                       variant="outlined"
                       placeholder="Enter your username"
                       size="small"
-                      value={username}
-                      onChange={(event) => setUsername(event.target.value)}
-                      helperText={error.uname}
+                      value={formik.values.username}
+                      onChange={formik.handleChange}
+                      helperText={formik.errors.username}
                       FormHelperTextProps={{
                         style: { color: theme.palette.error.main },
                       }}
                       sx={{
-                        size: 'small',
                         width: '100%',
                         borderRadius: theme.shape.borderRadius,
                         '&:hover': {
@@ -243,7 +281,7 @@ const Login = () => {
 
                   <UserText>
                     <Typography
-                      variant="h5"
+                      variant="h6"
                       sx={{
                         [theme.breakpoints.down('md')]: {
                           fontSize: '1rem',
@@ -260,13 +298,13 @@ const Login = () => {
                       name="password"
                       variant="outlined"
                       size="small"
-                      helperText={error.password}
+                      helperText={formik.errors.password}
                       FormHelperTextProps={{
                         style: { color: theme.palette.error.main },
                       }}
                       type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
                       sx={{
                         placeholder: 'Enter your password',
                         size: 'small',
@@ -385,7 +423,7 @@ const Login = () => {
                   <Button
                     variant="contained"
                     sx={{
-                      marginTop: '5%',
+                      marginTop: '0.5em',
                       width: 350,
                       height: 40,
                       [theme.breakpoints.down('md')]: {
@@ -397,12 +435,13 @@ const Login = () => {
                         backgroundColor: theme.palette.secondary.main,
                       },
                     }}
-                    onClick={loginHandle}
+                    type='submit'
                   >
                     <Typography variant="h6">Login</Typography>
                   </Button>
                 </Stack>
               </Stack>
+              </form> 
             </Box>
           </Stack>
         </DemoPaper>
