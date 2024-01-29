@@ -1,16 +1,10 @@
 import { apiClient } from '../Api/ApiClient'
 import { executeJwtAuthenticationService } from '../Api/AuthenticationApi'
 
-const { createContext, useContext } = require('react')
+const { createContext, useContext, useState } = require('react')
 
 export const AuthContext = createContext()
 export const useAuth = () => useContext(AuthContext)
-
-function logout() {
-  setIsAuthenticate(false)
-  setToken(null)
-  setUser(null)
-}
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
@@ -41,10 +35,15 @@ export const AuthProvider = ({ children }) => {
         return false
       }
     } catch (error) {
-      console.error(response.status)
+      console.error('Catch error')
       logout()
       return false
     }
+  }
+  function logout() {
+    setIsAuthenticate(false)
+    setToken(null)
+    setUser(null)
   }
 
   return (
