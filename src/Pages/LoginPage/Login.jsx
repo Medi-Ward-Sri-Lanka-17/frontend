@@ -20,21 +20,19 @@ import Reset from './Reset'
 import SuccessAlert from '../../Component/SuccessAlert'
 import CustomerSup from './CustomerSup'
 import { validationSchema } from './Validation'
-import axios from 'axios'
 import { useFormik } from 'formik'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../Security/AuthContext'
 
 const img1 = require('../../Assest/mainlogo.png')
 
 //calling Theme function
 const theme = Theme()
 
-
-
 const DemoPaper = styled(Paper)(({ theme }) => ({
   marginTop: '1em',
   width: 900,
-  height: "80vh",
+  height: '80vh',
   textAlign: 'center',
   borderRadius: theme.shape.borderRadius * 6,
   [theme.breakpoints.down('md')]: {
@@ -73,32 +71,37 @@ const UserInputBox = styled(Stack)(({ theme }) => ({
   },
 }))
 
-
-
 const Login = () => {
+  //using useNavigate hook
 
-   //using useNavigate hook
+  const navigate = useNavigate()
 
- const navigate=useNavigate();
+  //Authentication context
+  const authContext = useAuth()
 
   //formik initialValue
 
-const initialValues={
-  username:"",
-  password:"",
-}
+  const initialValues = {
+    username: '',
+    password: '',
+  }
 
-//formik onsubmit function
-const onSubmit=(values)=>{
-  console.log(values)
-  navigate("/home")
-  
- 
-}
+  //formik onsubmit function
+  // const onSubmit = (values) => {
+  //   console.log(values)
+  //   navigate('/home')
+  // }
+  async function onSubmit() {
+    if (
+      await authContext.login(formik.values.username, formik.values.password)
+    ) {
+      navigate('/home')
+    } else {
+      console.log('Error: login credentials are wrong')
+    }
+  }
 
-//formik validate function
-
-
+  //formik validate function
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -113,8 +116,6 @@ const onSubmit=(values)=>{
   const [custom, setCustom] = useState(false)
 
   const [responseAlert, setResponseAlert] = useState(false)
-
- 
 
   const resetPasswordModelOn = () => {
     setReset(true)
@@ -138,10 +139,10 @@ const onSubmit=(values)=>{
   }
 
   //validations
-  const formik=useFormik({
+  const formik = useFormik({
     initialValues,
     onSubmit,
-    validationSchema,   
+    validationSchema,
   })
 
   return (
@@ -170,7 +171,6 @@ const onSubmit=(values)=>{
               },
             }}
           >
-            
             <Box
               flex="45%"
               sx={{
@@ -216,232 +216,229 @@ const onSubmit=(values)=>{
                 [theme.breakpoints.down('md')]: {
                   height: '70vh',
                 },
-
               }}
             >
-              <form onSubmit={formik.handleSubmit}> 
-              <Stack display="flex" direction="column" alignItems="center">
-                <UserTitleBox>
-                  <Typography
-                    sx={{
-                      fontSize:"2.5rem",
-                      [theme.breakpoints.down('md')]: {
-                        fontSize: '2rem',
-                      },
-                    }}
-                  >
-                    Welcome!
-                  </Typography>
-                </UserTitleBox>
-
-                <Stack display="flex" direction="column" spacing={2}>
-                  
-                  <UserText>
+              <form onSubmit={formik.handleSubmit}>
+                <Stack display="flex" direction="column" alignItems="center">
+                  <UserTitleBox>
                     <Typography
-                      variant="h6"
                       sx={{
+                        fontSize: '2.5rem',
                         [theme.breakpoints.down('md')]: {
-                          fontSize: '1rem',
+                          fontSize: '2rem',
                         },
                       }}
                     >
-                      Username
+                      Welcome!
                     </Typography>
-                  </UserText>
+                  </UserTitleBox>
 
-                  <UserInputBox>
-                    <TextField
-                      id="username"
-                      name="username"
-                      variant="outlined"
-                      placeholder="Enter your username"
-                      size="small"
-                      value={formik.values.username}
-                      onChange={formik.handleChange}
-                      helperText={formik.errors.username}
-                      FormHelperTextProps={{
-                        style: { color: theme.palette.error.main },
-                      }}
-                      sx={{
-                        width: '100%',
-                        borderRadius: theme.shape.borderRadius,
-                        '&:hover': {
-                          borderBlockColor: theme.palette.success.main,
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <PersonIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </UserInputBox>
-
-                  <UserText>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        [theme.breakpoints.down('md')]: {
-                          fontSize: '1rem',
-                        },
-                      }}
-                    >
-                      Password
-                    </Typography>
-                  </UserText>
-
-                  <UserInputBox>
-                    <TextField
-                      id="pwd"
-                      name="password"
-                      variant="outlined"
-                      size="small"
-                      helperText={formik.errors.password}
-                      FormHelperTextProps={{
-                        style: { color: theme.palette.error.main },
-                      }}
-                      type={showPassword ? 'text' : 'password'}
-                      value={formik.values.password}
-                      onChange={formik.handleChange}
-                      sx={{
-                        placeholder: 'Enter your password',
-                        size: 'small',
-                        width: '100%',
-                        borderRadius: theme.shape.borderRadius,
-                        '&:hover': {
-                          borderBlockColor: theme.palette.success.main,
-                        },
-                        [theme.breakpoints.down('md')]: {
-                          fontSize: '1rem',
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              edge="end"
-                              onClick={() => setShowPassword(true)}
-                              onBlur={() => setShowPassword(false)}
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </UserInputBox>
-                </Stack>
-
-                <Stack
-                  display="flex"
-                  direction="row"
-                  justifyContent="space-between"
-                  sx={{
-                    width: 350,
-                    marginTop: '20px',
-                    marginBottom: '20px',
-                    [theme.breakpoints.down('md')]: {
-                      width: 250,
-                    },
-                  }}
-                >
-                  <Box
-                    flex="50%"
-                    sx={{
-                      textAlign: 'left',
-                    }}
-                  >
-                    <Button
-                      variant="text"
-                      sx={{ color: theme.palette.link.main }}
-                      onClick={() => setRecoveryModel(true)}
-                    >
+                  <Stack display="flex" direction="column" spacing={2}>
+                    <UserText>
                       <Typography
+                        variant="h6"
                         sx={{
-                          fontSize: '12px',
+                          [theme.breakpoints.down('md')]: {
+                            fontSize: '1rem',
+                          },
                         }}
                       >
-                        Reset Password
+                        Username
                       </Typography>
-                    </Button>
+                    </UserText>
 
-                    {recoveryModel && (
-                      <Recovery
-                        recoveryModel={recoveryModel}
-                        setRecoveryModel={setRecoveryModel}
-                        resetPasswordModelOn={resetPasswordModelOn}
-                      />
-                    )}
-                    {reset && (
-                      <Reset
-                        reset={reset}
-                        setReset={setReset}
-                        openAlertSuccess={openAlertSuccess}
-                      />
-                    )}
-                    {alert && <SuccessAlert setAlert={setAlert} />}
-                  </Box>
-
-                  <Box
-                    flex="50%"
-                    sx={{
-                      textAlign: 'right',
-                    }}
-                  >
-                    <Button
-                      variant="text"
-                      sx={{ color: theme.palette.link.main }}
-                      onClick={() => setCustom(true)}
-                    >
-                      <Typography
+                    <UserInputBox>
+                      <TextField
+                        id="username"
+                        name="username"
+                        variant="outlined"
+                        placeholder="Enter your username"
+                        size="small"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        helperText={formik.errors.username}
+                        FormHelperTextProps={{
+                          style: { color: theme.palette.error.main },
+                        }}
                         sx={{
-                          fontSize: '12px',
+                          width: '100%',
+                          borderRadius: theme.shape.borderRadius,
+                          '&:hover': {
+                            borderBlockColor: theme.palette.success.main,
+                          },
+                        }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <PersonIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </UserInputBox>
+
+                    <UserText>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          [theme.breakpoints.down('md')]: {
+                            fontSize: '1rem',
+                          },
                         }}
                       >
-                        Customer Suppprt
+                        Password
                       </Typography>
-                    </Button>
-                    {custom && (
-                      <CustomerSup
-                        closeCustom={closeCustom}
-                        responseSuccessAlert={responseSuccessAlert}
-                      />
-                    )}
-                    {responseAlert && (
-                      <SuccessAlert setAlert={setResponseAlert} />
-                    )}
-                  </Box>
-                </Stack>
+                    </UserText>
 
-                <Stack>
-                  <Button
-                    variant="contained"
+                    <UserInputBox>
+                      <TextField
+                        id="pwd"
+                        name="password"
+                        variant="outlined"
+                        size="small"
+                        helperText={formik.errors.password}
+                        FormHelperTextProps={{
+                          style: { color: theme.palette.error.main },
+                        }}
+                        type={showPassword ? 'text' : 'password'}
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        sx={{
+                          placeholder: 'Enter your password',
+                          size: 'small',
+                          width: '100%',
+                          borderRadius: theme.shape.borderRadius,
+                          '&:hover': {
+                            borderBlockColor: theme.palette.success.main,
+                          },
+                          [theme.breakpoints.down('md')]: {
+                            fontSize: '1rem',
+                          },
+                        }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                edge="end"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? (
+                                  <Visibility />
+                                ) : (
+                                  <VisibilityOff />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </UserInputBox>
+                  </Stack>
+
+                  <Stack
+                    display="flex"
+                    direction="row"
+                    justifyContent="space-between"
                     sx={{
-                      marginTop: '0.5em',
                       width: 350,
-                      height: 40,
+                      marginTop: '20px',
+                      marginBottom: '20px',
                       [theme.breakpoints.down('md')]: {
                         width: 250,
-                        height: 35,
-                      },
-                      color: 'White',
-                      '&:hover': {
-                        backgroundColor: theme.palette.secondary.main,
                       },
                     }}
-                    type='submit'
                   >
-                    <Typography variant="h6">Login</Typography>
-                  </Button>
+                    <Box
+                      flex="50%"
+                      sx={{
+                        textAlign: 'left',
+                      }}
+                    >
+                      <Button
+                        variant="text"
+                        sx={{ color: theme.palette.link.main }}
+                        onClick={() => setRecoveryModel(true)}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: '12px',
+                          }}
+                        >
+                          Reset Password
+                        </Typography>
+                      </Button>
+
+                      {recoveryModel && (
+                        <Recovery
+                          recoveryModel={recoveryModel}
+                          setRecoveryModel={setRecoveryModel}
+                          resetPasswordModelOn={resetPasswordModelOn}
+                        />
+                      )}
+                      {reset && (
+                        <Reset
+                          reset={reset}
+                          setReset={setReset}
+                          openAlertSuccess={openAlertSuccess}
+                        />
+                      )}
+                      {alert && <SuccessAlert setAlert={setAlert} />}
+                    </Box>
+
+                    <Box
+                      flex="50%"
+                      sx={{
+                        textAlign: 'right',
+                      }}
+                    >
+                      <Button
+                        variant="text"
+                        sx={{ color: theme.palette.link.main }}
+                        onClick={() => setCustom(true)}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: '12px',
+                          }}
+                        >
+                          Customer Suppprt
+                        </Typography>
+                      </Button>
+                      {custom && (
+                        <CustomerSup
+                          closeCustom={closeCustom}
+                          responseSuccessAlert={responseSuccessAlert}
+                        />
+                      )}
+                      {responseAlert && (
+                        <SuccessAlert setAlert={setResponseAlert} />
+                      )}
+                    </Box>
+                  </Stack>
+
+                  <Stack>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        marginTop: '0.5em',
+                        width: 350,
+                        height: 40,
+                        [theme.breakpoints.down('md')]: {
+                          width: 250,
+                          height: 35,
+                        },
+                        color: 'White',
+                        '&:hover': {
+                          backgroundColor: theme.palette.secondary.main,
+                        },
+                      }}
+                      type="submit"
+                    >
+                      <Typography variant="h6">Login</Typography>
+                    </Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-              </form> 
+              </form>
             </Box>
           </Stack>
         </DemoPaper>
