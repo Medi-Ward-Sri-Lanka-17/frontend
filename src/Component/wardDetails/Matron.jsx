@@ -1,4 +1,3 @@
-// Matron.jsx
 import React, { useState, useEffect } from "react";
 import { Grid, TextField, Button, MenuItem, Paper } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -203,6 +202,12 @@ export default function Matron() {
         open={isAddNurseFormOpen}
         handleClose={() => setAddNurseFormOpen(false)}
         handleAddNurse={handleAddNurse}
+      />
+
+      <StaffDetailsForm
+        open={isStaffDetailsFormOpen}
+        handleClose={() => setStaffDetailsFormOpen(false)}
+        initialSisterName={sisterName}
       />
     </Grid>
   );

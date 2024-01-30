@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import TextField from '@mui/material/TextField'; // Import TextField for the search bar
-import { getNurses } from '../../Pages/WardDetails/nursesService.js';
+import React, { useState, useEffect } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import TextField from "@mui/material/TextField"; // Import TextField for the search bar
+import { getNurses } from "../../Data/wardDetails/nursesService.js";
 
 export default function NursesTable() {
   const [nurses, setNurses] = useState([]);
   const [filteredNurses, setFilteredNurses] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchNurses = async () => {
@@ -18,7 +18,7 @@ export default function NursesTable() {
         setNurses(fetchedNurses);
         setFilteredNurses(fetchedNurses); // Initially set filteredNurses to all nurses
       } catch (error) {
-        console.error('Error fetching nurses:', error);
+        console.error("Error fetching nurses:", error);
       }
     };
 
@@ -49,18 +49,21 @@ export default function NursesTable() {
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'mobileNo', headerName: 'Mobile No', flex: 1 },
-    { field: 'email', headerName: 'Email', flex: 1 },
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "name", headerName: "Name", flex: 1 },
+    { field: "mobileNo", headerName: "Mobile No", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
 
     {
-      field: 'actions',
-      headerName: 'Action',
+      field: "actions",
+      headerName: "Action",
       flex: 1,
       renderCell: (params) => (
         <>
-          <IconButton onClick={() => handleDelete(params.row.id)} color="secondary">
+          <IconButton
+            onClick={() => handleDelete(params.row.id)}
+            color="secondary"
+          >
             <DeleteIcon />
           </IconButton>
 
@@ -72,15 +75,13 @@ export default function NursesTable() {
           >
             More
           </Button> */}
-
-
         </>
       ),
     },
   ];
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 400, width: "100%" }}>
       {/* Search Bar */}
       <TextField
         label="Search"
@@ -90,7 +91,7 @@ export default function NursesTable() {
         value={searchQuery}
         onChange={handleSearchChange}
       />
-      
+
       {/* DataGrid with filtered nurses */}
       <DataGrid
         rows={filteredNurses}
