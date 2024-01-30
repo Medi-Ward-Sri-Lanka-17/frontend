@@ -1,20 +1,27 @@
-// Matron.jsx
-import React, { useState, useEffect } from 'react';
-import { Grid, TextField, Button, MenuItem, Paper} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import NursesTable from './table';
-import AddIcon from '@mui/icons-material/Add';
-import { fetchWardData, fetchAllWards, fetchWardData_matron, fetchPosition } from '../../Pages/WardDetails/wardService';
-
+import React, { useState, useEffect } from "react";
+import { Grid, TextField, Button, MenuItem, Paper } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import NursesTable from "./table";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  fetchWardData,
+  fetchAllWards,
+  fetchWardData_matron,
+  fetchPosition,
+} from "../../Data/wardDetails/wardService";
+import AddNurseForm from "./addNurses";
+import StaffDetailsForm from "./showSisterDetails";
 
 export default function Matron() {
-  const [wardName, setWardName] = useState('');
-  const [wardNumber, setWardNumber] = useState('');
-  const [sisterName, setSisterName] = useState('');
-  const [numberOfNurses, setNumberOfNurses] = useState('');
+  const [wardName, setWardName] = useState("");
+  const [wardNumber, setWardNumber] = useState("");
+  const [sisterName, setSisterName] = useState("");
+  const [numberOfNurses, setNumberOfNurses] = useState("");
   const [position, setPosition] = useState();
   const [wards, setWard] = useState([]);
-  const [selectedWard, setSelectedWard] = useState('');
+  const [selectedWard, setSelectedWard] = useState("");
+  const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false);
+  const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,41 +31,36 @@ export default function Matron() {
         setWard(allWards);
         setPosition(positionData);
 
-        // Reset values when position is 'matron'
-        if (positionData === 'matron') {
-          setWardName('');
-          setWardNumber('');
-          setSisterName('');
-          setNumberOfNurses('');
+        if (positionData === "matron") {
+          setWardName("");
+          setWardNumber("");
+          setSisterName("");
+          setNumberOfNurses("");
         }
       } catch (error) {
-        console.error('Error fetching data:', error.message);
+        console.error("Error fetching data:", error.message);
       }
     };
 
     fetchData();
   }, []);
 
-  //for nurses and sisters
-    useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchWardData();
-        console.log(data); // Log the data
         setWardName(data.wardName);
         setWardNumber(data.wardNumber);
         setSisterName(data.sisterName);
         setNumberOfNurses(data.numberOfNurses);
       } catch (error) {
-        console.error('Error fetching ward data:', error.message);
+        console.error("Error fetching ward data:", error.message);
       }
     };
 
     fetchData();
   }, []);
 
-  
-  //for matrons
   const handleWardChange = async (selectedWard) => {
     try {
       const data = await fetchWardData_matron(selectedWard);
@@ -67,15 +69,21 @@ export default function Matron() {
       setSisterName(data.sisterName);
       setNumberOfNurses(data.numberOfNurses);
     } catch (error) {
-      console.error('Error fetching ward data:', error.message);
+      console.error("Error fetching ward data:", error.message);
     }
   };
+
+  const handleAddNurse = (values) => {
+    // Handle adding nurse logic here
+    console.log("Adding nurse:", values);
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Paper elevation={3} style={{ padding: 16, margin: 30 }}>
           <form>
-          {position && position === 'matron' && wards && ( // Check if wards is defined
+            {position && position === "matron" && wards && (
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -102,7 +110,7 @@ export default function Matron() {
                   <Button
                     variant="outlined"
                     size="medium"
-                    style={{ margin: '20px' }}
+                    style={{ margin: "20px" }}
                     startIcon={<EditIcon />}
                   >
                     Edit basic ward details
@@ -147,9 +155,9 @@ export default function Matron() {
                     endAdornment: (
                       <Button
                         variant="outlined"
-                        size="small"
-                        style={{ marginLeft: '10px' }}
-                        // Add your onClick logic for the "More" button
+                        size="medium"
+                        style={{ margin: "20px" }}
+                        onClick={() => setStaffDetailsFormOpen(true)}
                       >
                         More
                       </Button>
@@ -169,15 +177,17 @@ export default function Matron() {
                 />
               </Grid>
             </Grid>
-
-            <Button
-              variant="outlined"
-              size="medium"
-              style={{ margin: '20px' }}
-              startIcon={<AddIcon />}
-            >
-              Add staff member
-            </Button>
+            {position !== "nurse" && (
+              <Button
+                variant="outlined"
+                size="medium"
+                style={{ margin: "20px" }}
+                startIcon={<AddIcon />}
+                onClick={() => setAddNurseFormOpen(true)}
+              >
+                Add staff member
+              </Button>
+            )}
           </form>
         </Paper>
       </Grid>
@@ -187,6 +197,18 @@ export default function Matron() {
           <NursesTable />
         </Paper>
       </Grid>
+
+      <AddNurseForm
+        open={isAddNurseFormOpen}
+        handleClose={() => setAddNurseFormOpen(false)}
+        handleAddNurse={handleAddNurse}
+      />
+
+      <StaffDetailsForm
+        open={isStaffDetailsFormOpen}
+        handleClose={() => setStaffDetailsFormOpen(false)}
+        initialSisterName={sisterName}
+      />
     </Grid>
   );
 }
