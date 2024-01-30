@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -25,14 +25,21 @@ const RequestLeave = () => {
     return `${year}-${month}-${day}T${hour}:${minute}`;
   };
 
+  const calculateLeaveCount = (commencingDate, endingLeavesDate) => {
+    const diffInMilliseconds =
+      new Date(endingLeavesDate) - new Date(commencingDate);
+    const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+    return diffInDays;
+  };
+
   const [formData, setFormData] = useState({
     name: "pushpa silva",
     id: "12345",
     designation: "Nurse",
     numberOfDays: "",
-    leaveTakenCurrentYear: "5",
-    date: getCurrentDateTime(), // Set default date and time
-    // dateOfFirstAppointment: "2020-01-01",
+    casualLeaves: "20",
+    vacationLeaves: "10",
+    date: getCurrentDateTime(),
     dateOfCommencingLeave: "",
     dateOfEndingLeaves: "",
     reasonsForLeave: "",
@@ -42,28 +49,17 @@ const RequestLeave = () => {
   const [exceedCapacityDialogOpen, setExceedCapacityDialogOpen] =
     useState(false);
   const [requiredFieldsError, setRequiredFieldsError] = useState(false);
-  // const [numberOfDaysError, setNumberOfDaysError] = useState(false);
+  const [pastCommencingDateError, setPastCommencingDateError] = useState(false);
 
-  // useEffect(() => {
-  //   // Function to get the current date in the format YYYY-MM-DD
-  //   const getCurrentDate = () => {
-  //     const today = new Date();
-  //     const year = today.getFullYear();
-  //     const month = String(today.getMonth() + 1).padStart(2, "0");
-  //     const day = String(today.getDate()).padStart(2, "0");
-  //     return `${year}-${month}-${day}`;
-  //   };
-
-  //   // Set the current date when the component mounts
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     date: getCurrentDateTime(),
-  //   }));
-  // }, []);
+  useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      date: getCurrentDateTime(),
+    }));
+  }, []);
 
   const handleSuccessDialogClose = () => {
     setSuccessDialogOpen(false);
-    // Reset the form after successful submission
     handleReset();
   };
 
@@ -77,68 +73,73 @@ const RequestLeave = () => {
       // Show success message after submission
       setSuccessDialogOpen(true);
     } else {
-      // Reset the form if the user chooses not to proceed with excessive leaves
       handleReset();
     }
   };
 
   const handleReset = () => {
-    // Implement reset logic here (clear form fields)
     setFormData({
       ...formData,
-      // numberOfDays: "",
       dateOfCommencingLeave: "",
       dateOfEndingLeaves: "",
       reasonsForLeave: "",
     });
 
-    // Reset error states
     setRequiredFieldsError(false);
-    // setNumberOfDaysError(false);
+    setPastCommencingDateError(false);
   };
 
   const handleSubmit = () => {
-    // Check for validations before submission
-    const requestedLeaves = parseInt(formData.numberOfDays, 10);
-    const leaveCapacity = 14; // Updated leave capacity to 14
-    const currentDate = new Date();
     const commencingDate = new Date(formData.dateOfCommencingLeave);
     const endingLeavesDate = new Date(formData.dateOfEndingLeaves);
+    const currentDate = new Date();
+    const requestedLeaves = calculateLeaveCount(
+      commencingDate,
+      endingLeavesDate
+    );
+    const totalLeaves =
+      parseInt(formData.casualLeaves, 10) +
+      parseInt(formData.vacationLeaves, 10);
 
-    // Reset error states
     setRequiredFieldsError(false);
-    // setNumberOfDaysError(false);
+    setPastCommencingDateError(false);
 
     if (
       !formData.reasonsForLeave ||
       isNaN(requestedLeaves) ||
       requestedLeaves <= 0 ||
-      requestedLeaves > leaveCapacity ||
-      commencingDate <= currentDate ||
-      commencingDate >= endingLeavesDate
+      commencingDate >= endingLeavesDate ||
+      commencingDate < currentDate
     ) {
-      // Show error message or handle validation appropriately
       setRequiredFieldsError(!formData.reasonsForLeave);
-      // setNumberOfDaysError(
-      //   isNaN(requestedLeaves) ||
-      //     requestedLeaves <= 0 ||
-      //     requestedLeaves > leaveCapacity
-      // );
+
+      // Show an error message for past commencing date
+      if (commencingDate < currentDate) {
+        setPastCommencingDateError(true);
+      }
+
       return;
     }
 
-    // Continue with the normal submission flow
-    // ...
-
-    // Check if the number of requested leaves exceeds the capacity
-    if (requestedLeaves > leaveCapacity) {
+    // Check if the requested leaves exceed 14 consecutive days
+    const diffInDays = calculateLeaveCount(commencingDate, endingLeavesDate);
+    if (diffInDays > 14) {
       setExceedCapacityDialogOpen(true);
-      // Prevent further actions
       return;
     }
 
-    // Continue with the normal submission flow
-    // ...
+    if (requestedLeaves > 14) {
+      setExceedCapacityDialogOpen(true);
+      return;
+    }
+
+    const finalTotalLeaves = totalLeaves + requestedLeaves;
+
+    if (finalTotalLeaves > 42) {
+      setExceedCapacityDialogOpen(true);
+      return;
+    }
+
     setSuccessDialogOpen(true);
   };
 
@@ -201,7 +202,7 @@ const RequestLeave = () => {
                           </Typography>
                           <TextField
                             halfWidth
-                            value={formData.leaveTakenCurrentYear}
+                            value={formData.casualLeaves}
                             readOnly
                           />
                         </Grid>
@@ -211,7 +212,7 @@ const RequestLeave = () => {
                           </Typography>
                           <TextField
                             halfWidth
-                            value={formData.leaveTakenCurrentYear}
+                            value={formData.vacationLeaves}
                             readOnly
                           />
                         </Grid>
@@ -232,17 +233,6 @@ const RequestLeave = () => {
                 {/* Right Column */}
                 <Grid item xs={12} sm={12} md={6}>
                   <Grid container spacing={2}>
-                    {/* <Grid item xs={12}>
-                      <Typography variant="subtitle1">
-                        Date of First Appointment
-                      </Typography>
-                      <TextField
-                        type="date"
-                        fullWidth
-                        value={formData.dateOfFirstAppointment}
-                        readOnly
-                      />
-                    </Grid> */}
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">
                         Date of Commencing Leave
@@ -257,14 +247,20 @@ const RequestLeave = () => {
                             dateOfCommencingLeave: e.target.value,
                           })
                         }
-                        error={requiredFieldsError}
+                        error={requiredFieldsError || pastCommencingDateError}
                         required
-                        helperText={requiredFieldsError ? "*Required" : ""}
+                        helperText={
+                          requiredFieldsError
+                            ? "*Required"
+                            : pastCommencingDateError
+                            ? "*Commencing date must be in the future"
+                            : ""
+                        }
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">
-                        Date of ending leaves
+                        Date of ending leave
                       </Typography>
                       <TextField
                         type="date"
