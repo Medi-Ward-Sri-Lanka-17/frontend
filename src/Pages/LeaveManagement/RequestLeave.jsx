@@ -16,7 +16,7 @@ import SideBar from "../../Component/SideBar";
 
 const RequestLeave = () => {
   const [formData, setFormData] = useState({
-    name: "Sajad Deen",
+    name: "pushpa silva",
     id: "12345",
     designation: "Nurse",
     numberOfDays: "",
@@ -180,7 +180,7 @@ const RequestLeave = () => {
                         required
                         type="number"
                         helperText={
-                          numberOfDaysError ? "Enter a valid number" : ""
+                          numberOfDaysError ? "*Enter a valid number" : ""
                         }
                       />
                     </Grid>
@@ -236,7 +236,7 @@ const RequestLeave = () => {
                         }
                         error={requiredFieldsError}
                         required
-                        helperText={requiredFieldsError ? "Required" : ""}
+                        helperText={requiredFieldsError ? "*Required" : ""}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -255,7 +255,7 @@ const RequestLeave = () => {
                         }
                         error={requiredFieldsError}
                         required
-                        helperText={requiredFieldsError ? "Required" : ""}
+                        helperText={requiredFieldsError ? "*Required" : ""}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -275,7 +275,7 @@ const RequestLeave = () => {
                         }
                         error={requiredFieldsError}
                         required
-                        helperText={requiredFieldsError ? "Required" : ""}
+                        helperText={requiredFieldsError ? "*Required" : ""}
                       />
                     </Grid>
                   </Grid>
@@ -341,7 +341,7 @@ const RequestLeave = () => {
           <DialogTitle>Leave Request Submitted</DialogTitle>
           <DialogContent>
             <Typography variant="body1">
-              Your leave request has been submitted successfully.
+              Your leave request has been successfully submitted.Thank You.
             </Typography>
           </DialogContent>
           <DialogActions>
@@ -361,8 +361,9 @@ const RequestLeave = () => {
           <DialogTitle>Leave Capacity Exceeded</DialogTitle>
           <DialogContent>
             <Typography variant="body1">
-              You have exceeded the leave capacity for the year. This will be
-              recorded as excessive leaves. Are you sure about this?
+              You have exceeded the leave capacity that you can take for the
+              year. This will be recorded as excessive leaves. Are you sure
+              about this?
             </Typography>
           </DialogContent>
           <DialogActions>
