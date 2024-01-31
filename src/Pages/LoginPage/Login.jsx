@@ -91,6 +91,8 @@ const Login = () => {
   //   console.log(values)
   //   navigate('/home')
   // }
+  const [pwdError,setPwdError]=useState(null);
+
   async function onSubmit() {
     if (
       await authContext.login(formik.values.username, formik.values.password)
@@ -98,6 +100,8 @@ const Login = () => {
       navigate('/home')
     } else {
       console.log('Error: login credentials are wrong')
+      setPwdError("Login credentials are wrong");
+
     }
   }
 
@@ -332,6 +336,11 @@ const Login = () => {
                           ),
                         }}
                       />
+                    <Box marginTop="0.5em">
+                      {pwdError&& <Typography sx={{color:theme.palette.error.main,
+                        fontSize:"12px"
+                      }}>{pwdError}</Typography>}
+                    </Box>
                     </UserInputBox>
                   </Stack>
 
