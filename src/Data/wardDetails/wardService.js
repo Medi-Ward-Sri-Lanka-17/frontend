@@ -14,7 +14,7 @@ const wards = ["Accident ward", "surgical ward-men", "surgical ward-women"]; // 
 export const fetchPosition = async () => {
   try {
     const response = {
-      position: "sister", // Replace 'matron' with the actual position data
+      position: "nurse", // Replace 'matron' with the actual position data
     };
 
     return response.position.toLowerCase(); // Directly return the lowercase position
@@ -28,6 +28,18 @@ export const fetchWardData = async () => {
   try {
     // const data = await response.json();
     return response; // Directly return the response object
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    throw error;
+  }
+};
+
+export const shiftData = { morningShift: 7, eveningShift: 5, nightShift: 6 };
+
+export const fetchShiftData = async () => {
+  try {
+    // const data = await response.json();
+    return shiftData; // Directly return the response object
   } catch (error) {
     console.error("Error fetching data:", error.message);
     throw error;

@@ -8,16 +8,14 @@ import {
   TextField,
   Button,
   MenuItem,
-  Snackbar,
   Alert as MuiAlert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik, Form, Field } from "formik";
-import { ToastContainer, toast } from "react-toastify";
+import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
-  const [successMessage, setSuccessMessage] = useState(null);
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
 
   useEffect(() => {
@@ -34,6 +32,8 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
   }, []);
 
   const initialValues = {
+    firstName: "",
+    lastName: "",
     fullName: "",
     serviceId: "",
     birthdate: "",
@@ -42,6 +42,9 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
     leaveNo: "",
     mobileNo: "",
     serviceStartDate: "",
+    wardNo: "",
+    remainingVacationLeaves: "",
+    remainingCasualLeaves: "",
   };
 
   const validate = (values) => {
@@ -49,6 +52,14 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
 
     if (!values.fullName) {
       errors.fullName = "Required";
+    }
+
+    if (!values.firstName) {
+      errors.firstName = "Required";
+    }
+
+    if (!values.lastName) {
+      errors.lastName = "Required";
     }
 
     if (!values.serviceId) {
@@ -81,18 +92,34 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
       errors.serviceStartDate = "Required";
     }
 
+    if (!values.wardNo) {
+      errors.wardNo = "Required";
+    }
+
+    if (!values.remainingVacationLeaves) {
+      errors.remainingVacationLeaves = "Required";
+    }
+
+    if (!values.remainingCasualLeaves) {
+      errors.remainingCasualLeaves = "Required";
+    }
+
     return errors;
   };
 
   const onSubmit = async (values, actions) => {
     handleAddNurse(values);
     handleClose();
-    //setSuccessMessage("Nurse added successfully.");
     actions.setSubmitting(false);
   };
 
-  const showAlert = () => {
-    toast.info("This is a toast alert!");
+  const showSuccessAlert = () => {
+    handleClose();
+    Swal.fire({
+      text: "Staff member successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
   };
 
   return (
@@ -105,6 +132,26 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Add Nurse</DialogTitle>
           <DialogContent>
+            <label>First Name</label>
+            <Field
+              as={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="firstName"
+              required
+            />
+
+            <label>Last Name</label>
+            <Field
+              as={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="lastName"
+              required
+            />
+
             <label>Full Name</label>
             <Field
               as={TextField}
@@ -114,6 +161,7 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
               name="fullName"
               required
             />
+
             <label>Service ID</label>
             <Field
               as={TextField}
@@ -164,6 +212,16 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
               </MenuItem>
             </Field>
 
+            <label>Ward Number</label>
+            <Field
+              as={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="wardNo"
+              required
+            />
+
             <label>Leave No</label>
             <Field
               as={TextField}
@@ -194,24 +252,36 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
               name="serviceStartDate"
               required
             />
+
+            <label>Remaining Vacation Leaves</label>
+            <Field
+              as={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="remainingVacationLeaves"
+              required
+            />
+
+            <label>Remaining Casual Leaves</label>
+            <Field
+              as={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="remainingCasualLeaves"
+              required
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            <Button color="primary" onClick={showAlert} startIcon={<AddIcon />}>
+            <Button color="primary" onClick={showSuccessAlert}>
               Add Nurse
             </Button>
           </DialogActions>
         </Dialog>
-
-        {successMessage && (
-          <div
-            style={{ textAlign: "center", marginTop: "10px", color: "green" }}
-          >
-            {successMessage}
-          </div>
-        )}
       </Form>
     </Formik>
   );

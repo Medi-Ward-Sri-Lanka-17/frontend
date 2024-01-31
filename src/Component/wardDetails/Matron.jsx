@@ -11,6 +11,8 @@ import {
 } from "../../Data/wardDetails/wardService";
 import AddNurseForm from "./addNurses";
 import StaffDetailsForm from "./showSisterDetails";
+import AddWardDetailsForm from "./editBasicWardDetails";
+import AddNewWardForm from "./newWard";
 
 export default function Matron() {
   const [wardName, setWardName] = useState("");
@@ -20,6 +22,10 @@ export default function Matron() {
   const [position, setPosition] = useState();
   const [wards, setWard] = useState([]);
   const [selectedWard, setSelectedWard] = useState("");
+
+  {
+    /*Form useState*/
+  }
   const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false);
   const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false);
 
@@ -45,6 +51,13 @@ export default function Matron() {
     fetchData();
   }, []);
 
+  {
+    /*edit Ward details form related*/
+  }
+
+  const [isEditBasicWardDetailsDialogOpen, setEditBasicWardDetailsDialogOpen] =
+    useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -61,6 +74,27 @@ export default function Matron() {
     fetchData();
   }, []);
 
+  const handleEditBasicWardDetails = () => {
+    setEditBasicWardDetailsDialogOpen(true);
+  };
+
+  const handleEditBasicWardDetailsSave = () => {
+    setEditBasicWardDetailsDialogOpen(false);
+  };
+
+  {
+    /*add new ward */
+  }
+
+  const [isNewWardFormOpen, setNewWardFormOpen] = useState(false);
+
+  const handleNewWardForm = () => {
+    setNewWardFormOpen(false);
+  };
+
+  {
+    /*select ward field function */
+  }
   const handleWardChange = async (selectedWard) => {
     try {
       const data = await fetchWardData_matron(selectedWard);
@@ -83,9 +117,9 @@ export default function Matron() {
       <Grid item xs={12}>
         <Paper elevation={3} style={{ padding: 16, margin: 30 }}>
           <form>
-            {position && position === "matron" && wards && (
+            {position && position !== "nurse" && wards && (
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={4}>
                   <TextField
                     variant="outlined"
                     fullWidth
@@ -94,6 +128,7 @@ export default function Matron() {
                     label="Select the ward"
                     name="ward"
                     select
+                    disabled={position === "sister"}
                     onChange={(e) => {
                       setSelectedWard(e.target.value);
                       handleWardChange(e.target.value);
@@ -106,14 +141,29 @@ export default function Matron() {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={4}>
+                  {/*edit ward details form*/}
                   <Button
                     variant="outlined"
                     size="medium"
                     style={{ margin: "20px" }}
                     startIcon={<EditIcon />}
+                    onClick={() => setEditBasicWardDetailsDialogOpen(true)}
                   >
                     Edit basic ward details
+                  </Button>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  {/*add new ward form*/}
+                  <Button
+                    variant="outlined"
+                    disabled={position === "sister"}
+                    size="medium"
+                    style={{ margin: "20px" }}
+                    startIcon={<AddIcon />}
+                    onClick={() => setNewWardFormOpen(true)}
+                  >
+                    Add new ward
                   </Button>
                 </Grid>
               </Grid>
@@ -153,6 +203,7 @@ export default function Matron() {
                   fullWidth
                   InputProps={{
                     endAdornment: (
+                      //sister detail form
                       <Button
                         variant="outlined"
                         size="medium"
@@ -178,6 +229,7 @@ export default function Matron() {
               </Grid>
             </Grid>
             {position !== "nurse" && (
+              //add nurse or sister form
               <Button
                 variant="outlined"
                 size="medium"
@@ -198,16 +250,32 @@ export default function Matron() {
         </Paper>
       </Grid>
 
+      {/* Integrate Add nurse/sister form as a popup */}
       <AddNurseForm
         open={isAddNurseFormOpen}
         handleClose={() => setAddNurseFormOpen(false)}
         handleAddNurse={handleAddNurse}
       />
 
+      {/* Integrate edit and show sister details form as a popup */}
       <StaffDetailsForm
         open={isStaffDetailsFormOpen}
         handleClose={() => setStaffDetailsFormOpen(false)}
         initialSisterName={sisterName}
+      />
+
+      {/* Integrate AddWardDetailsForm as a popup */}
+      <AddWardDetailsForm
+        open={isEditBasicWardDetailsDialogOpen}
+        handleClose={() => setEditBasicWardDetailsDialogOpen(false)}
+        handleWardDetails={handleEditBasicWardDetailsSave}
+      />
+
+      {/* Integrate AddNewWardForm as a popup */}
+      <AddNewWardForm
+        open={isNewWardFormOpen}
+        handleClose={() => setNewWardFormOpen(false)}
+        handleWardDetails={handleNewWardForm}
       />
     </Grid>
   );
