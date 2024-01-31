@@ -9,6 +9,7 @@ import AddNews from '../Pages/News/AddNews'
 import ViewNews from '../Pages/News/ViewNews'
 import Profile from '../Pages/Profile/Profile'
 import Login from '../Pages/LoginPage/Login'
+import LeaveMoreDetails from '../Pages/LeaveManagement/LeaveMoreDetails'
 
 export const AppRoutes = {
   loginpath: { path: '/login', component: <Login /> },
@@ -23,6 +24,10 @@ export const AppRoutes = {
   // Leave related routes
   leave_request: { path: '/leave/request', component: <RequestLeave /> },
   leave_approve: { path: '/leave/approve', component: <LeaveApprove /> },
+  leave_more_details: {
+    path: '/leave/approve/:leaveId',
+    component: <LeaveMoreDetails />,
+  },
 
   // Ward details related routes
   add_ward_details: {
