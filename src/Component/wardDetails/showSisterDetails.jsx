@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
+import Swal from "sweetalert2";
 import {
   Dialog,
   DialogTitle,
@@ -65,6 +66,18 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
     leaveNo: leaveNo,
     mobileNo: mobileNo,
     serviceStartDate: serviceStartDate,
+  };
+
+  {
+    /*===============success alert=====================*/
+  }
+  const showSuccessAlert = () => {
+    handleClose();
+    Swal.fire({
+      text: "Staff member successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
   };
 
   return (
@@ -189,7 +202,7 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
               {editMode ? (
                 <Button
                   color="primary"
-                  onClick={handleSubmit}
+                  onClick={showSuccessAlert}
                   disabled={
                     loggedUserPosition === "sister" &&
                     loggedUserPosition === "nurse"
