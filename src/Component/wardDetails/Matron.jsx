@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import {
   fetchWardData,
   fetchAllWards,
-  fetchWardData_matron,
+  fetchWardData_matron as fetchSelectedWardData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
 import AddNurseForm from "./addNurses";
@@ -24,10 +24,8 @@ export default function Matron() {
   const [selectedWard, setSelectedWard] = useState("");
 
   {
-    /*Form useState*/
+    /*============================Initial field values fetching====================*/
   }
-  const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false);
-  const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +50,28 @@ export default function Matron() {
   }, []);
 
   {
-    /*edit Ward details form related*/
+    /*=======================Add a staff member form=============================*/
+  }
+  const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false);
+  const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false);
+
+  const handleAddNurse = (values) => {
+    // Handle adding nurse logic here
+    console.log("Adding nurse:", values);
+  };
+
+  {
+    /*================================add new ward=======================*/
+  }
+
+  const [isNewWardFormOpen, setNewWardFormOpen] = useState(false);
+
+  const handleNewWardForm = () => {
+    setNewWardFormOpen(false);
+  };
+
+  {
+    /*=====================edit Ward details form related========================*/
   }
 
   const [isEditBasicWardDetailsDialogOpen, setEditBasicWardDetailsDialogOpen] =
@@ -74,30 +93,20 @@ export default function Matron() {
     fetchData();
   }, []);
 
-  const handleEditBasicWardDetails = () => {
-    setEditBasicWardDetailsDialogOpen(true);
-  };
+  // const handleEditBasicWardDetails = () => {
+  //   setEditBasicWardDetailsDialogOpen(true);
+  // };
 
   const handleEditBasicWardDetailsSave = () => {
     setEditBasicWardDetailsDialogOpen(false);
   };
 
   {
-    /*add new ward */
-  }
-
-  const [isNewWardFormOpen, setNewWardFormOpen] = useState(false);
-
-  const handleNewWardForm = () => {
-    setNewWardFormOpen(false);
-  };
-
-  {
-    /*select ward field function */
+    /*===================selected ward field function=========================*/
   }
   const handleWardChange = async (selectedWard) => {
     try {
-      const data = await fetchWardData_matron(selectedWard);
+      const data = await fetchSelectedWardData(selectedWard);
       setWardName(data.wardName);
       setWardNumber(data.wardNumber);
       setSisterName(data.sisterName);
@@ -107,10 +116,9 @@ export default function Matron() {
     }
   };
 
-  const handleAddNurse = (values) => {
-    // Handle adding nurse logic here
-    console.log("Adding nurse:", values);
-  };
+  {
+    /*=======================User interrface==============================*/
+  }
 
   return (
     <Grid container spacing={3}>
