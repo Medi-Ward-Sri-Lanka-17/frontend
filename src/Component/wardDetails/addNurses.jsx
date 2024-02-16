@@ -15,7 +15,7 @@ import { Formik, Form, Field } from "formik";
 import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 
-const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
+const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
 
   useEffect(() => {
@@ -287,4 +287,4 @@ const AddNurseForm = ({ open, handleClose, handleAddNurse }) => {
   );
 };
 
-export default AddNurseForm;
+export default AddStaffMemberForm;

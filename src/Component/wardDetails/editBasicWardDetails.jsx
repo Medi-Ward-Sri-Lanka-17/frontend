@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
 import {
   Dialog,
   DialogTitle,
@@ -7,48 +6,49 @@ import {
   DialogActions,
   TextField,
   Button,
-  MenuItem,
-  Alert as MuiAlert,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { Formik, Form, Field } from "formik";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 import {
   fetchWardData,
   fetchShiftData,
+  fetchPosition,
+  shiftData,
 } from "../../Data/wardDetails/wardService";
 
-const AddWardDeatilsForm = ({ open, handleClose, handleAddNurse }) => {
-  const [successMessage, setSuccessMessage] = useState(null);
+const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
-  const [wardName, setWardName] = useState("");
-  const [wardNumber, setWardNumber] = useState("");
-  const [sisterName, setSisterName] = useState("");
-  const [numberOfNurses, setNumberOfNurses] = useState("");
-  const [morningShift, setMorningShift] = useState("");
-  const [eveningShift, setEveningShift] = useState("");
-  const [nightShift, setNightShift] = useState("");
+  const [wardData, setWardData] = useState({
+    wardName: "",
+    wardNumber: "",
+    sisterName: "",
+    numberOfNurses: "",
+    morningShift: "",
+    eveningShift: "",
+    nightShift: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //position retrieve
         const positionData = await fetchPosition();
         setLoggedUserPosition(positionData);
 
-        //ward data retrieve
         const data = await fetchWardData();
-        setWardName(data.wardName);
-        setWardNumber(data.wardNumber);
-        setSisterName(data.sisterName);
-        setNumberOfNurses(data.numberOfNurses);
+        setWardData({
+          wardName: data.wardName,
+          wardNumber: data.wardNumber,
+          sisterName: data.sisterName,
+          numberOfNurses: data.numberOfNurses,
+        });
 
-        //shift data retrieve
         const shiftData = await fetchShiftData();
-        setMorningShift(shiftData.morningShift);
-        setEveningShift(shiftData.eveningShift);
-        setNightShift(shiftData.nightShift);
+        setWardData((prevData) => ({
+          ...prevData,
+          morningShift: shiftData.morningShift,
+          eveningShift: shiftData.eveningShift,
+          nightShift: shiftData.nightShift,
+        }));
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -57,122 +57,131 @@ const AddWardDeatilsForm = ({ open, handleClose, handleAddNurse }) => {
     fetchData();
   }, []);
 
-  const onSubmit = () => {
-    return null;
-  };
-
-  const initialValues = {
-    wardName: "",
-    wardNumber: "",
-    sisterName: "",
-    numberOfNursesInTheWard: "",
-    morningShift: "",
-    eveningShift: "",
-    nightShift: "",
+  {
+    /*===============success alert=====================*/
+  }
+  const showSuccessAlert = () => {
+    handleClose();
+    Swal.fire({
+      text: "Staff member successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
   };
 
   return (
     <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      //   validate={validate}
+      initialValues={wardData}
+      enableReinitialize={true}
+      onSubmit={(values) => {
+        console.log(values);
+        // handleAddNurse(values);
+        handleClose();
+      }}
     >
-      <Form>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Add ward details</DialogTitle>
-          <DialogContent>
-            <label>Ward Name</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="wardName"
-              required
-              value={wardName}
-              disabled={loggedUserPosition === "sister"}
-            />
-            <label>Ward number</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="wardNumber"
-              required
-              value={wardNumber}
-              disabled={loggedUserPosition === "sister"}
-            />
-            <label>Sister name</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="sisterName"
-              required
-              value={sisterName}
-              disabled={loggedUserPosition === "sister"}
-            />
-
-            <label>Total number of nurses in ward</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="numberOfNursesInTheWard"
-              required
-              value={numberOfNurses}
-              disabled={loggedUserPosition === "sister"}
-            />
-
-            <label>Number of nurses in morning shift</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="morningShift"
-              required
-              value={morningShift}
-              disabled={loggedUserPosition === "matron"}
-            />
-
-            <label>Number of nurses in evening shift</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="eveningShift"
-              required
-              value={eveningShift}
-              disabled={loggedUserPosition === "matron"}
-            />
-
-            <label>Number of nurses in night shift</label>
-            <Field
-              as={TextField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="nightShift"
-              required
-              value={nightShift}
-              disabled={loggedUserPosition === "matron"}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button color="primary">Save</Button>
-          </DialogActions>
-        </Dialog>
-      </Form>
+      {({ handleChange, values }) => (
+        <Form>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Edit ward details</DialogTitle>
+            <DialogContent>
+              <label>Ward Name</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="wardName"
+                required
+                onChange={handleChange}
+                value={values.wardName}
+                disabled={loggedUserPosition === "sister"}
+              />
+              <label>Ward Number</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="wardNumber"
+                required
+                onChange={handleChange}
+                value={values.wardNumber}
+                disabled={loggedUserPosition === "sister"}
+              />
+              <label>Sister Name</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="sisterName"
+                required
+                onChange={handleChange}
+                value={values.sisterName}
+                disabled={loggedUserPosition === "sister"}
+              />
+              <label>Total number of nurses in ward</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="numberOfNurses"
+                required
+                onChange={handleChange}
+                value={values.numberOfNurses}
+                disabled={loggedUserPosition === "sister"}
+              />
+              <label>Number of nurses in morning shift</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="morningShift"
+                required
+                onChange={handleChange}
+                value={values.morningShift}
+                disabled={loggedUserPosition === "matron"}
+              />
+              <label>Number of nurses in evening shift</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="eveningShift"
+                required
+                onChange={handleChange}
+                value={values.eveningShift}
+                disabled={loggedUserPosition === "matron"}
+              />
+              <label>Number of nurses in night shift</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="nightShift"
+                required
+                onChange={handleChange}
+                value={values.nightShift}
+                disabled={loggedUserPosition === "matron"}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button color="primary" onClick={showSuccessAlert}>
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Form>
+      )}
     </Formik>
   );
 };
 
-export default AddWardDeatilsForm;
+export default AddWardDetailsForm;
