@@ -1,23 +1,21 @@
+import {
+  Box,
+  Grid,
+  InputLabel,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material'
 import React, { useState } from 'react'
 import SideBar from '../../Component/SideBar'
-import { Box, Grid, InputLabel, TextField } from '@mui/material'
 import Header from '../../Component/Header'
-import Theme from '../../Component/Theme'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import DataGrid from '../../Component/DataGridComponent'
 import DataGridComponent from '../../Component/DataGridComponent'
-import DefaultButton from '../../Component/Button/DefaultButton'
 
-const LeaveMoreDetails = (props) => {
-  const theme = Theme()
+const LeaveMoreDetails = (prop) => {
+  const theme = useTheme()
   const { leaveId } = useParams()
-  const navigate = useNavigate()
-
-  //Handle button function
-  const handleBackButton = () => {
-    navigate('/leave/approve')
-  }
-
   const [userDetails, setUserDetails] = useState({
     name: 'Dilki Hansapani',
     leaveBeginDate: '2024-02-12',
@@ -32,32 +30,30 @@ const LeaveMoreDetails = (props) => {
     {
       field: 'leaveId',
       headerName: 'Leave ID',
-      width: 200,
+      width: 100,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'leaveBeginDate',
       headerName: 'Begin Date of the leave',
-      width: 200,
+      width: 100,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'numOfLeaveDays',
       headerName: 'Number of Leave Days',
-      width: 200,
+      width: 150,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'description',
       headerName: 'Description',
-      width: 500,
+      width: 150,
       headerClassName: 'colored-data-grid',
     },
   ]
 
   const row = []
-
-  const totalWidth = columns.reduce((acc, column) => acc + column.width, 0)
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -70,14 +66,6 @@ const LeaveMoreDetails = (props) => {
           sx={{ width: '90%' }}
           style={{ marginLeft: '20px', marginRight: '20px' }}
         >
-          <Grid item xs={12}>
-            <DefaultButton
-              title="Back"
-              width="100px"
-              height="35px"
-              onClick={() => handleBackButton()}
-            />
-          </Grid>
           <Grid item xs={6}>
             <InputLabel
               htmlFor="leaveId"
@@ -268,11 +256,7 @@ const LeaveMoreDetails = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <DataGridComponent
-              columns={columns}
-              rows={row}
-              totalWidth={totalWidth}
-            />
+            <DataGridComponent columns={columns} />
           </Grid>
         </Grid>
       </Box>

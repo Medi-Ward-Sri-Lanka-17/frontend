@@ -14,10 +14,11 @@ import {
 import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid'
 import Theme from '../../Component/Theme'
 import { Button } from '@mui/base'
-import MoreButton from '../../Component/Button/MoreButton'
+import DefaultButton from '../../Component/Button/DefaultButton'
 import SuccessButton from '../../Component/Button/SuccessButton'
 import DeclineButton from '../../Component/Button/DeclineButton'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../Security/AuthContext'
 
 const LeaveApprove = () => {
   // Load theme into the page
@@ -28,6 +29,9 @@ const LeaveApprove = () => {
 
   // Use naviagete
   const navigate = useNavigate()
+
+  //use context
+  const authContext = useAuth()
 
   // for select the ward no
   const handleChangeOnSelection = (event) => {
@@ -43,6 +47,8 @@ const LeaveApprove = () => {
   // Decline button aciton on click
   const handleDeclineButton = (selectedRow) => {
     console.log('Selected Row Details:', selectedRow)
+    console.log(authContext.token)
+    console.log(authContext.position)
   }
   // Approve button aciton on click
   const handleApproveButton = (selectedRow) => {
@@ -143,7 +149,12 @@ const LeaveApprove = () => {
       headerClassName: 'colored-data-grid',
       width: 100,
       renderCell: (params) => (
-        <MoreButton onClick={() => handleButton(params.row)} />
+        <DefaultButton
+          title="More"
+          height="35px"
+          width="80px"
+          onClick={() => handleButton(params.row)}
+        />
       ),
     },
     {

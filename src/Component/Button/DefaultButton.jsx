@@ -4,22 +4,23 @@ import Theme from '../Theme'
 
 const theme = Theme()
 
-const MoreButton = (props) => {
+const DefaultButton = (props) => {
   return (
     <>
       <Button
         style={{
           backgroundColor: theme.palette.secondary.main,
-          height: '35px',
+          height: props.height,
+          width: props.width,
         }}
         variant="contained"
         size="small"
         onClick={props.onClick}
       >
-        MORE
+        {props.title}
       </Button>
     </>
   )
 }
 
-export default MoreButton
+export default DefaultButton

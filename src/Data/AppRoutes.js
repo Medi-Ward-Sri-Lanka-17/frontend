@@ -12,8 +12,8 @@ import Login from '../Pages/LoginPage/Login'
 import LeaveMoreDetails from '../Pages/LeaveManagement/LeaveMoreDetails'
 
 export const AppRoutes = {
-  loginpath: { path: '/login', component: <Login /> },
-  login: { path: '/', component: <Login /> },
+  // loginpath: { path: '/login', component: <Login /> },
+  // login: { path: '/', component: <Login /> },
   // Home page routes
   home: { path: '/home', component: <HomePage /> },
 
