@@ -94,9 +94,15 @@ const Login = () => {
   const [pwdError,setPwdError]=useState(null);
 
   async function onSubmit() {
-    if (
-      await authContext.login(formik.values.username, formik.values.password)
-    ) {
+    const response = await authContext.login(
+      formik.values.username,
+      formik.values.password
+    )
+    authContext.setIsAuthenticate(true)
+    if (response.status === 200) {
+      console.log(response.data.user.position)
+
+      console.log(authContext.isAuthenticate)
       navigate('/home')
     } else {
       console.log('Error: login credentials are wrong')

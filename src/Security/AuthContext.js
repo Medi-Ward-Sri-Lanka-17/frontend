@@ -10,36 +10,36 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [isAuthenticate, setIsAuthenticate] = useState(false)
   const [token, setToken] = useState(null)
+  const [position, setPosition] = useState(null)
 
   async function login(username, password) {
     try {
       const response = await executeJwtAuthenticationService(username, password)
-
       if (response.status == 200) {
         const jwtToken = 'Bearer ' + response.data.jwtToken
 
         setIsAuthenticate(true)
         setUser(response.data.user)
         setToken(jwtToken)
+        setPosition(response.data.user.position)
 
         apiClient.interceptors.request.use((config) => {
           console.log('intercepting and adding a token')
           config.headers.Authorization = jwtToken
           return config
         })
-
-        return true
       } else {
         logout()
-        console.error(response.status)
-        return false
       }
+
+      return response
     } catch (error) {
       console.error('Catch error')
       logout()
       return false
     }
   }
+
   function logout() {
     setIsAuthenticate(false)
     setToken(null)
@@ -48,7 +48,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticate, user, login, logout, token }}
+      value={{
+        isAuthenticate,
+        user,
+        login,
+        logout,
+        token,
+        setIsAuthenticate,
+        position,
+        setPosition,
+      }}
     >
       {children}
     </AuthContext.Provider>

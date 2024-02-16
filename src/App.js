@@ -1,16 +1,36 @@
 import { AppRoutes } from './Data/AppRoutes'
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from './Security/AuthContext'
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './Security/AuthContext'
+import Login from './Pages/LoginPage/Login'
 
 function App() {
   let routes = Object.values(AppRoutes)
+
+  function AuthenticatedRoute({ children }) {
+    const AuthContext = useAuth()
+    if (AuthContext.isAuthenticate) {
+      console.log(AuthContext.isAuthenticate)
+      return children
+    }
+    return <Navigate to="/" />
+  }
 
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           {routes.map((route, i) => {
-            return <Route key={i} path={route.path} element={route.component} />
+            return (
+              <Route
+                key={i}
+                path={route.path}
+                element={
+                  <AuthenticatedRoute>{route.component}</AuthenticatedRoute>
+                }
+              />
+            )
           })}
         </Routes>
       </BrowserRouter>
