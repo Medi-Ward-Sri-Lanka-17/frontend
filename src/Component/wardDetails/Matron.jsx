@@ -9,7 +9,7 @@ import {
   fetchWardData_matron as fetchSelectedWardData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import AddNurseForm from "./addNurses";
+import AddStaffMemberForm from "./addNurses";
 import StaffDetailsForm from "./showSisterDetails";
 import AddWardDetailsForm from "./editBasicWardDetails";
 import AddNewWardForm from "./newWard";
@@ -28,10 +28,13 @@ export default function Matron() {
   }
 
   useEffect(() => {
+    //fetchData is a asynchronous function. That means operations are those that don't block the execution of code.
+    //Instead of waiting for one operation to complete before moving on to the next.
     const fetchData = async () => {
       try {
-        const allWards = await fetchAllWards();
+        const allWards = await fetchAllWards(); //This line calls a function fetchAllWards() and waits for it to complete before moving on to the next line
         const positionData = await fetchPosition();
+        const data = await fetchWardData();
         setWard(allWards);
         setPosition(positionData);
 
@@ -40,6 +43,11 @@ export default function Matron() {
           setWardNumber("");
           setSisterName("");
           setNumberOfNurses("");
+        } else {
+          setWardName(data.wardName);
+          setWardNumber(data.wardNumber);
+          setSisterName(data.sisterName);
+          setNumberOfNurses(data.numberOfNurses);
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -47,7 +55,7 @@ export default function Matron() {
     };
 
     fetchData();
-  }, []);
+  }, []); //dependency array empty means useEffeect run only one time
 
   {
     /*=======================Add a staff member form=============================*/
@@ -76,22 +84,6 @@ export default function Matron() {
 
   const [isEditBasicWardDetailsDialogOpen, setEditBasicWardDetailsDialogOpen] =
     useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchWardData();
-        setWardName(data.wardName);
-        setWardNumber(data.wardNumber);
-        setSisterName(data.sisterName);
-        setNumberOfNurses(data.numberOfNurses);
-      } catch (error) {
-        console.error("Error fetching ward data:", error.message);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   // const handleEditBasicWardDetails = () => {
   //   setEditBasicWardDetailsDialogOpen(true);
@@ -156,6 +148,7 @@ export default function Matron() {
                     size="medium"
                     style={{ margin: "20px" }}
                     startIcon={<EditIcon />}
+                    disabled={selectedWard === "" && position === "matron"}
                     onClick={() => setEditBasicWardDetailsDialogOpen(true)}
                   >
                     Edit basic ward details
@@ -216,6 +209,7 @@ export default function Matron() {
                         variant="outlined"
                         size="medium"
                         style={{ margin: "20px" }}
+                        disabled={selectedWard === "" && position === "matron"}
                         onClick={() => setStaffDetailsFormOpen(true)}
                       >
                         More
@@ -259,7 +253,7 @@ export default function Matron() {
       </Grid>
 
       {/* Integrate Add nurse/sister form as a popup */}
-      <AddNurseForm
+      <AddStaffMemberForm
         open={isAddNurseFormOpen}
         handleClose={() => setAddNurseFormOpen(false)}
         handleAddNurse={handleAddNurse}

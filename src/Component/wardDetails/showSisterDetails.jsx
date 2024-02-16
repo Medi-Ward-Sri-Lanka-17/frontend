@@ -13,14 +13,17 @@ import { fetchSisterData } from "../../Data/wardDetails/sisterService";
 import { fetchPosition } from "../../Data/wardDetails/wardService";
 
 const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
-  const [fullName, setFullName] = useState("");
-  const [serviceId, setServiceId] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [email, setEmail] = useState("");
-  const [position, setPosition] = useState("Sister");
-  const [leaveNo, setLeaveNo] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [serviceStartDate, setServiceStartDate] = useState("");
+  const [formValues, setFormValues] = useState({
+    fullName: "",
+    serviceId: "",
+    birthdate: "",
+    email: "",
+    position: "Sister",
+    leaveNo: "",
+    mobileNo: "",
+    serviceStartDate: "",
+  });
+
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [editMode, setEditMode] = useState(false); // State variable for edit mode
 
@@ -29,14 +32,10 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
       try {
         const sisterData = await fetchSisterData();
         const loggedPositionData = await fetchPosition();
-        setFullName(sisterData.fullName);
-        setServiceId(sisterData.serviceId);
-        setBirthdate(sisterData.birthdate);
-        setEmail(sisterData.email);
-        setLeaveNo(sisterData.leaveNo);
-        setMobileNo(sisterData.mobileNo);
-        setServiceStartDate(sisterData.serviceStartDate);
-        setPosition(loggedPositionData);
+        setFormValues({
+          ...sisterData,
+          position: loggedPositionData,
+        });
         setLoggedUserPosition(loggedPositionData);
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -57,24 +56,16 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
     setEditMode(!editMode);
   };
 
-  const initialValues = {
-    fullName: fullName,
-    serviceId: serviceId,
-    birthdate: birthdate,
-    email: email,
-    position: position,
-    leaveNo: leaveNo,
-    mobileNo: mobileNo,
-    serviceStartDate: serviceStartDate,
-  };
-
-  {
-    /*===============success alert=====================*/
-  }
   const showSuccessAlert = () => {
+    let alertText = "";
+    if (loggedUserPosition === "sister") {
+      alertText = "Your details successfully updated";
+    } else {
+      alertText = "Sister details successfully updated";
+    }
     handleClose();
     Swal.fire({
-      text: "Staff member successfully added!",
+      text: alertText,
       icon: "success",
       confirmButtonColor: "#243e4f",
     });
@@ -82,11 +73,11 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={formValues}
       onSubmit={handleSave}
       enableReinitialize={true}
     >
-      {({ values, handleChange, handleSubmit, setValues }) => (
+      {({ values, handleChange, handleSubmit }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Sister details</DialogTitle>
@@ -204,7 +195,7 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
                   color="primary"
                   onClick={showSuccessAlert}
                   disabled={
-                    loggedUserPosition === "sister" &&
+                    loggedUserPosition === "sister" ||
                     loggedUserPosition === "nurse"
                   }
                 >
@@ -214,16 +205,15 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
                 <Button
                   color="primary"
                   disabled={
-                    loggedUserPosition === "sister" &&
+                    loggedUserPosition === "sister" ||
                     loggedUserPosition === "nurse"
                   }
                   onClick={() => {
                     handleEdit();
-                    // Fetch data and set the form values when entering edit mode
                     fetchSisterData().then((sisterData) => {
-                      setValues({
+                      setFormValues({
                         ...sisterData,
-                        position: "Sister", // Assuming position is not editable
+                        position: "Sister",
                       });
                     });
                   }}
