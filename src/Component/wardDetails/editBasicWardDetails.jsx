@@ -7,16 +7,17 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import Swal from "sweetalert2";
 import {
   fetchWardData,
   fetchShiftData,
   fetchPosition,
-  shiftData,
 } from "../../Data/wardDetails/wardService";
+import validationSchema from "./validation";
+import "./style.css";
 
-const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
+const AddWardDetailsForm = ({ open, handleClose }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
     wardName: "",
@@ -58,7 +59,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
   }, []);
 
   {
-    /*===============success alert=====================*/
+    /*=======================success alert============================*/
   }
   const showSuccessAlert = () => {
     handleClose();
@@ -73,107 +74,166 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
     <Formik
       initialValues={wardData}
       enableReinitialize={true}
-      onSubmit={(values) => {
-        console.log(values);
-        // handleAddNurse(values);
-        handleClose();
+      validationSchema={validationSchema}
+      validateOnChange={false}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          showSuccessAlert();
+          handleClose();
+        } catch (error) {
+          console.error("Error submitting form:", error.message);
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
-      {({ handleChange, values }) => (
+      {({
+        handleChange,
+        values,
+        isSubmitting,
+        handleSubmit,
+        touched, //touched property in Formik, it is a state variable that keeps track of which fields have been "touched" or interacted with.
+        errors,
+      }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Edit ward details</DialogTitle>
             <DialogContent>
-              <label>Ward Name</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="wardName"
-                required
-                onChange={handleChange}
-                value={values.wardName}
-                disabled={loggedUserPosition === "sister"}
-              />
-              <label>Ward Number</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="wardNumber"
-                required
-                onChange={handleChange}
-                value={values.wardNumber}
-                disabled={loggedUserPosition === "sister"}
-              />
-              <label>Sister Name</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="sisterName"
-                required
-                onChange={handleChange}
-                value={values.sisterName}
-                disabled={loggedUserPosition === "sister"}
-              />
-              <label>Total number of nurses in ward</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="numberOfNurses"
-                required
-                onChange={handleChange}
-                value={values.numberOfNurses}
-                disabled={loggedUserPosition === "sister"}
-              />
-              <label>Number of nurses in morning shift</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="morningShift"
-                required
-                onChange={handleChange}
-                value={values.morningShift}
-                disabled={loggedUserPosition === "matron"}
-              />
-              <label>Number of nurses in evening shift</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="eveningShift"
-                required
-                onChange={handleChange}
-                value={values.eveningShift}
-                disabled={loggedUserPosition === "matron"}
-              />
-              <label>Number of nurses in night shift</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="nightShift"
-                required
-                onChange={handleChange}
-                value={values.nightShift}
-                disabled={loggedUserPosition === "matron"}
-              />
+              <DialogContent>
+                <label>Ward Name</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="wardName"
+                  required
+                  onChange={handleChange}
+                  value={values.wardName}
+                  disabled={loggedUserPosition === "sister"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="wardName" />
+                </div>
+              </DialogContent>
+              <DialogContent>
+                <label>Ward Number</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="wardNumber"
+                  required
+                  onChange={handleChange}
+                  value={values.wardNumber}
+                  disabled={loggedUserPosition === "sister"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="wardNumber" />
+                </div>
+              </DialogContent>
+              <DialogContent>
+                <label>Sister Name</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="sisterName"
+                  required
+                  onChange={handleChange}
+                  value={values.sisterName}
+                  disabled={loggedUserPosition === "sister"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="siserName" />
+                </div>
+              </DialogContent>
+              <DialogContent>
+                <label>Total number of nurses in ward</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="numberOfNurses"
+                  required
+                  onChange={handleChange}
+                  value={values.numberOfNurses}
+                  disabled={loggedUserPosition === "sister"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="numberOfNurses" />
+                </div>
+              </DialogContent>
+              <DialogContent>
+                <label>Number of nurses in morning shift</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="morningShift"
+                  required
+                  onChange={handleChange}
+                  value={values.morningShift}
+                  disabled={loggedUserPosition === "matron"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="morningShift" />
+                </div>
+              </DialogContent>
+              <DialogContent>
+                <label>Number of nurses in evening shift</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="eveningShift"
+                  required
+                  onChange={handleChange}
+                  value={values.eveningShift}
+                  disabled={loggedUserPosition === "matron"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="eveningShift" />
+                </div>
+              </DialogContent>
+              <DialogContent>
+                <label>Number of nurses in night shift</label>
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="nightShift"
+                  required
+                  onChange={handleChange}
+                  value={values.nightShift}
+                  disabled={loggedUserPosition === "matron"}
+                />
+                <div className="errorMessage">
+                  <ErrorMessage name="nightShift" />
+                </div>
+              </DialogContent>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
                 Cancel
               </Button>
-              <Button color="primary" onClick={showSuccessAlert}>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={isSubmitting}
+                onClick={() => {
+                  handleSubmit();
+                  Object.keys(values).forEach((field) => {
+                    touched[field] = true;
+                  });
+                }}
+              >
                 Submit
               </Button>
             </DialogActions>
