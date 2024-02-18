@@ -14,7 +14,7 @@ import {
   fetchShiftData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import validationSchema from "./validation";
+import { validationSchema } from "./validation";
 import "./style.css";
 
 const AddWardDetailsForm = ({ open, handleClose }) => {
