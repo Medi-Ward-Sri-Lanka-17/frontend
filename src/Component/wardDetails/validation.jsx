@@ -40,7 +40,7 @@ export const validationSchema = Yup.object({
     .min(1, "Number of nurses in the night shift must be greater than 0"),
 });
 
-export const addNurseValidation = Yup.object({
+export const addNurseValidation = Yup.object().shape({
   firstName: Yup.string()
     .required("First name is required")
     .matches(/^[a-zA-Z\s]+$/, "Name must only contain letters and spaces"),
@@ -55,10 +55,10 @@ export const addNurseValidation = Yup.object({
 
   serviceId: Yup.string()
     .required("Service ID is required")
-    .matches(
-      /^[0-9]{9}[V]$/,
-      "ID must have 9 numeric digits followed by a letter or 12 digits"
-    )
+    // .matches(
+    //   /^[0-9]{9}[V]$/,
+    //   "ID must have 9 numeric digits followed by a letter or 12 digits"
+    // )
     .matches(
       /^[0-9]{12}$/,
       "ID must have 9 numeric digits followed by a letter or 12 digits"
@@ -74,17 +74,17 @@ export const addNurseValidation = Yup.object({
 
   position: Yup.string().required("Position is required"),
 
-  wardNumber: Yup.number()
+  wardNo: Yup.number()
     .required("Ward number is required")
     .positive("Ward number must be a positive integer")
     .integer("Ward number must be an integer"),
 
-  leaveNumber: Yup.number()
+  leaveNo: Yup.number()
     .required("Leave number is required")
     .positive("Leave number must be a positive integer")
     .integer("Leave number must be an integer"),
 
-  phoneNumber: Yup.string()
+  mobileNo: Yup.string()
     .matches(/^[0-9]{10}$/, "Invalid phone number")
     .required("Phone number is required"),
 
