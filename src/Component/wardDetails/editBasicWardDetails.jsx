@@ -99,125 +99,103 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Edit ward details</DialogTitle>
             <DialogContent>
-              <DialogContent>
-                <label>Ward Name</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="wardName"
-                  required
-                  onChange={handleChange}
-                  value={values.wardName}
-                  disabled={loggedUserPosition === "sister"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="wardName" />
-                </div>
-              </DialogContent>
-              <DialogContent>
-                <label>Ward Number</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="wardNumber"
-                  required
-                  onChange={handleChange}
-                  value={values.wardNumber}
-                  disabled={loggedUserPosition === "sister"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="wardNumber" />
-                </div>
-              </DialogContent>
-              <DialogContent>
-                <label>Sister Name</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="sisterName"
-                  required
-                  onChange={handleChange}
-                  value={values.sisterName}
-                  disabled={loggedUserPosition === "sister"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="siserName" />
-                </div>
-              </DialogContent>
-              <DialogContent>
-                <label>Total number of nurses in ward</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="numberOfNurses"
-                  required
-                  onChange={handleChange}
-                  value={values.numberOfNurses}
-                  disabled={loggedUserPosition === "sister"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="numberOfNurses" />
-                </div>
-              </DialogContent>
-              <DialogContent>
-                <label>Number of nurses in morning shift</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="morningShift"
-                  required
-                  onChange={handleChange}
-                  value={values.morningShift}
-                  disabled={loggedUserPosition === "matron"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="morningShift" />
-                </div>
-              </DialogContent>
-              <DialogContent>
-                <label>Number of nurses in evening shift</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="eveningShift"
-                  required
-                  onChange={handleChange}
-                  value={values.eveningShift}
-                  disabled={loggedUserPosition === "matron"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="eveningShift" />
-                </div>
-              </DialogContent>
-              <DialogContent>
-                <label>Number of nurses in night shift</label>
-                <Field
-                  as={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="nightShift"
-                  required
-                  onChange={handleChange}
-                  value={values.nightShift}
-                  disabled={loggedUserPosition === "matron"}
-                />
-                <div className="errorMessage">
-                  <ErrorMessage name="nightShift" />
-                </div>
-              </DialogContent>
+              <label>Ward Name</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="wardName"
+                required
+                onChange={handleChange}
+                value={values.wardName}
+                disabled={loggedUserPosition === "sister"}
+                helperText={errors.wardName}
+              />
+
+              <label>Ward Number</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="wardNumber"
+                required
+                onChange={handleChange}
+                value={values.wardNumber}
+                disabled={loggedUserPosition === "sister"}
+                helperText={errors.wardNumber}
+              />
+
+              <label>Sister Name</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="sisterName"
+                required
+                onChange={handleChange}
+                value={values.sisterName}
+                disabled={loggedUserPosition === "sister"}
+                helperText={errors.sisterName}
+              />
+
+              <label>Total number of nurses in ward</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="numberOfNurses"
+                required
+                onChange={handleChange}
+                value={values.numberOfNurses}
+                disabled={loggedUserPosition === "sister"}
+                helperText={errors.numberOfNurses}
+              />
+
+              <label>Number of nurses in morning shift</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="morningShift"
+                required
+                onChange={handleChange}
+                value={values.morningShift}
+                disabled={loggedUserPosition === "matron"}
+                helperText={errors.morningShift}
+              />
+
+              <label>Number of nurses in evening shift</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="eveningShift"
+                required
+                onChange={handleChange}
+                value={values.eveningShift}
+                disabled={loggedUserPosition === "matron"}
+                helperText={errors.eveningShift}
+              />
+
+              <label>Number of nurses in night shift</label>
+              <Field
+                as={TextField}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="nightShift"
+                required
+                onChange={handleChange}
+                value={values.nightShift}
+                disabled={loggedUserPosition === "matron"}
+                helperText={errors.nightShift}
+              />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
