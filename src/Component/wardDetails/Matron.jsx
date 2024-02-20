@@ -178,6 +178,7 @@ export default function Matron() {
                   name="wardName"
                   value={wardName}
                   fullWidth
+                  disabled={selectedWard === "" && true}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -188,6 +189,7 @@ export default function Matron() {
                   name="wardNumber"
                   value={wardNumber}
                   fullWidth
+                  disabled={selectedWard === "" && true}
                 />
               </Grid>
             </Grid>
@@ -202,6 +204,7 @@ export default function Matron() {
                   name="sisterName"
                   value={sisterName}
                   fullWidth
+                  disabled={selectedWard === "" && true}
                   InputProps={{
                     endAdornment: (
                       //sister detail form
@@ -227,6 +230,7 @@ export default function Matron() {
                   name="numberOfNurses"
                   value={numberOfNurses}
                   fullWidth
+                  disabled={selectedWard === "" && true}
                 />
               </Grid>
             </Grid>
@@ -237,6 +241,7 @@ export default function Matron() {
                 size="medium"
                 style={{ margin: "20px" }}
                 startIcon={<AddIcon />}
+                disabled={selectedWard === "" && position === "matron"}
                 onClick={() => setAddNurseFormOpen(true)}
               >
                 Add staff member
