@@ -4,7 +4,7 @@ import { Box, Avatar, Button, TextField } from "@mui/material";
 import SideBar from "../../Component/SideBar";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import profilePicture from "./propic.jpg"; // Import the profile picture
+import profilePicture from "./propic.png"; // Import the profile picture
 import Swal from "sweetalert2";
 
 const Profile = () => {
