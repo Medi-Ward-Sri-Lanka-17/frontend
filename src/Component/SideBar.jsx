@@ -10,16 +10,18 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import mainlogo from '../Assest/mainlogo.png'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
-import { menus } from '../Data/SideBarData'
+import { menus, menusForAdmin } from '../Data/SideBarData'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { auto } from '@popperjs/core'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../Security/AuthContext'
 
 const drawerWidth = 260
 
 const SideBar = () => {
   const naviagate = useNavigate()
   const [openMenus, setOpenMenus] = useState({})
+  const authContext = useAuth()
 
   const handleClick = (menuName) => {
     setOpenMenus((prevOpenMenus) => ({
@@ -31,6 +33,8 @@ const SideBar = () => {
   const handleClickForNavigate = (path) => {
     naviagate(path)
   }
+
+  const sideBarHander = authContext.position == 'Admin' ? menusForAdmin : menus
 
   return (
     <Drawer
@@ -60,7 +64,7 @@ const SideBar = () => {
         <img src={mainlogo} alt="Logo" style={{ width: '80%' }} />
       </div>
       <List sx={{ paddingTop: '20px' }}>
-        {menus.map((menu) => (
+        {sideBarHander.map((menu) => (
           <React.Fragment key={menu.name}>
             <ListItem disablePadding>
               <ListItemButton
