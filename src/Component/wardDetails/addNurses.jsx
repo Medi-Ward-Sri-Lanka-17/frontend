@@ -71,6 +71,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
 
   //Use a seperate method for validate, because there was a problem in the validating with the onSubmit button
   const handleManualSubmit = () => {
+    console.log(formikAddNurse.errors);
     formikAddNurse.submitForm();
   };
 
