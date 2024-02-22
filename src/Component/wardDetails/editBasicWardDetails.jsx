@@ -7,16 +7,17 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import Swal from "sweetalert2";
 import {
   fetchWardData,
   fetchShiftData,
   fetchPosition,
-  shiftData,
 } from "../../Data/wardDetails/wardService";
+import { validationSchema } from "./validation";
+import "./style.css";
 
-const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
+const AddWardDetailsForm = ({ open, handleClose }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
     wardName: "",
@@ -58,7 +59,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
   }, []);
 
   {
-    /*===============success alert=====================*/
+    /*=======================success alert============================*/
   }
   const showSuccessAlert = () => {
     handleClose();
@@ -73,13 +74,27 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
     <Formik
       initialValues={wardData}
       enableReinitialize={true}
-      onSubmit={(values) => {
-        console.log(values);
-        // handleAddNurse(values);
-        handleClose();
+      validationSchema={validationSchema}
+      validateOnChange={false}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          showSuccessAlert();
+          handleClose();
+        } catch (error) {
+          console.error("Error submitting form:", error.message);
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
-      {({ handleChange, values }) => (
+      {({
+        handleChange,
+        values,
+        isSubmitting,
+        handleSubmit,
+        touched, //touched property in Formik, it is a state variable that keeps track of which fields have been "touched" or interacted with.
+        errors,
+      }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Edit ward details</DialogTitle>
@@ -95,7 +110,9 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.wardName}
                 disabled={loggedUserPosition === "sister"}
+                helperText={errors.wardName}
               />
+
               <label>Ward Number</label>
               <Field
                 as={TextField}
@@ -107,7 +124,9 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.wardNumber}
                 disabled={loggedUserPosition === "sister"}
+                helperText={errors.wardNumber}
               />
+
               <label>Sister Name</label>
               <Field
                 as={TextField}
@@ -119,7 +138,9 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.sisterName}
                 disabled={loggedUserPosition === "sister"}
+                helperText={errors.sisterName}
               />
+
               <label>Total number of nurses in ward</label>
               <Field
                 as={TextField}
@@ -131,7 +152,9 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.numberOfNurses}
                 disabled={loggedUserPosition === "sister"}
+                helperText={errors.numberOfNurses}
               />
+
               <label>Number of nurses in morning shift</label>
               <Field
                 as={TextField}
@@ -143,7 +166,9 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.morningShift}
                 disabled={loggedUserPosition === "matron"}
+                helperText={errors.morningShift}
               />
+
               <label>Number of nurses in evening shift</label>
               <Field
                 as={TextField}
@@ -155,7 +180,9 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.eveningShift}
                 disabled={loggedUserPosition === "matron"}
+                helperText={errors.eveningShift}
               />
+
               <label>Number of nurses in night shift</label>
               <Field
                 as={TextField}
@@ -167,13 +194,24 @@ const AddWardDetailsForm = ({ open, handleClose, handleAddNurse }) => {
                 onChange={handleChange}
                 value={values.nightShift}
                 disabled={loggedUserPosition === "matron"}
+                helperText={errors.nightShift}
               />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
                 Cancel
               </Button>
-              <Button color="primary" onClick={showSuccessAlert}>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={isSubmitting}
+                onClick={() => {
+                  handleSubmit();
+                  Object.keys(values).forEach((field) => {
+                    touched[field] = true;
+                  });
+                }}
+              >
                 Submit
               </Button>
             </DialogActions>
