@@ -71,14 +71,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
         }
       }}
     >
-      {({
-        handleChange,
-        values,
-        isSubmitting,
-        handleSubmit,
-        touched, //touched property in Formik, it is a state variable that keeps track of which fields have been "touched" or interacted with.
-        errors,
-      }) => (
+      {({ handleChange, isSubmitting, handleSubmit, touched, errors }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add ward details</DialogTitle>
