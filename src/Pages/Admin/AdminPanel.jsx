@@ -2,6 +2,7 @@ import React from 'react'
 import Header from '../../Component/Header'
 import { Box, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import SideBar from '../../Component/SideBar'
 
 const AdminPanel = () => {
   // Set use Navigate
@@ -15,6 +16,7 @@ const AdminPanel = () => {
   return (
     <Box>
       <Header title="Admin Panel" />
+      <SideBar />
       <Button onClick={() => handleSubmit()}>Add Staff</Button>
     </Box>
   )

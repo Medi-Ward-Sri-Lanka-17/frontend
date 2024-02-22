@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import React from 'react'
 import Header from '../../Component/Header'
 
-const AddStaff = () => {
+const StaffManagement = () => {
   return (
     <Box>
       <Header title="Admin - Add Staff" />
@@ -10,4 +10,4 @@ const AddStaff = () => {
   )
 }
 
-export default AddStaff
+export default StaffManagement

@@ -11,7 +11,10 @@ import Profile from '../Pages/Profile/Profile'
 import Login from '../Pages/LoginPage/Login'
 import LeaveMoreDetails from '../Pages/LeaveManagement/LeaveMoreDetails'
 import AdminPanel from '../Pages/Admin/AdminPanel'
-import AddStaff from '../Pages/Admin/AddStaff'
+import AddStaff from '../Pages/Admin/StaffManagement'
+import MatronManagement from '../Pages/Admin/MatronManagement'
+import WardManagement from '../Pages/Admin/WardManagement'
+import NewsManagement from '../Pages/Admin/NewsManagement'
 
 export const AppRoutes = {
   // loginpath: { path: '/login', component: <Login /> },
@@ -49,5 +52,8 @@ export const AppRoutes = {
   profile: { path: '/profile', component: <Profile /> },
 
   //Admin Panel
-  addStaff_Admin: { path: '/admin/staff/add', component: <AddStaff /> },
+  Staff_Admin: { path: '/admin/staff', component: <AddStaff /> },
+  Matron_Admin: { path: '/admin/matron', component: <MatronManagement /> },
+  Ward_Admin: { path: '/admin/ward', component: <WardManagement /> },
+  News_Admin: { path: '/admin/news', component: <NewsManagement /> },
 }
