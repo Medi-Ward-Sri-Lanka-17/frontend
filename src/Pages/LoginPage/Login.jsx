@@ -91,7 +91,7 @@ const Login = () => {
   //   console.log(values)
   //   navigate('/home')
   // }
-  const [pwdError,setPwdError]=useState(null);
+  const [pwdError, setPwdError] = useState(null)
 
   async function onSubmit() {
     const response = await authContext.login(
@@ -103,11 +103,14 @@ const Login = () => {
       console.log(response.data.user.position)
 
       console.log(authContext.isAuthenticate)
-      navigate('/home')
+      if (response.data.user.position == 'Admin') {
+        navigate('/admin')
+      } else {
+        navigate('/home')
+      }
     } else {
       console.log('Error: login credentials are wrong')
-      setPwdError("Login credentials are wrong");
-
+      setPwdError('Login credentials are wrong')
     }
   }
 
@@ -342,11 +345,18 @@ const Login = () => {
                           ),
                         }}
                       />
-                    <Box marginTop="0.5em">
-                      {pwdError&& <Typography sx={{color:theme.palette.error.main,
-                        fontSize:"12px"
-                      }}>{pwdError}</Typography>}
-                    </Box>
+                      <Box marginTop="0.5em">
+                        {pwdError && (
+                          <Typography
+                            sx={{
+                              color: theme.palette.error.main,
+                              fontSize: '12px',
+                            }}
+                          >
+                            {pwdError}
+                          </Typography>
+                        )}
+                      </Box>
                     </UserInputBox>
                   </Stack>
 
