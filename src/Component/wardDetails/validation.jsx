@@ -104,3 +104,51 @@ export const addNurseValidation = Yup.object().shape({
     .integer("*Remaining casual leaves must be an integer")
     .max(23, "*Remaining casual leaves must be less than 24"),
 });
+
+export const addSisterValidation = Yup.object().shape({
+  firstName: Yup.string()
+    .required("*First name is required")
+    .matches(/^[a-zA-Z\s]+$/, "*Name must only contain letters and spaces"),
+
+  lastName: Yup.string()
+    .required("*Last name is required")
+    .matches(/^[a-zA-Z\s]+$/, "*Name must only contain letters and spaces"),
+
+  fullName: Yup.string()
+    .required("*Full name is required")
+    .matches(/^[a-zA-Z\s]+$/, "*Name must only contain letters and spaces"),
+
+  serviceId: Yup.string()
+    .required("*Service ID is required")
+    // .matches(
+    //   /^[0-9]{9}[V]$/,
+    //   "ID must have 9 numeric digits followed by a letter or 12 digits"
+    // )
+    .matches(
+      /^[0-9]{12}$/,
+      "*ID must have 9 numeric digits followed by a letter or 12 digits"
+    ),
+
+  birthdate: Yup.date()
+    .required("*Birthdate is required")
+    .typeError("*Invalid date type"),
+
+  email: Yup.string()
+    .required("*Email is required")
+    .email("*Invalid email address"),
+
+  position: Yup.string().required("*Position is required"),
+
+  leaveNo: Yup.number()
+    .required("*Leave number is required")
+    .positive("*Leave number must be a positive integer")
+    .integer("*Leave number must be an integer"),
+
+  mobileNo: Yup.string()
+    .matches(/^[0-9]{10}$/, "*Invalid phone number")
+    .required("*Phone number is required"),
+
+  serviceStartDate: Yup.date()
+    .required("*Service start date is required")
+    .typeError("*Invalid date type"),
+});
