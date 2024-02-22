@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
+import React, { useState, useEffect } from 'react'
+import { fetchPosition } from '../../Data/wardDetails/wardService'
 import {
   Dialog,
   DialogTitle,
@@ -9,50 +9,50 @@ import {
   Button,
   MenuItem,
   Alert as MuiAlert,
-} from "@mui/material";
-import { Formik, Form, Field } from "formik";
-import "react-toastify/dist/ReactToastify.css";
-import Swal from "sweetalert2";
+} from '@mui/material'
+import { Formik, Form, Field } from 'formik'
+import 'react-toastify/dist/ReactToastify.css'
+import Swal from 'sweetalert2'
 
 const AddNewWardForm = ({ open, handleClose }) => {
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [loggedUserPosition, setLoggedUserPosition] = useState('')
 
   const showSuccessAlert = () => {
-    handleClose();
+    handleClose()
     Swal.fire({
-      text: "New ward successfully added!",
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
-  };
+      text: 'New ward successfully added!',
+      icon: 'success',
+      confirmButtonColor: '#243e4f',
+    })
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
-        setLoggedUserPosition(positionData);
+        const positionData = await fetchPosition()
+        setLoggedUserPosition(positionData)
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error('Error fetching data:', error.message)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const onSubmit = () => {
-    return null;
-  };
+    return null
+  }
 
   const initialValues = {
-    wardName: "",
-    wardNumber: "",
-    sisterName: "",
-    numberOfNursesInTheWard: "",
-    morningShift: "",
-    eveningShift: "",
-    nightShift: "",
-  };
+    wardName: '',
+    wardNumber: '',
+    sisterName: '',
+    numberOfNursesInTheWard: '',
+    morningShift: '',
+    eveningShift: '',
+    nightShift: '',
+  }
 
   return (
     <Formik
@@ -144,7 +144,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
         </Dialog>
       </Form>
     </Formik>
-  );
-};
+  )
+}
 
-export default AddNewWardForm;
+export default AddNewWardForm

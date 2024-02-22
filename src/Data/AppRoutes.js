@@ -11,6 +11,7 @@ import Profile from '../Pages/Profile/Profile'
 import Login from '../Pages/LoginPage/Login'
 import LeaveMoreDetails from '../Pages/LeaveManagement/LeaveMoreDetails'
 import AdminPanel from '../Pages/Admin/AdminPanel'
+import AddStaff from '../Pages/Admin/AddStaff'
 
 export const AppRoutes = {
   // loginpath: { path: '/login', component: <Login /> },
@@ -47,6 +48,6 @@ export const AppRoutes = {
   //Prpfile
   profile: { path: '/profile', component: <Profile /> },
 
-  // //Admin Panel
-  // admin: { path: '/admin', component: <AdminPanel /> },
+  //Admin Panel
+  addStaff_Admin: { path: '/admin/staff/add', component: <AddStaff /> },
 }
