@@ -19,7 +19,7 @@ import { validationSchema } from "./validation";
 const AddWardDetailsForm = ({ open, handleClose }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
-    wardrName: "",
+    wardName: "",
     wardNumber: "",
     sisterName: "",
     numberOfNurses: "",
@@ -105,7 +105,7 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="sisterName"
+                name="wardName"
                 required
                 onChange={handleChange}
                 value={values.wardName}
