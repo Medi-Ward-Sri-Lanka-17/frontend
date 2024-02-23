@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Formik, Form, Field } from "formik";
+import { useFormik } from "formik";
 import Swal from "sweetalert2";
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { fetchSisterData } from "../../Data/wardDetails/sisterService";
 import { fetchPosition } from "../../Data/wardDetails/wardService";
+import { addSisterValidation } from "./validation";
 
 const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
   const [formValues, setFormValues] = useState({
@@ -34,7 +35,6 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
         const loggedPositionData = await fetchPosition();
         setFormValues({
           ...sisterData,
-          position: loggedPositionData,
         });
         setLoggedUserPosition(loggedPositionData);
       } catch (error) {
@@ -45,14 +45,7 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
     fetchData();
   }, []);
 
-  const handleSave = (values) => {
-    // Handle saving data or any other logic here
-    console.log("Saved data:", values);
-    handleClose();
-  };
-
   const handleEdit = () => {
-    // Toggle the edit mode
     setEditMode(!editMode);
   };
 
@@ -71,161 +64,261 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
     });
   };
 
+  const manualSubmit = async () => {
+    try {
+      console.log("manualSubmit called");
+      console.log("Form errors:", sisterFormik.errors);
+      sisterFormik.submitForm();
+    } catch (error) {
+      console.error("Error during manualSubmit:", error);
+    }
+  };
+
+  const sisterFormik = useFormik({
+    initialValues: formValues,
+    validationSchema: addSisterValidation,
+    enableReinitialize: true,
+    onSubmit: async (values, actions) => {
+      setTimeout(() => {
+        console.log(values);
+        showSuccessAlert();
+        handleClose();
+        actions.setSubmitting(false);
+      }, 700);
+    },
+  });
+
   return (
-    <Formik
-      initialValues={formValues}
-      onSubmit={handleSave}
-      enableReinitialize={true}
-    >
-      {({ values, handleChange, handleSubmit }) => (
-        <Form>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Sister details</DialogTitle>
-            <DialogContent>
-              <label>Full Name</label>
-              <Field
-                as={TextField}
+    <form>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Sister details</DialogTitle>
+        <DialogContent>
+          <label>Full Name</label>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="fullName"
+            onChange={sisterFormik.handleChange}
+            value={sisterFormik.values.fullName}
+            required
+            disabled={!editMode}
+            error={
+              sisterFormik.touched.fullName &&
+              Boolean(sisterFormik.errors.fullName)
+            }
+            helperText={
+              sisterFormik.touched.fullName && sisterFormik.errors.fullName
+            }
+          />
+          <label>First Name</label>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="firstName"
+            onChange={sisterFormik.handleChange}
+            value={sisterFormik.values.firstName}
+            required
+            disabled={!editMode}
+            error={
+              sisterFormik.touched.fisrtName &&
+              Boolean(sisterFormik.errors.fisrtName)
+            }
+            helperText={
+              sisterFormik.touched.fisrtName && sisterFormik.errors.firstName
+            }
+          />
+          <label>Last Name</label>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="lastName"
+            onChange={sisterFormik.handleChange}
+            value={sisterFormik.values.lastName}
+            required
+            disabled={!editMode}
+            error={
+              sisterFormik.touched.lastName &&
+              Boolean(sisterFormik.errors.lastName)
+            }
+            helperText={
+              sisterFormik.touched.lastName && sisterFormik.errors.Name
+            }
+          />
+          <label>Email</label>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            label="Email"
+            fullWidth
+            name="email"
+            onChange={sisterFormik.handleChange}
+            value={sisterFormik.values.email}
+            required
+            disabled={!editMode}
+            error={
+              sisterFormik.touched.email && Boolean(sisterFormik.errors.email)
+            }
+            helperText={sisterFormik.touched.email && sisterFormik.errors.email}
+          />
+          <label>Mobile No</label>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="mobileNo"
+            onChange={sisterFormik.handleChange}
+            value={sisterFormik.values.mobileNo}
+            required
+            disabled={!editMode}
+            error={
+              sisterFormik.touched.mobileNo &&
+              Boolean(sisterFormik.errors.mobileNo)
+            }
+            helperText={
+              sisterFormik.touched.mobileNo && sisterFormik.errors.mobileNo
+            }
+          />
+          {loggedUserPosition && loggedUserPosition === "matron" && (
+            <>
+              <label>Service ID</label>
+              <TextField
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="fullName"
-                onChange={handleChange}
-                value={values.fullName}
+                name="serviceId"
+                onChange={sisterFormik.handleChange}
+                value={sisterFormik.values.serviceId}
                 required
                 disabled={!editMode}
+                error={
+                  sisterFormik.touched.serviceId &&
+                  Boolean(sisterFormik.errors.serviceId)
+                }
+                helperText={
+                  sisterFormik.touched.serviceId &&
+                  sisterFormik.errors.serviceId
+                }
               />
-              <label>Email</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                label="Email"
-                fullWidth
-                name="email"
-                onChange={handleChange}
-                value={values.email}
-                required
-                disabled={!editMode}
-              />
-              <label>Mobile No</label>
-              <Field
-                as={TextField}
+              <label>Birthday</label>
+              <TextField
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="mobileNo"
-                onChange={handleChange}
-                value={values.mobileNo}
+                type="date"
+                name="birthdate"
+                onChange={sisterFormik.handleChange}
+                value={sisterFormik.values.birthdate}
                 required
                 disabled={!editMode}
+                error={
+                  sisterFormik.touched.birthdate &&
+                  Boolean(sisterFormik.errors.birthdate)
+                }
+                helperText={
+                  sisterFormik.touched.birthdate &&
+                  sisterFormik.errors.birthdate
+                }
               />
-              {loggedUserPosition && loggedUserPosition === "matron" && (
-                <>
-                  <label>Service ID</label>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    name="serviceId"
-                    onChange={handleChange}
-                    value={values.serviceId}
-                    required
-                    disabled={!editMode}
-                  />
-                  <label>Birthday</label>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    type="date"
-                    name="birthdate"
-                    onChange={handleChange}
-                    value={values.birthdate}
-                    required
-                    disabled={!editMode}
-                  />
-                  <label>Position</label>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    name="position"
-                    onChange={handleChange}
-                    value={values.position}
-                    required
-                    disabled={!editMode}
-                  />
-                  <label>Leave No</label>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    name="leaveNo"
-                    onChange={handleChange}
-                    value={values.leaveNo}
-                    required
-                    disabled={!editMode}
-                  />
-                  <label>Service Start Date</label>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    type="date"
-                    name="serviceStartDate"
-                    onChange={handleChange}
-                    value={values.serviceStartDate}
-                    required
-                    disabled={!editMode}
-                  />
-                </>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              {editMode ? (
-                <Button
-                  color="primary"
-                  onClick={showSuccessAlert}
-                  disabled={
-                    loggedUserPosition === "sister" ||
-                    loggedUserPosition === "nurse"
-                  }
-                >
-                  Save
-                </Button>
-              ) : (
-                <Button
-                  color="primary"
-                  disabled={
-                    loggedUserPosition === "sister" ||
-                    loggedUserPosition === "nurse"
-                  }
-                  onClick={() => {
-                    handleEdit();
-                    fetchSisterData().then((sisterData) => {
-                      setFormValues({
-                        ...sisterData,
-                        position: "Sister",
-                      });
-                    });
-                  }}
-                >
-                  Edit
-                </Button>
-              )}
-            </DialogActions>
-          </Dialog>
-        </Form>
-      )}
-    </Formik>
+              <label>Position</label>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="position"
+                onChange={sisterFormik.handleChange}
+                value={sisterFormik.values.position}
+                required
+                disabled={!editMode}
+                error={
+                  sisterFormik.touched.position &&
+                  Boolean(sisterFormik.errors.position)
+                }
+                helperText={
+                  sisterFormik.touched.position && sisterFormik.errors.position
+                }
+              />
+              <label>Leave No</label>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="leaveNo"
+                onChange={sisterFormik.handleChange}
+                value={sisterFormik.values.leaveNo}
+                required
+                disabled={!editMode}
+                error={
+                  sisterFormik.touched.leaveNo &&
+                  Boolean(sisterFormik.errors.leaveNo)
+                }
+                helperText={
+                  sisterFormik.touched.leaveNo && sisterFormik.errors.leaveNo
+                }
+              />
+              <label>Service Start Date</label>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                type="date"
+                name="serviceStartDate"
+                onChange={sisterFormik.handleChange}
+                value={sisterFormik.values.serviceStartDate}
+                required
+                disabled={!editMode}
+                error={
+                  sisterFormik.touched.serviceStartDate &&
+                  Boolean(sisterFormik.errors.serviceStartDate)
+                }
+                helperText={
+                  sisterFormik.touched.serviceStartDate &&
+                  sisterFormik.errors.serviceStartDate
+                }
+              />
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          {editMode ? (
+            <Button
+              color="primary"
+              disabled={
+                loggedUserPosition === "sister" ||
+                loggedUserPosition === "nurse"
+              }
+              onClick={manualSubmit}
+            >
+              Save
+            </Button>
+          ) : (
+            <Button
+              color="primary"
+              disabled={
+                loggedUserPosition === "sister" ||
+                loggedUserPosition === "nurse"
+              }
+              onClick={() => {
+                handleEdit();
+                fetchSisterData().then((sisterData) => {
+                  setFormValues({
+                    ...sisterData,
+                    position: "Sister",
+                  });
+                });
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+    </form>
   );
 };
 
