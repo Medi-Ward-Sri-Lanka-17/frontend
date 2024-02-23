@@ -16,7 +16,7 @@ import {
 } from "../../Data/wardDetails/wardService";
 import { validationSchema } from "../../Validation/validation";
 
-const AddWardDetailsForm = ({ open, handleClose }) => {
+const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
     wardName: "",
@@ -78,6 +78,7 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
       validateOnChange={false}
       onSubmit={async (values, { setSubmitting }) => {
         try {
+          handleWardDetails(values); //Update the values according to the editBasicWardDetails form
           showSuccessAlert();
           handleClose();
         } catch (error) {
