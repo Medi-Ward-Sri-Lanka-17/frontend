@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
+import React, { useState, useEffect } from 'react'
+import { fetchPosition } from '../../Data/wardDetails/wardService'
 import {
   Dialog,
   DialogTitle,
@@ -8,71 +8,71 @@ import {
   TextField,
   Button,
   MenuItem,
-} from "@mui/material";
-import { useFormik } from "formik";
-import Swal from "sweetalert2";
+} from '@mui/material'
+import { useFormik } from 'formik'
+import Swal from 'sweetalert2'
 //import "react-toastify/dist/ReactToastify.css";
-import { addNurseValidation } from "./validation";
-import "./style.css";
+import { addNurseValidation } from './validation'
+import './style.css'
 
 const AddStaffMemberForm = ({ open, handleClose }) => {
-  const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [loggedUserPosition, setLoggedUserPosition] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
-        setLoggedUserPosition(positionData);
+        const positionData = await fetchPosition()
+        setLoggedUserPosition(positionData)
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error('Error fetching data:', error.message)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const initialValues = {
-    firstName: "",
-    lastName: "",
-    fullName: "",
-    serviceId: "",
-    birthdate: "",
-    email: "",
-    position: "",
-    leaveNo: "",
-    mobileNo: "",
-    serviceStartDate: "",
-    wardNo: "",
-    remainingVacationLeaves: "",
-    remainingCasualLeaves: "",
-  };
+    firstName: '',
+    lastName: '',
+    fullName: '',
+    serviceId: '',
+    birthdate: '',
+    email: '',
+    position: '',
+    leaveNo: '',
+    mobileNo: '',
+    serviceStartDate: '',
+    wardNo: '',
+    remainingVacationLeaves: '',
+    remainingCasualLeaves: '',
+  }
 
   const showSuccessAlert = () => {
-    handleClose();
+    handleClose()
     Swal.fire({
-      text: "Staff member successfully added!",
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
-  };
+      text: 'Staff member successfully added!',
+      icon: 'success',
+      confirmButtonColor: '#243e4f',
+    })
+  }
 
   const formikAddNurse = useFormik({
     initialValues: initialValues,
     validationSchema: addNurseValidation,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
-        console.log(values);
-        showSuccessAlert();
-        handleClose();
-        actions.setSubmitting(false);
-      }, 700);
+        console.log(values)
+        showSuccessAlert()
+        handleClose()
+        actions.setSubmitting(false)
+      }, 700)
     },
-  });
+  })
 
   //Use a seperate method for validate, because there was a problem in the validating with the onSubmit button
   const handleManualSubmit = () => {
-    formikAddNurse.submitForm();
-  };
+    formikAddNurse.submitForm()
+  }
 
   return (
     <form autoComplete="off">
@@ -218,7 +218,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
             }
           >
             <MenuItem value="Nurse">Nurse</MenuItem>
-            <MenuItem value="Sister" disabled={loggedUserPosition === "sister"}>
+            <MenuItem value="Sister" disabled={loggedUserPosition === 'sister'}>
               Sister
             </MenuItem>
           </TextField>
@@ -351,7 +351,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
         </DialogActions>
       </Dialog>
     </form>
-  );
-};
+  )
+}
 
-export default AddStaffMemberForm;
+export default AddStaffMemberForm
