@@ -9,10 +9,10 @@ import {
   fetchWardData_matron as fetchSelectedWardData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import AddStaffMemberForm from "./addNurses";
-import StaffDetailsForm from "./showSisterDetails";
-import AddWardDetailsForm from "./editBasicWardDetails";
-import AddNewWardForm from "./newWard";
+import AddStaffMemberForm from "../Forms/addNurses";
+import StaffDetailsForm from "../Forms/showSisterDetails";
+import AddWardDetailsForm from "../Forms/editBasicWardDetails";
+import AddNewWardForm from "../Forms/newWard";
 
 export default function Matron() {
   const [wardName, setWardName] = useState("");
