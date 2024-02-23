@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { fetchPosition } from '../../Data/wardDetails/wardService'
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,48 +6,19 @@ import {
   DialogActions,
   TextField,
   Button,
-  MenuItem,
-  Alert as MuiAlert,
-
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
-import "react-toastify/dist/ReactToastify.css";
+import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
 import Swal from "sweetalert2";
-import { validationSchema } from "./validation";
+import {
+  fetchWardData,
+  fetchShiftData,
+  fetchPosition,
+} from "../../Data/wardDetails/wardService";
+import { validationSchema } from "../../Validation/validation";
 
-
-const AddNewWardForm = ({ open, handleClose }) => {
-  const [successMessage, setSuccessMessage] = useState(null)
-  const [loggedUserPosition, setLoggedUserPosition] = useState('')
-
-  const showSuccessAlert = () => {
-    handleClose()
-    Swal.fire({
-      text: 'New ward successfully added!',
-      icon: 'success',
-      confirmButtonColor: '#243e4f',
-    })
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const positionData = await fetchPosition()
-        setLoggedUserPosition(positionData)
-      } catch (error) {
-        console.error('Error fetching data:', error.message)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  const onSubmit = () => {
-    return null
-  }
-
-  const initialValues = {
-
+const AddWardDetailsForm = ({ open, handleClose }) => {
+  const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [wardData, setWardData] = useState({
     wardName: "",
     wardNumber: "",
     sisterName: "",
@@ -56,14 +26,58 @@ const AddNewWardForm = ({ open, handleClose }) => {
     morningShift: "",
     eveningShift: "",
     nightShift: "",
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const positionData = await fetchPosition();
+        setLoggedUserPosition(positionData);
+
+        const data = await fetchWardData();
+        setWardData({
+          wardName: data.wardName,
+          sisterName: data.sisterName,
+          wardNumber: data.wardNumber,
+          sisterName: data.sisterName,
+          numberOfNurses: data.numberOfNurses,
+        });
+
+        const shiftData = await fetchShiftData();
+        setWardData((prevData) => ({
+          ...prevData,
+          morningShift: shiftData.morningShift,
+          eveningShift: shiftData.eveningShift,
+          nightShift: shiftData.nightShift,
+        }));
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  {
+    /*=======================success alert============================*/
+  }
+  const showSuccessAlert = () => {
+    handleClose();
+    Swal.fire({
+      text: "Staff member successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
   };
+
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={wardData}
+      enableReinitialize={true}
       validationSchema={validationSchema}
+      validateOnChange={false}
       onSubmit={async (values, { setSubmitting }) => {
         try {
-          console.log(values);
           showSuccessAlert();
           handleClose();
         } catch (error) {
@@ -73,10 +87,17 @@ const AddNewWardForm = ({ open, handleClose }) => {
         }
       }}
     >
-      {({ handleChange, isSubmitting, handleSubmit, touched, errors }) => (
+      {({
+        handleChange,
+        values,
+        isSubmitting,
+        handleSubmit,
+        touched, //touched property in Formik, it is a state variable that keeps track of which fields have been "touched" or interacted with.
+        errors,
+      }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add ward details</DialogTitle>
+            <DialogTitle>Edit ward details</DialogTitle>
             <DialogContent>
               <label>Ward Name</label>
               <Field
@@ -87,10 +108,13 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="wardName"
                 required
                 onChange={handleChange}
+                value={values.wardName}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.wardName && Boolean(errors.wardName)}
                 helperText={touched.wardName && errors.wardName}
               />
-              <label>Ward number</label>
+
+              <label>Ward Number</label>
               <Field
                 as={TextField}
                 variant="outlined"
@@ -99,10 +123,13 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="wardNumber"
                 required
                 onChange={handleChange}
+                value={values.wardNumber}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.wardNumber && Boolean(errors.wardNumber)}
                 helperText={touched.wardNumber && errors.wardNumber}
               />
-              <label>Sister name</label>
+
+              <label>Sister Name</label>
               <Field
                 as={TextField}
                 variant="outlined"
@@ -111,6 +138,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="sisterName"
                 required
                 onChange={handleChange}
+                value={values.sisterName}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.sisterName && Boolean(errors.sisterName)}
                 helperText={touched.sisterName && errors.sisterName}
               />
@@ -124,6 +153,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="numberOfNurses"
                 required
                 onChange={handleChange}
+                value={values.numberOfNurses}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.numberOfNurses && Boolean(errors.numberOfNurses)}
                 helperText={touched.numberOfNurses && errors.numberOfNurses}
               />
@@ -137,6 +168,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="morningShift"
                 required
                 onChange={handleChange}
+                value={values.morningShift}
+                disabled={loggedUserPosition === "matron"}
                 error={touched.morningShift && Boolean(errors.morningShift)}
                 helperText={touched.morningShift && errors.morningShift}
               />
@@ -150,6 +183,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="eveningShift"
                 required
                 onChange={handleChange}
+                value={values.eveningShift}
+                disabled={loggedUserPosition === "matron"}
                 error={touched.eveningShift && Boolean(errors.eveningShift)}
                 helperText={touched.eveningShift && errors.eveningShift}
               />
@@ -163,6 +198,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 name="nightShift"
                 required
                 onChange={handleChange}
+                value={values.nightShift}
+                disabled={loggedUserPosition === "matron"}
                 error={touched.nightShift && Boolean(errors.nightShift)}
                 helperText={touched.nightShift && errors.nightShift}
               />
@@ -172,20 +209,24 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 Cancel
               </Button>
               <Button
+                type="submit"
                 color="primary"
                 disabled={isSubmitting}
                 onClick={() => {
                   handleSubmit();
+                  Object.keys(values).forEach((field) => {
+                    touched[field] = true;
+                  });
                 }}
               >
-                Save
+                Submit
               </Button>
             </DialogActions>
           </Dialog>
         </Form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default AddNewWardForm
+export default AddWardDetailsForm;
