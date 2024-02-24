@@ -1,4 +1,4 @@
-import { styled } from '@mui/system'
+import { styled } from "@mui/system";
 import {
   Box,
   Button,
@@ -8,152 +8,151 @@ import {
   Stack,
   TextField,
   Typography,
-} from '@mui/material'
-import React, { useState } from 'react'
-import Theme from '../../Component/Theme' //**** Special import*/
-import { ThemeProvider } from '@mui/material'
+} from "@mui/material";
+import React, { useState } from "react";
+import Theme from "../../Component/Theme"; //**** Special import*/
+import { ThemeProvider } from "@mui/material";
 
-import { Visibility, VisibilityOff } from '@mui/icons-material'
-import PersonIcon from '@mui/icons-material/Person'
-import Recovery from './Recovery'
-import Reset from './Reset'
-import SuccessAlert from '../../Component/SuccessAlert'
-import CustomerSup from './CustomerSup'
-import { validationSchema } from './Validation'
-import { useFormik } from 'formik'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../Security/AuthContext'
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import PersonIcon from "@mui/icons-material/Person";
+import Recovery from "./Recovery";
+import Reset from "./Reset";
+import SuccessAlert from "../../Component/SuccessAlert";
+import CustomerSup from "./CustomerSup";
+import { validationSchema } from "./Validation";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Security/AuthContext";
 
-const img1 = require('../../Assest/mainlogo.png')
+const img1 = require("../../Assest/mainlogo.png");
 
 //calling Theme function
-const theme = Theme()
+const theme = Theme();
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
-  marginTop: '1em',
+  marginTop: "1em",
   width: 900,
-  height: '80vh',
-  textAlign: 'center',
+  height: "80vh",
+  textAlign: "center",
   borderRadius: theme.shape.borderRadius * 6,
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down("md")]: {
     width: 600,
-    height: '70vh',
+    height: "70vh",
   },
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     width: 450,
     height: 750,
   },
-}))
+}));
 
 const UserTitleBox = styled(Stack)(({ theme }) => ({
-  marginTop: '2.5em',
-  marginBottom: '2.5em',
+  marginTop: "2.5em",
+  marginBottom: "2.5em",
   width: 350,
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down("md")]: {
     width: 250,
   },
-  textAlign: 'center',
-}))
+  textAlign: "center",
+}));
 
 const UserText = styled(Stack)(({ theme }) => ({
-  textAlign: 'left',
+  textAlign: "left",
   width: 350,
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down("md")]: {
     width: 250,
   },
-}))
+}));
 
 const UserInputBox = styled(Stack)(({ theme }) => ({
-  textAlign: 'left',
+  textAlign: "left",
   width: 350,
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down("md")]: {
     width: 250,
   },
-}))
+}));
 
 const Login = () => {
   //using useNavigate hook
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   //Authentication context
-  const authContext = useAuth()
+  const authContext = useAuth();
 
   //formik initialValue
 
   const initialValues = {
-    username: '',
-    password: '',
-  }
+    username: "",
+    password: "",
+  };
 
   //formik onsubmit function
   // const onSubmit = (values) => {
   //   console.log(values)
   //   navigate('/home')
   // }
-  const [pwdError,setPwdError]=useState(null);
+  const [pwdError, setPwdError] = useState(null);
 
   async function onSubmit() {
     const response = await authContext.login(
       formik.values.username,
       formik.values.password
-    )
-    authContext.setIsAuthenticate(true)
+    );
+    authContext.setIsAuthenticate(true);
     if (response.status === 200) {
-      console.log(response.data.user.position)
+      console.log(response.data.user.position);
 
-      console.log(authContext.isAuthenticate)
-      navigate('/home')
+      console.log(authContext.isAuthenticate);
+      navigate("/home");
     } else {
-      console.log('Error: login credentials are wrong')
+      console.log("Error: login credentials are wrong");
       setPwdError("Login credentials are wrong");
-
     }
   }
 
   //formik validate function
 
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [recoveryModel, setRecoveryModel] = useState(false)
+  const [recoveryModel, setRecoveryModel] = useState(false);
 
-  const [reset, setReset] = useState(false)
+  const [reset, setReset] = useState(false);
 
-  const [resetPwd, setResetPwd] = useState(true)
+  const [resetPwd, setResetPwd] = useState(true);
 
-  const [alert, setAlert] = useState(false)
+  const [alert, setAlert] = useState(false);
 
-  const [custom, setCustom] = useState(false)
+  const [custom, setCustom] = useState(false);
 
-  const [responseAlert, setResponseAlert] = useState(false)
+  const [responseAlert, setResponseAlert] = useState(false);
 
   const resetPasswordModelOn = () => {
-    setReset(true)
-    setRecoveryModel(false)
-  }
+    setReset(true);
+    setRecoveryModel(false);
+  };
 
   const openAlertSuccess = () => {
     if (resetPwd) {
-      setAlert(true)
-      setReset(false)
+      setAlert(true);
+      setReset(false);
     }
-  }
+  };
 
   const closeCustom = () => {
-    setCustom(false)
-  }
+    setCustom(false);
+  };
 
   const responseSuccessAlert = () => {
-    setResponseAlert(true)
-    setCustom(false)
-  }
+    setResponseAlert(true);
+    setCustom(false);
+  };
 
   //validations
   const formik = useFormik({
     initialValues,
     onSubmit,
     validationSchema,
-  })
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -163,8 +162,8 @@ const Login = () => {
         justifyContent="center"
         alignItems="center"
         sx={{
-          marginTop: '3%',
-          marginBottom: '3%',
+          marginTop: "3%",
+          marginBottom: "3%",
           backgroundColor: theme.palette.background.normal,
         }}
       >
@@ -174,9 +173,9 @@ const Login = () => {
             direction="row"
             justifyContent="space-between"
             sx={{
-              overflowY: 'auto',
-              [theme.breakpoints.down('sm')]: {
-                display: 'block',
+              overflowY: "auto",
+              [theme.breakpoints.down("sm")]: {
+                display: "block",
                 width: 450,
               },
             }}
@@ -184,19 +183,19 @@ const Login = () => {
             <Box
               flex="45%"
               sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 backgroundColor: theme.palette.primary.main,
-                height: '80vh',
+                height: "80vh",
                 borderTopLeftRadius: theme.shape.borderRadius * 6,
                 borderBottomLeftRadius: theme.shape.borderRadius * 6,
-                [theme.breakpoints.down('md')]: {
-                  height: '70vh',
+                [theme.breakpoints.down("md")]: {
+                  height: "70vh",
                   width: 300,
                 },
-                [theme.breakpoints.down('sm')]: {
-                  height: '15vh',
+                [theme.breakpoints.down("sm")]: {
+                  height: "15vh",
                   width: 450,
                   borderTopRightRadius: theme.shape.borderRadius * 6,
                   borderBottomLeftRadius: theme.shape.borderRadius * 0,
@@ -208,9 +207,9 @@ const Login = () => {
                 src={img1}
                 alt="Image description"
                 sx={{
-                  width: { xs: '155px', sm: '200px', md: '300px' },
+                  width: { xs: "155px", sm: "200px", md: "300px" },
 
-                  height: { xs: '13vh', sm: '23vh', md: '33vh' },
+                  height: { xs: "13vh", sm: "23vh", md: "33vh" },
                 }}
               />
             </Box>
@@ -218,13 +217,13 @@ const Login = () => {
             <Box
               flex="55%"
               sx={{
-                height: '80vh',
+                height: "80vh",
                 borderTopRightRadius: theme.shape.borderRadius * 6,
                 borderBottomRightRadius: theme.shape.borderRadius * 6,
                 backgroundColor: theme.palette.background.normal,
                 borderBottomLeftRadius: { xs: theme.shape.borderRadius * 6 },
-                [theme.breakpoints.down('md')]: {
-                  height: '70vh',
+                [theme.breakpoints.down("md")]: {
+                  height: "70vh",
                 },
               }}
             >
@@ -233,9 +232,9 @@ const Login = () => {
                   <UserTitleBox>
                     <Typography
                       sx={{
-                        fontSize: '2.5rem',
-                        [theme.breakpoints.down('md')]: {
-                          fontSize: '2rem',
+                        fontSize: "2.5rem",
+                        [theme.breakpoints.down("md")]: {
+                          fontSize: "2rem",
                         },
                       }}
                     >
@@ -248,8 +247,8 @@ const Login = () => {
                       <Typography
                         variant="h6"
                         sx={{
-                          [theme.breakpoints.down('md')]: {
-                            fontSize: '1rem',
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: "1rem",
                           },
                         }}
                       >
@@ -271,9 +270,9 @@ const Login = () => {
                           style: { color: theme.palette.error.main },
                         }}
                         sx={{
-                          width: '100%',
+                          width: "100%",
                           borderRadius: theme.shape.borderRadius,
-                          '&:hover': {
+                          "&:hover": {
                             borderBlockColor: theme.palette.success.main,
                           },
                         }}
@@ -291,8 +290,8 @@ const Login = () => {
                       <Typography
                         variant="h6"
                         sx={{
-                          [theme.breakpoints.down('md')]: {
-                            fontSize: '1rem',
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: "1rem",
                           },
                         }}
                       >
@@ -310,19 +309,19 @@ const Login = () => {
                         FormHelperTextProps={{
                           style: { color: theme.palette.error.main },
                         }}
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         sx={{
-                          placeholder: 'Enter your password',
-                          size: 'small',
-                          width: '100%',
+                          placeholder: "Enter your password",
+                          size: "small",
+                          width: "100%",
                           borderRadius: theme.shape.borderRadius,
-                          '&:hover': {
+                          "&:hover": {
                             borderBlockColor: theme.palette.success.main,
                           },
-                          [theme.breakpoints.down('md')]: {
-                            fontSize: '1rem',
+                          [theme.breakpoints.down("md")]: {
+                            fontSize: "1rem",
                           },
                         }}
                         InputProps={{
@@ -342,11 +341,18 @@ const Login = () => {
                           ),
                         }}
                       />
-                    <Box marginTop="0.5em">
-                      {pwdError&& <Typography sx={{color:theme.palette.error.main,
-                        fontSize:"12px"
-                      }}>{pwdError}</Typography>}
-                    </Box>
+                      <Box marginTop="0.5em">
+                        {pwdError && (
+                          <Typography
+                            sx={{
+                              color: theme.palette.error.main,
+                              fontSize: "12px",
+                            }}
+                          >
+                            {pwdError}
+                          </Typography>
+                        )}
+                      </Box>
                     </UserInputBox>
                   </Stack>
 
@@ -356,9 +362,9 @@ const Login = () => {
                     justifyContent="space-between"
                     sx={{
                       width: 350,
-                      marginTop: '20px',
-                      marginBottom: '20px',
-                      [theme.breakpoints.down('md')]: {
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                      [theme.breakpoints.down("md")]: {
                         width: 250,
                       },
                     }}
@@ -366,7 +372,7 @@ const Login = () => {
                     <Box
                       flex="50%"
                       sx={{
-                        textAlign: 'left',
+                        textAlign: "left",
                       }}
                     >
                       <Button
@@ -376,7 +382,7 @@ const Login = () => {
                       >
                         <Typography
                           sx={{
-                            fontSize: '12px',
+                            fontSize: "12px",
                           }}
                         >
                           Reset Password
@@ -403,7 +409,7 @@ const Login = () => {
                     <Box
                       flex="50%"
                       sx={{
-                        textAlign: 'right',
+                        textAlign: "right",
                       }}
                     >
                       <Button
@@ -413,7 +419,7 @@ const Login = () => {
                       >
                         <Typography
                           sx={{
-                            fontSize: '12px',
+                            fontSize: "12px",
                           }}
                         >
                           Customer Suppprt
@@ -435,15 +441,15 @@ const Login = () => {
                     <Button
                       variant="contained"
                       sx={{
-                        marginTop: '0.5em',
+                        marginTop: "0.5em",
                         width: 350,
                         height: 40,
-                        [theme.breakpoints.down('md')]: {
+                        [theme.breakpoints.down("md")]: {
                           width: 250,
                           height: 35,
                         },
-                        color: 'White',
-                        '&:hover': {
+                        color: "White",
+                        "&:hover": {
                           backgroundColor: theme.palette.secondary.main,
                         },
                       }}
@@ -459,7 +465,7 @@ const Login = () => {
         </DemoPaper>
       </Stack>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
