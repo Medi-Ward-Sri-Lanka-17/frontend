@@ -103,7 +103,11 @@ const Login = () => {
       console.log(response.data.user.position);
 
       console.log(authContext.isAuthenticate);
-      navigate("/home");
+      if (response.data.user.position == "Admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
     } else {
       console.log("Error: login credentials are wrong");
       setPwdError("Login credentials are wrong");

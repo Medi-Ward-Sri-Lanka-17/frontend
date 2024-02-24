@@ -7,17 +7,16 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
 import Swal from "sweetalert2";
 import {
   fetchWardData,
   fetchShiftData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import { validationSchema } from "./validation";
-import "./style.css";
+import { validationSchema } from "../../Validation/validation";
 
-const AddWardDetailsForm = ({ open, handleClose }) => {
+const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
     wardName: "",
@@ -38,6 +37,7 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
         const data = await fetchWardData();
         setWardData({
           wardName: data.wardName,
+          sisterName: data.sisterName,
           wardNumber: data.wardNumber,
           sisterName: data.sisterName,
           numberOfNurses: data.numberOfNurses,
@@ -78,6 +78,7 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
       validateOnChange={false}
       onSubmit={async (values, { setSubmitting }) => {
         try {
+          handleWardDetails(values); //Update the values according to the editBasicWardDetails form
           showSuccessAlert();
           handleClose();
         } catch (error) {
@@ -110,7 +111,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.wardName}
                 disabled={loggedUserPosition === "sister"}
-                helperText={errors.wardName}
+                error={touched.wardName && Boolean(errors.wardName)}
+                helperText={touched.wardName && errors.wardName}
               />
 
               <label>Ward Number</label>
@@ -124,7 +126,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.wardNumber}
                 disabled={loggedUserPosition === "sister"}
-                helperText={errors.wardNumber}
+                error={touched.wardNumber && Boolean(errors.wardNumber)}
+                helperText={touched.wardNumber && errors.wardNumber}
               />
 
               <label>Sister Name</label>
@@ -138,7 +141,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.sisterName}
                 disabled={loggedUserPosition === "sister"}
-                helperText={errors.sisterName}
+                error={touched.sisterName && Boolean(errors.sisterName)}
+                helperText={touched.sisterName && errors.sisterName}
               />
 
               <label>Total number of nurses in ward</label>
@@ -152,7 +156,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.numberOfNurses}
                 disabled={loggedUserPosition === "sister"}
-                helperText={errors.numberOfNurses}
+                error={touched.numberOfNurses && Boolean(errors.numberOfNurses)}
+                helperText={touched.numberOfNurses && errors.numberOfNurses}
               />
 
               <label>Number of nurses in morning shift</label>
@@ -166,7 +171,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.morningShift}
                 disabled={loggedUserPosition === "matron"}
-                helperText={errors.morningShift}
+                error={touched.morningShift && Boolean(errors.morningShift)}
+                helperText={touched.morningShift && errors.morningShift}
               />
 
               <label>Number of nurses in evening shift</label>
@@ -180,7 +186,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.eveningShift}
                 disabled={loggedUserPosition === "matron"}
-                helperText={errors.eveningShift}
+                error={touched.eveningShift && Boolean(errors.eveningShift)}
+                helperText={touched.eveningShift && errors.eveningShift}
               />
 
               <label>Number of nurses in night shift</label>
@@ -194,7 +201,8 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 value={values.nightShift}
                 disabled={loggedUserPosition === "matron"}
-                helperText={errors.nightShift}
+                error={touched.nightShift && Boolean(errors.nightShift)}
+                helperText={touched.nightShift && errors.nightShift}
               />
             </DialogContent>
             <DialogActions>

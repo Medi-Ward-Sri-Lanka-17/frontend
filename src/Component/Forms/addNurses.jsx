@@ -12,8 +12,8 @@ import {
 import { useFormik } from "formik";
 import Swal from "sweetalert2";
 //import "react-toastify/dist/ReactToastify.css";
-import { addNurseValidation } from "./validation";
-import "./style.css";
+import { addNurseValidation } from "../../Validation/validation";
+//import "./style.css";
 
 const AddStaffMemberForm = ({ open, handleClose }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
@@ -71,6 +71,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
 
   //Use a seperate method for validate, because there was a problem in the validating with the onSubmit button
   const handleManualSubmit = () => {
+    console.log(formikAddNurse.errors);
     formikAddNurse.submitForm();
   };
 

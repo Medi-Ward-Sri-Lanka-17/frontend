@@ -4,8 +4,10 @@ export const fetchSisterData = async () => {
 
     const response = {
       fullName: "Dilki Hansapani",
+      firstName: "Dilki",
+      lastName: "Hansapani",
       serviceId: "199965500338",
-      birthday: "1999-06-03",
+      birthdate: "1999-06-03",
       email: "dilki99hansapani@gmail.com",
       position: "Sister",
       leaveNo: "715",
@@ -13,8 +15,8 @@ export const fetchSisterData = async () => {
       serviceStartDate: "2021-02-15",
     };
 
-    response.birthday = new Date(response.birthday);
-    response.serviceStartDate = new Date(response.serviceStartDate);
+    // response.birthday = new Date(response.birthday);
+    // response.serviceStartDate = new Date(response.serviceStartDate);
 
     return response; // Directly return the response object
   } catch (error) {

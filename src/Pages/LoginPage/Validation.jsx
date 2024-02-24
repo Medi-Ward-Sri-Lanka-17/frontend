@@ -5,7 +5,7 @@ export const validationSchema = Yup.object({
   username: Yup.string().required("Required*"),
   password: Yup.string()
     .required("Required*")
-    .max(10, "Maximum 10 characters")
+    .max(20, "Maximum 20 characters")
     .min(8, "At least 8 characters require"),
 });
 

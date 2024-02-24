@@ -9,10 +9,10 @@ import {
   fetchWardData_matron as fetchSelectedWardData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import AddStaffMemberForm from "./addNurses";
-import StaffDetailsForm from "./showSisterDetails";
-import AddWardDetailsForm from "./editBasicWardDetails";
-import AddNewWardForm from "./newWard";
+import AddStaffMemberForm from "../Forms/addNurses";
+import StaffDetailsForm from "../Forms/showSisterDetails";
+import AddWardDetailsForm from "../Forms/editBasicWardDetails";
+import AddNewWardForm from "../Forms/newWard";
 
 export default function Matron() {
   const [wardName, setWardName] = useState("");
@@ -85,12 +85,19 @@ export default function Matron() {
   const [isEditBasicWardDetailsDialogOpen, setEditBasicWardDetailsDialogOpen] =
     useState(false);
 
-  // const handleEditBasicWardDetails = () => {
-  //   setEditBasicWardDetailsDialogOpen(true);
-  // };
-
-  const handleEditBasicWardDetailsSave = () => {
-    setEditBasicWardDetailsDialogOpen(false);
+  const handleEditBasicWardDetailsSave = async (editedValues) => {
+    console.log("edited values : ", editedValues);
+    try {
+      // Call fetchWardData again to get the updated data
+      setWardName(editedValues.wardName);
+      setWardNumber(editedValues.wardNumber);
+      setSisterName(editedValues.sisterName);
+      setNumberOfNurses(editedValues.numberOfNurses);
+    } catch (error) {
+      console.error("Error updating state:", error.message);
+    } finally {
+      setEditBasicWardDetailsDialogOpen(false);
+    }
   };
 
   {
@@ -149,7 +156,9 @@ export default function Matron() {
                     style={{ margin: "20px" }}
                     startIcon={<EditIcon />}
                     disabled={selectedWard === "" && position === "matron"}
-                    onClick={() => setEditBasicWardDetailsDialogOpen(true)}
+                    onClick={() => {
+                      setEditBasicWardDetailsDialogOpen(true);
+                    }}
                   >
                     Edit basic ward details
                   </Button>
