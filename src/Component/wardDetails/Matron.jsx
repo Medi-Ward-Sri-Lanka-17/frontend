@@ -88,7 +88,6 @@ export default function Matron() {
   const handleEditBasicWardDetailsSave = async (editedValues) => {
     console.log("edited values : ", editedValues);
     try {
-      // Call fetchWardData again to get the updated data
       setWardName(editedValues.wardName);
       setWardNumber(editedValues.wardNumber);
       setSisterName(editedValues.sisterName);
@@ -261,7 +260,7 @@ export default function Matron() {
       </Grid>
 
       <Grid item xs={12}>
-        <Paper elevation={3} style={{ padding: 16, margin: 10 }}>
+        <Paper elevation={3} style={{ padding: 16, marginTop: -20 }}>
           <NursesTable />
         </Paper>
       </Grid>

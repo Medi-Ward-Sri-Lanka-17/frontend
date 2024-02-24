@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import TextField from "@mui/material/TextField"; // Import TextField for the search bar
+import TextField from "@mui/material/TextField";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import { getNurses } from "../../Data/wardDetails/nursesService.js";
+import Theme from "../Theme";
 
 export default function NursesTable() {
+  const theme = Theme();
+
   const [nurses, setNurses] = useState([]);
   const [filteredNurses, setFilteredNurses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,55 +40,23 @@ export default function NursesTable() {
     setFilteredNurses(filtered);
   }, [searchQuery, nurses]);
 
+  //Function for delete button
   const handleDelete = (id) => {
     console.log(`Delete clicked for ID ${id}`);
-    // Add your delete logic here
   };
 
-  const handleMoreButtonClick = (event, id) => {
-    // Handle the "More" button click and show additional actions or a menu
-    console.log(`More clicked for ID ${id}`);
-    // You can implement logic to display a menu or popover with additional actions here
+  //Function for edit button
+  const handleEdit = (id) => {
+    console.log(`Edit clicked for ID ${id}`);
   };
 
+  //Function for search button
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", flex: 1 },
-    { field: "name", headerName: "Name", flex: 1 },
-    { field: "mobileNo", headerName: "Mobile No", flex: 1 },
-    { field: "email", headerName: "Email", flex: 1 },
-
-    {
-      field: "actions",
-      headerName: "Action",
-      flex: 1,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            onClick={() => handleDelete(params.row.id)}
-            color="secondary"
-          >
-            <DeleteIcon />
-          </IconButton>
-
-          {/* <Button
-            variant="outlined"
-            color="default"
-            onClick={(event) => handleMoreButtonClick(event, params.row.id)}
-            sx={{ marginLeft: 8, height: 36 }}
-          >
-            More
-          </Button> */}
-        </>
-      ),
-    },
-  ];
-
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ width: "100%", margin: "0" }}>
       {/* Search Bar */}
       <TextField
         label="Search"
@@ -92,14 +67,103 @@ export default function NursesTable() {
         onChange={handleSearchChange}
       />
 
-      {/* DataGrid with filtered nurses */}
-      <DataGrid
-        rows={filteredNurses}
-        columns={columns}
-        pageSize={5}
-        disableSelectionOnClick
-        autoHeight
-      />
+      {/* Custom Table */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead
+            style={{
+              backgroundColor: theme.palette.secondary.main,
+            }}
+          >
+            <TableRow>
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                ID
+              </TableCell>
+
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                Service ID
+              </TableCell>
+
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                Name
+              </TableCell>
+
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                Mobile No
+              </TableCell>
+
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                Email
+              </TableCell>
+
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                Edit details
+              </TableCell>
+
+              <TableCell
+                style={{
+                  color: "white",
+                }}
+              >
+                Delete
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredNurses.map((nurse) => (
+              <TableRow key={nurse.id}>
+                <TableCell>{nurse.id}</TableCell>
+                <TableCell>{nurse.serviceId}</TableCell>
+                <TableCell>{nurse.name}</TableCell>
+                <TableCell>{nurse.mobileNo}</TableCell>
+                <TableCell>{nurse.email}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: theme.palette.success.main }}
+                    onClick={() => handleEdit(nurse.id)}
+                  >
+                    Edit
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    style={{ color: "red", borderColor: "red" }}
+                    onClick={() => handleDelete(nurse.id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }
