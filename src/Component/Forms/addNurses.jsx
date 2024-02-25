@@ -12,7 +12,7 @@ import {
 import { useFormik } from "formik";
 import Swal from "sweetalert2";
 //import "react-toastify/dist/ReactToastify.css";
-import { addNurseValidation } from "../../Validation/validation";
+import { addNurseValidation } from "../../Validation/wardDetailsValidation";
 //import "./style.css";
 
 const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
@@ -65,6 +65,7 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
         handleAddNurse(values);
         showSuccessAlert();
         handleClose();
+        actions.resetForm();
         actions.setSubmitting(false);
       }, 700);
     },
