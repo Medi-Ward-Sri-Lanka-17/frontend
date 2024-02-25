@@ -14,7 +14,7 @@ import {
   fetchShiftData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import { validationSchema } from "../../Validation/validation";
+import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
 
 const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
@@ -74,7 +74,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
     <Formik
       initialValues={wardData}
       enableReinitialize={true}
-      validationSchema={validationSchema}
+      validationSchema={EditBasicWardDetailsValidation}
       validateOnChange={false}
       onSubmit={async (values, { setSubmitting }) => {
         try {

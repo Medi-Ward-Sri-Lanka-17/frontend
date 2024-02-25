@@ -1,9 +1,14 @@
 import * as Yup from "yup";
 
-export const validationSchema = Yup.object({
+//Edit basic ward details validation
+
+export const EditBasicWardDetailsValidation = Yup.object({
   wardName: Yup.string()
     .required("*Ward name is required")
-    .matches(/^[a-zA-Z\s]+$/, "*Name must only contain letters and spaces"),
+    .matches(
+      /^[a-zA-Z\s\-]+$/,
+      "*Name must only contain letters, spaces, and hyphens"
+    ),
 
   wardNumber: Yup.number()
     .required("*Ward number is required")
@@ -40,6 +45,8 @@ export const validationSchema = Yup.object({
     .min(1, "*Number of nurses in the night shift must be greater than 0"),
 });
 
+//add a staff member validation
+
 export const addNurseValidation = Yup.object().shape({
   firstName: Yup.string()
     .required("*First name is required")
@@ -55,13 +62,9 @@ export const addNurseValidation = Yup.object().shape({
 
   serviceId: Yup.string()
     .required("*Service ID is required")
-    // .matches(
-    //   /^[0-9]{9}[V]$/,
-    //   "ID must have 9 numeric digits followed by a letter or 12 digits"
-    // )
     .matches(
-      /^[0-9]{12}$/,
-      "*ID must have 9 numeric digits followed by a letter or 12 digits"
+      /^(?:[0-9]{9}V|[0-9]{12})$/,
+      "ID must have 9 numeric digits followed by the letter 'V' or exactly 12 numeric digits"
     ),
 
   birthdate: Yup.date()
@@ -88,9 +91,18 @@ export const addNurseValidation = Yup.object().shape({
     .matches(/^[0-9]{10}$/, "*Invalid phone number")
     .required("*Phone number is required"),
 
-  serviceStartDate: Yup.date()
-    .required("*Service start date is required")
-    .typeError("*Invalid date type"),
+  serviceStartDate: Yup.date().when("birthdate", (birthdate, schema) => {
+    const twentyYearsAfterBirth = new Date(birthdate);
+    twentyYearsAfterBirth.setFullYear(twentyYearsAfterBirth.getFullYear() + 20);
+
+    return schema
+      .required("*Service start date is required")
+      .typeError("*Invalid date type")
+      .min(
+        twentyYearsAfterBirth,
+        "Service start date must be greater than 20 years from birthdate"
+      );
+  }),
 
   remainingVacationLeaves: Yup.number()
     .required("*Remaining vacation leaves are required")
@@ -104,6 +116,8 @@ export const addNurseValidation = Yup.object().shape({
     .integer("*Remaining casual leaves must be an integer")
     .max(23, "*Remaining casual leaves must be less than 24"),
 });
+
+//Add new sister validation
 
 export const addSisterValidation = Yup.object().shape({
   firstName: Yup.string()
@@ -120,13 +134,9 @@ export const addSisterValidation = Yup.object().shape({
 
   serviceId: Yup.string()
     .required("*Service ID is required")
-    // .matches(
-    //   /^[0-9]{9}[V]$/,
-    //   "ID must have 9 numeric digits followed by a letter or 12 digits"
-    // )
     .matches(
-      /^[0-9]{12}$/,
-      "*ID must have 9 numeric digits followed by a letter or 12 digits"
+      /^(?:[0-9]{9}V|[0-9]{12})$/,
+      "ID must have 9 numeric digits followed by the letter 'V' or exactly 12 numeric digits"
     ),
 
   birthdate: Yup.date()
@@ -148,7 +158,16 @@ export const addSisterValidation = Yup.object().shape({
     .matches(/^[0-9]{10}$/, "*Invalid phone number")
     .required("*Phone number is required"),
 
-  serviceStartDate: Yup.date()
-    .required("*Service start date is required")
-    .typeError("*Invalid date type"),
+  serviceStartDate: Yup.date().when("birthdate", (birthdate, schema) => {
+    const twentyYearsAfterBirth = new Date(birthdate);
+    twentyYearsAfterBirth.setFullYear(twentyYearsAfterBirth.getFullYear() + 20);
+
+    return schema
+      .required("*Service start date is required")
+      .typeError("*Invalid date type")
+      .min(
+        twentyYearsAfterBirth,
+        "Service start date must be greater than 20 years from birthdate"
+      );
+  }),
 });
