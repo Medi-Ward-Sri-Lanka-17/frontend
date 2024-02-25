@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 import { addNurseValidation } from "../../Validation/validation";
 //import "./style.css";
 
-const AddStaffMemberForm = ({ open, handleClose }) => {
+const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
 
   useEffect(() => {
@@ -62,6 +62,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
     onSubmit: async (values, actions) => {
       setTimeout(() => {
         console.log(values);
+        handleAddNurse(values);
         showSuccessAlert();
         handleClose();
         actions.setSubmitting(false);
@@ -73,6 +74,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
   const handleManualSubmit = () => {
     console.log(formikAddNurse.errors);
     formikAddNurse.submitForm();
+    // handleAddNurse(formikAddNurse.values);
   };
 
   return (

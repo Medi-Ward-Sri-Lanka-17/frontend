@@ -13,7 +13,6 @@ import Theme from "../Theme";
 
 export default function NursesTable() {
   const theme = Theme();
-
   const [nurses, setNurses] = useState([]);
   const [filteredNurses, setFilteredNurses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,8 +33,10 @@ export default function NursesTable() {
 
   useEffect(() => {
     // Filter nurses based on the search query when it changes
-    const filtered = nurses.filter((nurse) =>
-      nurse.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = nurses.filter(
+      (nurse) =>
+        nurse.fullName &&
+        nurse.fullName.toLowerCase().includes(searchQuery?.toLowerCase())
     );
     setFilteredNurses(filtered);
   }, [searchQuery, nurses]);
@@ -138,7 +139,7 @@ export default function NursesTable() {
               <TableRow key={nurse.id}>
                 <TableCell>{nurse.id}</TableCell>
                 <TableCell>{nurse.serviceId}</TableCell>
-                <TableCell>{nurse.name}</TableCell>
+                <TableCell>{nurse.fullName}</TableCell>
                 <TableCell>{nurse.mobileNo}</TableCell>
                 <TableCell>{nurse.email}</TableCell>
                 <TableCell>

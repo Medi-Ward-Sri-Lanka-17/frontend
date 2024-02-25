@@ -13,6 +13,7 @@ import AddStaffMemberForm from "../Forms/addNurses";
 import StaffDetailsForm from "../Forms/showSisterDetails";
 import AddWardDetailsForm from "../Forms/editBasicWardDetails";
 import AddNewWardForm from "../Forms/newWard";
+import { addNurseService } from "../../Data/wardDetails/nursesService";
 
 export default function Matron() {
   const [wardName, setWardName] = useState("");
@@ -62,10 +63,22 @@ export default function Matron() {
   }
   const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false);
   const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false);
+  // Add this state variable at the beginning of your Matron component
+  // const [isNursesTableVisible, setNursesTableVisible] = useState(true);
+  const [nursesTableKey, setNursesTableKey] = useState(0);
 
   const handleAddNurse = (values) => {
     // Handle adding nurse logic here
-    console.log("Adding nurse:", values);
+    addNurseService(values);
+
+    // // Update the state to make NursesTable visible
+    // setNursesTableVisible(true);
+
+    // Change the key to trigger a reload of the NursesTable
+    setNursesTableKey((prevKey) => prevKey + 1);
+
+    // Close the form
+    setAddNurseFormOpen(false);
   };
 
   {
@@ -261,7 +274,7 @@ export default function Matron() {
 
       <Grid item xs={12}>
         <Paper elevation={3} style={{ padding: 16, marginTop: -20 }}>
-          <NursesTable />
+          {<NursesTable key={nursesTableKey} />}
         </Paper>
       </Grid>
 
