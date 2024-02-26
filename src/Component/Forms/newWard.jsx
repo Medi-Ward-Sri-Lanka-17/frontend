@@ -41,10 +41,6 @@ const AddNewWardForm = ({ open, handleClose }) => {
     fetchData();
   }, []);
 
-  const onSubmit = () => {
-    return null;
-  };
-
   const initialValues = {
     wardName: "",
     wardNumber: "",
