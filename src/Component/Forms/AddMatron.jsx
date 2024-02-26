@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { fetchPosition } from '../../Data/wardDetails/wardService'
 import {
   Dialog,
   DialogTitle,
@@ -12,7 +11,6 @@ import {
 import { useFormik } from 'formik'
 import Swal from 'sweetalert2'
 //import "react-toastify/dist/ReactToastify.css";
-import { addNurseValidation } from '../../Validation/validation'
 import { validationSchema } from '../../Validation/MatronValidation'
 //import "./style.css";
 
