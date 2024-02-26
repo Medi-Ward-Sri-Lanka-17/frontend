@@ -12,10 +12,10 @@ import {
 import { useFormik } from 'formik'
 import Swal from 'sweetalert2'
 //import "react-toastify/dist/ReactToastify.css";
-import { addNurseValidation } from '../../Validation/validation'
+import { addNurseValidation } from '../../Validation/wardDetailsValidation'
 //import "./style.css";
 
-const AddStaffMemberForm = ({ open, handleClose }) => {
+const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState('')
 
   useEffect(() => {
@@ -62,8 +62,10 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
     onSubmit: async (values, actions) => {
       setTimeout(() => {
         console.log(values)
+        handleAddNurse(values)
         showSuccessAlert()
         handleClose()
+        actions.resetForm()
         actions.setSubmitting(false)
       }, 700)
     },
@@ -73,6 +75,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
   const handleManualSubmit = () => {
     console.log(formikAddNurse.errors)
     formikAddNurse.submitForm()
+    // handleAddNurse(formikAddNurse.values);
   }
 
   return (

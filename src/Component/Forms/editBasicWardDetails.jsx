@@ -14,9 +14,9 @@ import {
   fetchShiftData,
   fetchPosition,
 } from "../../Data/wardDetails/wardService";
-import { validationSchema } from "../../Validation/validation";
+import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
 
-const AddWardDetailsForm = ({ open, handleClose }) => {
+const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
     wardName: "",
@@ -74,10 +74,11 @@ const AddWardDetailsForm = ({ open, handleClose }) => {
     <Formik
       initialValues={wardData}
       enableReinitialize={true}
-      validationSchema={validationSchema}
+      validationSchema={EditBasicWardDetailsValidation}
       validateOnChange={false}
       onSubmit={async (values, { setSubmitting }) => {
         try {
+          handleWardDetails(values); //Update the values according to the editBasicWardDetails form
           showSuccessAlert();
           handleClose();
         } catch (error) {

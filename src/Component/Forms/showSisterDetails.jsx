@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { fetchSisterData } from "../../Data/wardDetails/sisterService";
 import { fetchPosition } from "../../Data/wardDetails/wardService";
-import { addSisterValidation } from "../../Validation/validation";
+import { addSisterValidation } from "../../Validation/wardDetailsValidation";
 
 const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
   const [formValues, setFormValues] = useState({
