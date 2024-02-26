@@ -8,13 +8,12 @@ const response = {
   numberOfNurses: "5",
   //position:....
 };
-
 const wards = ["Accident ward", "surgical ward-men", "surgical ward-women"]; // retrieve wards from database
 
 export const fetchPosition = async () => {
   try {
     const response = {
-      position: "sister", // Replace 'matron' with the actual position data
+      position: "matron", // Replace 'matron' with the actual position data
     };
 
     return response.position.toLowerCase(); // Directly return the lowercase position
