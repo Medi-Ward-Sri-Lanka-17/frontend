@@ -55,3 +55,28 @@ export const getNurses = async () => {
     throw error;
   }
 };
+
+const nurse = {
+  firstName: "Dilki",
+  lastName: "Hansapani",
+  fullName: "Dilki Hansapani",
+  serviceId: "199965500456",
+  birthdate: "1999-06-03",
+  email: "dilki99hansapani@gmail.com",
+  position: "nurse",
+  leaveNo: "141",
+  mobileNo: "0773092710",
+  serviceStartDate: "2022-01-04",
+  wardNo: "4",
+  remainingVacationLeaves: "15",
+  remainingCasualLeaves: "14",
+};
+
+export const getNurseById = async (serviceId) => {
+  try {
+    return nurse;
+  } catch (error) {
+    console.error("Error fetching nurse by ID:", error);
+    throw error;
+  }
+};

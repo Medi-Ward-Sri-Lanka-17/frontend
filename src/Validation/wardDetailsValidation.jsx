@@ -45,7 +45,7 @@ export const EditBasicWardDetailsValidation = Yup.object({
     .min(1, '*Number of nurses in the night shift must be greater than 0'),
 })
 
-//add a staff member validation
+//add a staff member and edit nurse details validation
 
 export const addNurseValidation = Yup.object().shape({
   firstName: Yup.string()
