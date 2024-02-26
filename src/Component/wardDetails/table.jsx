@@ -11,19 +11,23 @@ import Paper from "@mui/material/Paper";
 import { getNurses } from "../../Data/wardDetails/nursesService.js";
 import Theme from "../Theme";
 import EditStaffMemberForm from "../Forms/editStaffMemberDetails.jsx";
+import { fetchPosition } from "../../Data/wardDetails/wardService.js";
 
 export default function NursesTable() {
   const theme = Theme();
   const [nurses, setNurses] = useState([]);
   const [filteredNurses, setFilteredNurses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loggedUserPosition, setLoggedUserPosition] = useState();
 
   useEffect(() => {
     const fetchNurses = async () => {
       try {
         const fetchedNurses = await getNurses();
+        const position = await fetchPosition();
         setNurses(fetchedNurses);
         setFilteredNurses(fetchedNurses); // Initially set filteredNurses to all nurses
+        setLoggedUserPosition(position);
       } catch (error) {
         console.error("Error fetching nurses:", error);
       }
@@ -123,21 +127,24 @@ export default function NursesTable() {
                 Email
               </TableCell>
 
-              <TableCell
-                style={{
-                  color: "white",
-                }}
-              >
-                Edit details
-              </TableCell>
-
-              <TableCell
-                style={{
-                  color: "white",
-                }}
-              >
-                Delete
-              </TableCell>
+              {loggedUserPosition !== "nurse" && (
+                <>
+                  <TableCell
+                    style={{
+                      color: "white",
+                    }}
+                  >
+                    Edit details
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      color: "white",
+                    }}
+                  >
+                    Delete
+                  </TableCell>
+                </>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -148,24 +155,28 @@ export default function NursesTable() {
                 <TableCell>{nurse.fullName}</TableCell>
                 <TableCell>{nurse.mobileNo}</TableCell>
                 <TableCell>{nurse.email}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: theme.palette.success.main }}
-                    onClick={() => handleEdit(nurse.serviceId)}
-                  >
-                    Edit
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    style={{ color: "red", borderColor: "red" }}
-                    onClick={() => handleDelete(nurse.serviceId)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
+                {loggedUserPosition !== "nurse" && (
+                  <>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        style={{ backgroundColor: theme.palette.success.main }}
+                        onClick={() => handleEdit(nurse.serviceId)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        style={{ color: "red", borderColor: "red" }}
+                        onClick={() => handleDelete(nurse.serviceId)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </>
+                )}
               </TableRow>
             ))}
           </TableBody>
