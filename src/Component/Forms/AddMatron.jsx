@@ -12,9 +12,10 @@ import { useFormik } from 'formik'
 import Swal from 'sweetalert2'
 //import "react-toastify/dist/ReactToastify.css";
 import { validationSchema } from '../../Validation/MatronValidation'
+import { addMatron } from '../../Services/Admin/AdminMatronServices'
 //import "./style.css";
 
-const AddMatron = ({ open, handleClose }) => {
+const AddMatron = ({ open, handleClose, initialValues }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,16 +27,6 @@ const AddMatron = ({ open, handleClose }) => {
     fetchData()
   }, [])
 
-  const initialValues = {
-    nic: '',
-    fullName: '',
-    firstName: '',
-    lastName: '',
-    dob: '',
-    email: '',
-    mobile: '',
-  }
-
   const showSuccessAlert = () => {
     handleClose()
     Swal.fire({
@@ -45,16 +36,27 @@ const AddMatron = ({ open, handleClose }) => {
     })
   }
 
-  const handleSubmit = async (values, actions) => {
-    formikAddMatron.submitForm()
+  const handleSubmitForm = () => {
     console.log(formikAddMatron.errors)
-    showSuccessAlert()
+    formikAddMatron.submitForm()
   }
 
   const formikAddMatron = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: handleSubmit,
+    onSubmit: async (values, actions) => {
+      try {
+        const response = await addMatron(values)
+
+        showSuccessAlert()
+        handleClose()
+        console.log(response)
+        //actions.resetForm()
+        //actions.setSubmitting(false)
+      } catch (error) {
+        console.error('Error while submitting form:', error)
+      }
+    },
   })
 
   return (
@@ -105,7 +107,7 @@ const AddMatron = ({ open, handleClose }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="firstname"
+            name="firstName"
             value={formikAddMatron.values.firstName}
             required
             onChange={formikAddMatron.handleChange}
@@ -137,6 +139,23 @@ const AddMatron = ({ open, handleClose }) => {
             helperText={
               formikAddMatron.touched.lastName &&
               formikAddMatron.errors.lastName
+            }
+          />
+          <label>Service Start Date</label>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            type="date"
+            name="serviceDate"
+            value={formikAddMatron.values.serviceDate}
+            required
+            onChange={formikAddMatron.handleChange}
+            onBlur={formikAddMatron.handleBlur}
+            error={Boolean(formikAddMatron.errors.serviceDate)}
+            helperText={
+              formikAddMatron.touched.serviceDate &&
+              formikAddMatron.errors.serviceDate
             }
           />
 
@@ -182,17 +201,18 @@ const AddMatron = ({ open, handleClose }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="mobile"
-            value={formikAddMatron.values.mobile}
+            name="mobileNo"
+            value={formikAddMatron.values.mobileNo}
             required
             onChange={formikAddMatron.handleChange}
             onBlur={formikAddMatron.handleBlur}
             error={
-              formikAddMatron.touched.mobile &&
-              Boolean(formikAddMatron.errors.mobile)
+              formikAddMatron.touched.mobileNo &&
+              Boolean(formikAddMatron.errors.mobileNo)
             }
             helperText={
-              formikAddMatron.touched.mobile && formikAddMatron.errors.mobile
+              formikAddMatron.touched.mobileNo &&
+              formikAddMatron.errors.mobileNo
             }
           />
         </DialogContent>
@@ -200,7 +220,7 @@ const AddMatron = ({ open, handleClose }) => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button color="primary" onClick={formikAddMatron.onSubmit}>
+          <Button type="submit" color="primary" onClick={handleSubmitForm}>
             Submit
           </Button>
         </DialogActions>
