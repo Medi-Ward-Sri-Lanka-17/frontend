@@ -92,7 +92,7 @@ const Profile = () => {
                 onClick={handleChangeProfilePicture}
                 sx={{ mt: 1 }}
               >
-                pdate Profile Picture
+                Update Profile Picture
               </Button>
               <Button
                 variant="contained"
