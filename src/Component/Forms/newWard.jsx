@@ -13,7 +13,7 @@ import {
 import { Formik, Form, Field } from "formik";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
-import { validationSchema } from "../../Validation/validation";
+import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
 
 const AddNewWardForm = ({ open, handleClose }) => {
   const [successMessage, setSuccessMessage] = useState(null);
@@ -41,10 +41,6 @@ const AddNewWardForm = ({ open, handleClose }) => {
     fetchData();
   }, []);
 
-  const onSubmit = () => {
-    return null;
-  };
-
   const initialValues = {
     wardName: "",
     wardNumber: "",
@@ -57,7 +53,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={EditBasicWardDetailsValidation}
       onSubmit={async (values, { setSubmitting }) => {
         try {
           console.log(values);

@@ -8,7 +8,6 @@ const response = {
   numberOfNurses: "5",
   //position:....
 };
-
 const wards = ["Accident ward", "surgical ward-men", "surgical ward-women"]; // retrieve wards from database
 
 export const fetchPosition = async () => {
