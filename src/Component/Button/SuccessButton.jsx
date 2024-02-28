@@ -16,6 +16,8 @@ const SuccessButton = (props) => {
         }}
         onClick={props.onClick}
         variant="contained"
+        endIcon={props.iconEnd}
+        startIcon={props.iconStart}
       >
         {props.title}
       </Button>
