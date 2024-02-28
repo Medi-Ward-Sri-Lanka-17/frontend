@@ -50,13 +50,14 @@ const Header = (props) => {
               </Badge>
             </IconButton>
 
+            {/* Updated Avatar to display the profile picture */}
             <Avatar
+              alt={props.title} // Use the title as alt text
+              src={props.profilePicture} // Set the src attribute to the profile picture
               sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
               //navigate to the profile page
               onClick={handleOnClick}
-            >
-              SD
-            </Avatar>
+            />
           </Grid>
         </Grid>
       </Box>
