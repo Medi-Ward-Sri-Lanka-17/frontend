@@ -48,7 +48,9 @@ const AddMatron = ({ open, handleClose, initialValues }) => {
       try {
         const response = await addMatron(values)
 
-        showSuccessAlert()
+        if (response.status === 200) {
+          showSuccessAlert()
+        }
         handleClose()
         console.log(response)
         //actions.resetForm()
