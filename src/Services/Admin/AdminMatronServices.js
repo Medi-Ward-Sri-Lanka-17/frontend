@@ -3,6 +3,18 @@ import { apiClient } from '../../Api/ApiClient'
 export const addMatron = async (values) => {
   try {
     const response = await apiClient.post('/admin/matron/add', values)
+    console.log(response)
+    return response
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}
+
+export const getMatronDetails = async (id) => {
+  try {
+    const response = await apiClient.get(`/admin/matron/get`)
+    console.log(response)
     return response
   } catch (err) {
     console.error(err)
