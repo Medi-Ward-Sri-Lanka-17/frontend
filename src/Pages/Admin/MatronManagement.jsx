@@ -31,6 +31,7 @@ import SideBar from '../../Component/SideBar'
 import AddMatron from '../../Component/Forms/AddMatron'
 import Header from '../../Component/Header'
 import DefaultButton from '../../Component/Button/DefaultButton'
+import DeclineButton from '../../Component/Button/DeclineButton'
 
 const roles = ['Market', 'Finance', 'Development']
 const randomRole = () => {
@@ -171,7 +172,7 @@ const MatronManagement = () => {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: 200,
       cellClassName: 'actions',
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
@@ -197,19 +198,29 @@ const MatronManagement = () => {
         }
 
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
+          <DefaultButton
+            iconStart={<EditIcon />}
+            title="Edit"
             onClick={handleEditClick(id)}
-            color="inherit"
           />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
+          <DeclineButton
+            iconStart={<DeleteIcon />}
+            title="Delete"
             onClick={handleDeleteClick(id)}
-            color="inherit"
           />,
+          // <GridActionsCellItem
+          //   icon={<EditIcon />}
+          //   label="Edit"
+          //   className="textPrimary"
+          //   onClick={handleEditClick(id)}
+          //   color="inherit"
+          // />,
+          // <GridActionsCellItem
+          //   icon={<DeleteIcon />}
+          //   label="Delete"
+          //   onClick={handleDeleteClick(id)}
+          //   color="inherit"
+          // />,
         ]
       },
     },
