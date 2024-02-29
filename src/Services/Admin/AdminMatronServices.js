@@ -11,9 +11,9 @@ export const addMatron = async (values) => {
   }
 }
 
-export const getMatronDetails = async (id) => {
+export const getMatronDetails = async () => {
   try {
-    const response = await apiClient.get(`/admin/matron/get`)
+    const response = await apiClient.get('/admin/matron/get')
     console.log(response)
     return response
   } catch (err) {
