@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import Header from "../../Component/Header";
 import SideBar from "../../Component/SideBar";
+import Swal from "sweetalert2"; // Import Swal library
 
 const RequestLeave = () => {
   const getCurrentDateTime = () => {
@@ -33,19 +34,18 @@ const RequestLeave = () => {
   };
 
   const [formData, setFormData] = useState({
-    name: "pushpa silva",
-    id: "12345",
-    designation: "Nurse",
-    numberOfDays: "",
-    casualLeaves: "20",
-    vacationLeaves: "10",
-    date: getCurrentDateTime(),
-    dateOfCommencingLeave: "",
-    dateOfEndingLeaves: "",
-    reasonsForLeave: "",
+    fullName: "pushpa silva",
+    nic: "12345",
+    position: "Nurse",
+    leaveNo: "19",
+    numberOfTakenCasualLeaves: "20",
+    numberOfTakenVacationLeaves: "10",
+    requestedDateAndTime: getCurrentDateTime(),
+    leaveBeginDate: "",
+    leaveEndDate: "",
+    reason: "",
   });
 
-  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [exceedCapacityDialogOpen, setExceedCapacityDialogOpen] =
     useState(false);
   const [requiredFieldsError, setRequiredFieldsError] = useState(false);
@@ -54,14 +54,9 @@ const RequestLeave = () => {
   useEffect(() => {
     setFormData((prevData) => ({
       ...prevData,
-      date: getCurrentDateTime(),
+      requestedDateAndTime: getCurrentDateTime(),
     }));
   }, []);
-
-  const handleSuccessDialogClose = () => {
-    setSuccessDialogOpen(false);
-    handleReset();
-  };
 
   const handleExceedCapacityDialogClose = (confirmed) => {
     setExceedCapacityDialogOpen(false);
@@ -71,8 +66,7 @@ const RequestLeave = () => {
       // ...
 
       // Show success message after submission
-      setSuccessDialogOpen(true);
-    } else {
+      showSuccessAlert("Your Leave Request Has Successfully Submitted !");
       handleReset();
     }
   };
@@ -80,9 +74,9 @@ const RequestLeave = () => {
   const handleReset = () => {
     setFormData({
       ...formData,
-      dateOfCommencingLeave: "",
-      dateOfEndingLeaves: "",
-      reasonsForLeave: "",
+      leaveBeginDate: "",
+      leaveEndDate: "",
+      reason: "",
     });
 
     setRequiredFieldsError(false);
@@ -90,28 +84,28 @@ const RequestLeave = () => {
   };
 
   const handleSubmit = () => {
-    const commencingDate = new Date(formData.dateOfCommencingLeave);
-    const endingLeavesDate = new Date(formData.dateOfEndingLeaves);
+    const commencingDate = new Date(formData.leaveBeginDate);
+    const endingLeavesDate = new Date(formData.leaveEndDate);
     const currentDate = new Date();
     const requestedLeaves = calculateLeaveCount(
       commencingDate,
       endingLeavesDate
     );
     const totalLeaves =
-      parseInt(formData.casualLeaves, 10) +
-      parseInt(formData.vacationLeaves, 10);
+      parseInt(formData.numberOfTakenCasualLeaves, 10) +
+      parseInt(formData.numberOfTakenVacationLeaves, 10);
 
     setRequiredFieldsError(false);
     setPastCommencingDateError(false);
 
     if (
-      !formData.reasonsForLeave ||
+      !formData.reason ||
       isNaN(requestedLeaves) ||
       requestedLeaves <= 0 ||
       commencingDate >= endingLeavesDate ||
       commencingDate < currentDate
     ) {
-      setRequiredFieldsError(!formData.reasonsForLeave);
+      setRequiredFieldsError(!formData.reason);
 
       // Show an error message for past commencing date
       if (commencingDate < currentDate) {
@@ -140,7 +134,18 @@ const RequestLeave = () => {
       return;
     }
 
-    setSuccessDialogOpen(true);
+    // If all validations pass, show success alert
+    showSuccessAlert("Your Leave Request Has Successfully Submitted !");
+    handleReset();
+  };
+
+  // Function to show success alert
+  const showSuccessAlert = (message) => {
+    Swal.fire({
+      text: message,
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
   };
 
   return (
@@ -176,20 +181,16 @@ const RequestLeave = () => {
                 <Grid item xs={12} sm={12} md={6}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <Typography variant="subtitle1">Name</Typography>
-                      <TextField fullWidth value={formData.name} readOnly />
+                      <Typography variant="subtitle1">Full Name</Typography>
+                      <TextField fullWidth value={formData.fullName} readOnly />
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography variant="subtitle1">ID</Typography>
-                      <TextField fullWidth value={formData.id} readOnly />
+                      <Typography variant="subtitle1">Service ID</Typography>
+                      <TextField fullWidth value={formData.nic} readOnly />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">Designation</Typography>
-                      <TextField
-                        fullWidth
-                        value={formData.designation}
-                        readOnly
-                      />
+                      <TextField fullWidth value={formData.position} readOnly />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">
@@ -202,7 +203,7 @@ const RequestLeave = () => {
                           </Typography>
                           <TextField
                             halfWidth
-                            value={formData.casualLeaves}
+                            value={formData.numberOfTakenCasualLeaves}
                             readOnly
                           />
                         </Grid>
@@ -212,7 +213,7 @@ const RequestLeave = () => {
                           </Typography>
                           <TextField
                             halfWidth
-                            value={formData.vacationLeaves}
+                            value={formData.numberOfTakenVacationLeaves}
                             readOnly
                           />
                         </Grid>
@@ -223,7 +224,7 @@ const RequestLeave = () => {
                       <TextField
                         type="datetime-local"
                         fullWidth
-                        value={formData.date}
+                        value={formData.requestedDateAndTime}
                         readOnly
                       />
                     </Grid>
@@ -234,17 +235,21 @@ const RequestLeave = () => {
                 <Grid item xs={12} sm={12} md={6}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
+                      <Typography variant="subtitle1">Leave No</Typography>
+                      <TextField fullWidth value={formData.leaveNo} readOnly />
+                    </Grid>
+                    <Grid item xs={12}>
                       <Typography variant="subtitle1">
                         Date of Commencing Leave
                       </Typography>
                       <TextField
                         type="date"
                         fullWidth
-                        value={formData.dateOfCommencingLeave}
+                        value={formData.leaveBeginDate}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            dateOfCommencingLeave: e.target.value,
+                            leaveBeginDate: e.target.value,
                           })
                         }
                         error={requiredFieldsError || pastCommencingDateError}
@@ -265,11 +270,11 @@ const RequestLeave = () => {
                       <TextField
                         type="date"
                         fullWidth
-                        value={formData.dateOfEndingLeaves}
+                        value={formData.leaveEndDate}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            dateOfEndingLeaves: e.target.value,
+                            leaveEndDate: e.target.value,
                           })
                         }
                         error={requiredFieldsError}
@@ -285,11 +290,11 @@ const RequestLeave = () => {
                         multiline
                         rows={4}
                         fullWidth
-                        value={formData.reasonsForLeave}
+                        value={formData.reason}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            reasonsForLeave: e.target.value,
+                            reason: e.target.value,
                           })
                         }
                         error={requiredFieldsError}
@@ -349,26 +354,6 @@ const RequestLeave = () => {
             </Box>
           </Box>
         </Container>
-
-        {/* Success Dialog */}
-        <Dialog
-          open={successDialogOpen}
-          onClose={handleSuccessDialogClose}
-          fullWidth
-          maxWidth="xs"
-        >
-          <DialogTitle>Leave Request Submitted</DialogTitle>
-          <DialogContent>
-            <Typography variant="body1">
-              Your leave request has been successfully submitted. Thank You.
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleSuccessDialogClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
 
         {/* Exceed Capacity Dialog */}
         <Dialog
