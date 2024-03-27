@@ -2,229 +2,27 @@ import { Grid } from '@mui/material'
 import { useState } from 'react'
 import * as React from 'react'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
-import SaveIcon from '@mui/icons-material/Save'
-import CancelIcon from '@mui/icons-material/Close'
-import {
-  GridRowsProp,
-  GridRowModesModel,
-  GridRowModes,
-  DataGrid,
-  GridColDef,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridEventListener,
-  GridRowId,
-  GridRowModel,
-  GridRowEditStopReasons,
-} from '@mui/x-data-grid'
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from '@mui/x-data-grid-generator'
 import SideBar from '../../Component/SideBar'
 import AddMatron from '../../Component/Forms/AddMatron'
 import Header from '../../Component/Header'
 import DefaultButton from '../../Component/Button/DefaultButton'
+import SuccessButton from '../../Component/Button/SuccessButton'
 import DeclineButton from '../../Component/Button/DeclineButton'
-
-const roles = ['Market', 'Finance', 'Development']
-const randomRole = () => {
-  return randomArrayItem(roles)
-}
-
-const initialRows = [
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-]
-
-function EditToolbar(props) {
-  const { setRows, setRowModesModel } = props
-
-  const handleClick = () => {
-    const id = randomId()
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }])
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }))
-  }
-
-  return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
-  )
-}
+import DataGridComponent from '../../Component/DataGridComponent'
 
 const MatronManagement = () => {
   const [isAddMatronOpen, setIsAddMatronOpen] = useState(false)
-  const [rows, setRows] = React.useState(initialRows)
-  const [rowModesModel, setRowModesModel] = React.useState({})
+  const [rows, setRows] = useState([])
 
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true
-    }
+  // More button aciton on click
+  const handleButton = (selectedRow) => {
+    console.log('Selected Row Details:', selectedRow)
+    const leaveId = selectedRow.leaveId
   }
-
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } })
+  // Decline button aciton on click
+  const handleDeclineButton = (selectedRow) => {
+    console.log('Selected Row Details:', selectedRow)
   }
-
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
-  }
-
-  const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id))
-  }
-
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    })
-
-    const editedRow = rows.find((row) => row.id === id)
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id))
-    }
-  }
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false }
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-    return updatedRow
-  }
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel)
-  }
-
-  const columns = [
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
-    {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      width: 80,
-      align: 'left',
-      headerAlign: 'left',
-      editable: true,
-    },
-    {
-      field: 'joinDate',
-      headerName: 'Join date',
-      type: 'date',
-      width: 180,
-      editable: true,
-    },
-    {
-      field: 'role',
-      headerName: 'Department',
-      width: 220,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['Market', 'Finance', 'Development'],
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      width: 200,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ]
-        }
-
-        return [
-          <DefaultButton
-            iconStart={<EditIcon />}
-            title="Edit"
-            onClick={handleEditClick(id)}
-          />,
-          <DeclineButton
-            iconStart={<DeleteIcon />}
-            title="Delete"
-            onClick={handleDeleteClick(id)}
-          />,
-          // <GridActionsCellItem
-          //   icon={<EditIcon />}
-          //   label="Edit"
-          //   className="textPrimary"
-          //   onClick={handleEditClick(id)}
-          //   color="inherit"
-          // />,
-          // <GridActionsCellItem
-          //   icon={<DeleteIcon />}
-          //   label="Delete"
-          //   onClick={handleDeleteClick(id)}
-          //   color="inherit"
-          // />,
-        ]
-      },
-    },
-  ]
 
   const initialValuesForSave = {
     nic: '',
@@ -237,10 +35,74 @@ const MatronManagement = () => {
     mobileNo: '',
   }
 
+  const columns = [
+    {
+      field: 'nic',
+      headerName: 'Service ID',
+      width: 180,
+      headerClassName: 'colored-data-grid',
+    },
+    {
+      field: 'firstName',
+      headerName: 'First Name',
+      width: 180,
+      headerClassName: 'colored-data-grid',
+    },
+    {
+      field: 'lastName',
+      headerName: 'Last Name',
+      width: 180,
+      headerClassName: 'colored-data-grid',
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 200,
+      headerClassName: 'colored-data-grid',
+    },
+    {
+      field: 'mobileNo',
+      headerName: 'Mobile No.',
+      width: 150,
+      headerClassName: 'colored-data-grid',
+    },
+    {
+      field: 'edit', // New column for custom button
+      headerName: 'Edit',
+      headerClassName: 'colored-data-grid',
+      width: 100,
+      renderCell: (params) => (
+        <DefaultButton
+          title="More"
+          height="35px"
+          width="80px"
+          onClick={() => handleButton(params.row)}
+        />
+      ),
+    },
+    {
+      field: 'delete',
+      headerName: 'Detele',
+      width: 100,
+      headerClassName: 'colored-data-grid',
+      renderCell: (params) => (
+        <DeclineButton
+          title="Delete"
+          onClick={() => handleDeclineButton(params.row)}
+        />
+      ),
+    },
+  ]
+
+  // Calculate the total width of all columns
+  const totalWidth = columns.reduce((acc, column) => acc + column.width, 0)
+
+  React.useEffect(() => {})
+
   return (
     <Box sx={{ display: 'flex' }}>
       <SideBar />
-      <Box sx={{ width: '100%' }}>
+      <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
         <Header title="Admin - Matron Management" />
         <Grid container spacing={2} style={{ padding: '3vh' }}>
           <Grid item xs={6}>
@@ -252,20 +114,10 @@ const MatronManagement = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <DataGrid
+            <DataGridComponent
+              totalWidth={totalWidth}
               rows={rows}
               columns={columns}
-              editMode="row"
-              rowModesModel={rowModesModel}
-              onRowModesModelChange={handleRowModesModelChange}
-              onRowEditStop={handleRowEditStop}
-              processRowUpdate={processRowUpdate}
-              slots={{
-                toolbar: EditToolbar,
-              }}
-              slotProps={{
-                toolbar: { setRows, setRowModesModel },
-              }}
             />
           </Grid>
 

@@ -7,13 +7,13 @@ import {
   fetchWardData,
   fetchAllWards,
   fetchWardData_matron as fetchSelectedWardData,
-  fetchPosition,
 } from '../../Data/wardDetails/wardService'
 import AddStaffMemberForm from '../Forms/addNurses'
 import StaffDetailsForm from '../Forms/showSisterDetails'
 import AddWardDetailsForm from '../Forms/editBasicWardDetails'
 import AddNewWardForm from '../Forms/newWard'
 import { addNurseService } from '../../Data/wardDetails/nursesService'
+import { useAuth } from '../../Security/AuthContext'
 
 export default function Matron() {
   const [wardName, setWardName] = useState('')
@@ -27,6 +27,7 @@ export default function Matron() {
   {
     /*============================Initial field values fetching====================*/
   }
+  const authContext = useAuth()
 
   useEffect(() => {
     //fetchData is a asynchronous function. That means operations are those that don't block the execution of code.
@@ -34,7 +35,7 @@ export default function Matron() {
     const fetchData = async () => {
       try {
         const allWards = await fetchAllWards() //This line calls a function fetchAllWards() and waits for it to complete before moving on to the next line
-        const positionData = await fetchPosition()
+        const positionData = authContext.position
         const data = await fetchWardData()
         setWard(allWards)
         setPosition(positionData)
@@ -50,6 +51,8 @@ export default function Matron() {
           setSisterName(data.sisterName)
           setNumberOfNurses(data.numberOfNurses)
         }
+
+        console.log(positionData)
       } catch (error) {
         console.error('Error fetching data:', error.message)
       }
@@ -136,7 +139,7 @@ export default function Matron() {
       <Grid item xs={12}>
         <Paper elevation={3} style={{ padding: 16, margin: 30 }}>
           <form>
-            {position && position !== 'nurse' && wards && (
+            {position && position !== 'Nurse' && wards && (
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <TextField
@@ -147,7 +150,7 @@ export default function Matron() {
                     label="Select the ward"
                     name="ward"
                     select
-                    disabled={position === 'sister'}
+                    disabled={position === 'Sister'}
                     onChange={(e) => {
                       setSelectedWard(e.target.value)
                       handleWardChange(e.target.value)
@@ -167,7 +170,7 @@ export default function Matron() {
                     size="medium"
                     style={{ margin: '20px' }}
                     startIcon={<EditIcon />}
-                    disabled={selectedWard === '' && position === 'matron'}
+                    disabled={selectedWard === '' && position === 'Matron'}
                     onClick={() => {
                       setEditBasicWardDetailsDialogOpen(true)
                     }}
@@ -179,7 +182,7 @@ export default function Matron() {
                   {/*add new ward form*/}
                   <Button
                     variant="outlined"
-                    disabled={position === 'sister'}
+                    disabled={position === 'Sister'}
                     size="medium"
                     style={{ margin: '20px' }}
                     startIcon={<AddIcon />}
@@ -233,7 +236,7 @@ export default function Matron() {
                         variant="outlined"
                         size="medium"
                         style={{ margin: '20px' }}
-                        disabled={selectedWard === '' && position === 'matron'}
+                        disabled={selectedWard === '' && position === 'Matron'}
                         onClick={() => setStaffDetailsFormOpen(true)}
                       >
                         More
@@ -255,14 +258,14 @@ export default function Matron() {
                 />
               </Grid>
             </Grid>
-            {position !== 'nurse' && (
+            {position !== 'Nurse' && (
               //add nurse or sister form
               <Button
                 variant="outlined"
                 size="medium"
                 style={{ margin: '20px' }}
                 startIcon={<AddIcon />}
-                disabled={selectedWard === '' && position === 'matron'}
+                disabled={selectedWard === '' && position === 'Matron'}
                 onClick={() => setAddNurseFormOpen(true)}
               >
                 Add staff member

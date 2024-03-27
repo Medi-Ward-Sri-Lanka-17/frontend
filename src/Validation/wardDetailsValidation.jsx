@@ -15,9 +15,9 @@ export const EditBasicWardDetailsValidation = Yup.object({
     .positive('*Ward number must be a positive integer')
     .integer('*Ward number must be an integer'),
 
-  sisterName: Yup.string()
-    .required('*Sister name is required')
-    .matches(/^[a-zA-Z\s]+$/, '*Name must only contain letters and spaces'),
+  matron: Yup.string()
+    .required('*NIC is required')
+    .matches(/^[0-9Vv]+$/, '*NIC is Invalid'),
 
   numberOfNurses: Yup.number()
     .required('*Total number of nurses is required')

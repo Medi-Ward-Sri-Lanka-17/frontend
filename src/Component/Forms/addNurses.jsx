@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { fetchPosition } from '../../Data/wardDetails/wardService'
 import {
   Dialog,
   DialogTitle,
@@ -13,15 +12,17 @@ import { useFormik } from 'formik'
 import Swal from 'sweetalert2'
 //import "react-toastify/dist/ReactToastify.css";
 import { addNurseValidation } from '../../Validation/wardDetailsValidation'
+import { useAuth } from '../../Security/AuthContext'
 //import "./style.css";
 
 const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState('')
+  const authContext = useAuth()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition()
+        const positionData = authContext.position
         setLoggedUserPosition(positionData)
       } catch (error) {
         console.error('Error fetching data:', error.message)

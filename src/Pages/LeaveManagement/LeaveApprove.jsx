@@ -177,7 +177,10 @@ const LeaveApprove = () => {
       width: 100,
       headerClassName: 'colored-data-grid',
       renderCell: (params) => (
-        <DeclineButton onClick={() => handleDeclineButton(params.row)} />
+        <DeclineButton
+          title="Decline"
+          onClick={() => handleDeclineButton(params.row)}
+        />
       ),
     },
   ]
