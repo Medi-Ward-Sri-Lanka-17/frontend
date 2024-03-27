@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
+import React, { useState, useEffect } from 'react'
+import { fetchPosition } from '../../Data/wardDetails/wardService'
 import {
   Dialog,
   DialogTitle,
@@ -9,60 +9,67 @@ import {
   Button,
   MenuItem,
   Alert as MuiAlert,
-} from "@mui/material";
-import { Formik, Form, Field } from "formik";
-import "react-toastify/dist/ReactToastify.css";
-import Swal from "sweetalert2";
-import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+} from '@mui/material'
+import { Formik, Form, Field } from 'formik'
+import 'react-toastify/dist/ReactToastify.css'
+import Swal from 'sweetalert2'
+import { EditBasicWardDetailsValidation } from '../../Validation/wardDetailsValidation'
+import { addWard } from '../../Services/WardDetails/WardDetailsServices'
+import { useAuth } from '../../Security/AuthContext'
 
 const AddNewWardForm = ({ open, handleClose }) => {
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [loggedUserPosition, setLoggedUserPosition] = useState('')
+
+  const authContext = useAuth()
 
   const showSuccessAlert = () => {
-    handleClose();
+    handleClose()
     Swal.fire({
-      text: "New ward successfully added!",
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
-  };
+      text: 'New ward successfully added!',
+      icon: 'success',
+      confirmButtonColor: '#243e4f',
+    })
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
-        setLoggedUserPosition(positionData);
+        const positionData = authContext.position
+        setLoggedUserPosition(positionData)
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error('Error fetching data:', error.message)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const initialValues = {
-    wardName: "",
-    wardNumber: "",
-    sisterName: "",
-    numberOfNurses: "",
-    morningShift: "",
-    eveningShift: "",
-    nightShift: "",
-  };
+    wardName: '',
+    wardNumber: '',
+    matron: '',
+    numberOfNurses: '',
+    morningShift: '',
+    eveningShift: '',
+    nightShift: '',
+  }
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={EditBasicWardDetailsValidation}
       onSubmit={async (values, { setSubmitting }) => {
         try {
-          console.log(values);
-          showSuccessAlert();
-          handleClose();
+          const status = await addWard(values)
+          if (status == 200) {
+            showSuccessAlert()
+            handleClose()
+          }
+          console.log(values)
         } catch (error) {
-          console.error("Error submitting form:", error.message);
+          console.error('Error submitting form:', error.message)
         } finally {
-          setSubmitting(false);
+          setSubmitting(false)
         }
       }}
     >
@@ -95,17 +102,17 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 error={touched.wardNumber && Boolean(errors.wardNumber)}
                 helperText={touched.wardNumber && errors.wardNumber}
               />
-              <label>Sister name</label>
+              <label>Matron NIC</label>
               <Field
                 as={TextField}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="sisterName"
+                name="matron"
                 required
                 onChange={handleChange}
-                error={touched.sisterName && Boolean(errors.sisterName)}
-                helperText={touched.sisterName && errors.sisterName}
+                error={touched.matron && Boolean(errors.matron)}
+                helperText={touched.matron && errors.matron}
               />
 
               <label>Total number of nurses in ward</label>
@@ -168,7 +175,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 color="primary"
                 disabled={isSubmitting}
                 onClick={() => {
-                  handleSubmit();
+                  handleSubmit()
                 }}
               >
                 Save
@@ -178,7 +185,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
         </Form>
       )}
     </Formik>
-  );
-};
+  )
+}
 
-export default AddNewWardForm;
+export default AddNewWardForm

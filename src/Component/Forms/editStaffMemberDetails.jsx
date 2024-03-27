@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
+import React, { useState, useEffect } from 'react'
+import { fetchPosition } from '../../Data/wardDetails/wardService'
 import {
   Dialog,
   DialogTitle,
@@ -8,57 +8,60 @@ import {
   TextField,
   Button,
   MenuItem,
-} from "@mui/material";
-import { Formik, Form, useFormik } from "formik";
-import Swal from "sweetalert2";
-import { addNurseValidation } from "../../Validation/wardDetailsValidation";
-import { getNurseById } from "../../Data/wardDetails/nursesService";
+} from '@mui/material'
+import { Formik, Form, useFormik } from 'formik'
+import Swal from 'sweetalert2'
+import { addNurseValidation } from '../../Validation/wardDetailsValidation'
+import { getNurseById } from '../../Data/wardDetails/nursesService'
+import { useAuth } from '../../Security/AuthContext'
 
 const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
-  const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [loggedUserPosition, setLoggedUserPosition] = useState('')
   const [nurse, setNurse] = useState({
-    firstName: "",
-    lastName: "",
-    fullName: "",
-    serviceId: "",
-    birthdate: "",
-    email: "",
-    position: "",
-    leaveNo: "",
-    mobileNo: "",
-    serviceStartDate: "",
-    wardNo: "",
-    remainingVacationLeaves: "",
-    remainingCasualLeaves: "",
-  });
+    firstName: '',
+    lastName: '',
+    fullName: '',
+    serviceId: '',
+    birthdate: '',
+    email: '',
+    position: '',
+    leaveNo: '',
+    mobileNo: '',
+    serviceStartDate: '',
+    wardNo: '',
+    remainingVacationLeaves: '',
+    remainingCasualLeaves: '',
+  })
+
+  const authContext = useAuth()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
-        const nurseData = await getNurseById(staffMemberServiceId);
-        setNurse(nurseData);
-        setLoggedUserPosition(positionData);
+        const positionData = authContext.position
+        const nurseData = await getNurseById(staffMemberServiceId)
+        setNurse(nurseData)
+        setLoggedUserPosition(positionData)
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error('Error fetching data:', error.message)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const showSuccessAlert = () => {
-    handleClose();
+    handleClose()
     Swal.fire({
-      text: "Staff member successfully added!",
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
-  };
+      text: 'Staff member successfully added!',
+      icon: 'success',
+      confirmButtonColor: '#243e4f',
+    })
+  }
 
   const handleEditNurse = (values) => {
-    console.log("updated nurses data ", values);
-  };
+    console.log('updated nurses data ', values)
+  }
 
   const formikEditNurse = useFormik({
     initialValues: nurse,
@@ -66,22 +69,22 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
     validationSchema: addNurseValidation,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
-        console.log(values);
+        console.log(values)
 
-        showSuccessAlert();
-        handleClose();
-        actions.resetForm();
-        actions.setSubmitting(false);
-      }, 700);
+        showSuccessAlert()
+        handleClose()
+        actions.resetForm()
+        actions.setSubmitting(false)
+      }, 700)
     },
-  });
+  })
 
   //Use a seperate method for validate, because there was a problem in the validating with the onSubmit button
   const handleManualSubmit = () => {
-    console.log(formikEditNurse.errors);
-    formikEditNurse.submitForm();
+    console.log(formikEditNurse.errors)
+    formikEditNurse.submitForm()
     // handleAddNurse(formikEditNurse.values);
-  };
+  }
 
   return (
     <form autoComplete="off">
@@ -230,7 +233,7 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
             }
           >
             <MenuItem value="Nurse">Nurse</MenuItem>
-            <MenuItem value="Sister" disabled={loggedUserPosition === "sister"}>
+            <MenuItem value="Sister" disabled={loggedUserPosition === 'sister'}>
               Sister
             </MenuItem>
           </TextField>
@@ -364,7 +367,7 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
         </DialogActions>
       </Dialog>
     </form>
-  );
-};
+  )
+}
 
-export default EditStaffMemberForm;
+export default EditStaffMemberForm

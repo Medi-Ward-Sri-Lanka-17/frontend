@@ -1,40 +1,42 @@
-import React, { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { getNurses } from "../../Data/wardDetails/nursesService.js";
-import Theme from "../Theme";
-import EditStaffMemberForm from "../Forms/editStaffMemberDetails.jsx";
-import { fetchPosition } from "../../Data/wardDetails/wardService.js";
+import React, { useState, useEffect } from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import { getNurses } from '../../Data/wardDetails/nursesService.js'
+import Theme from '../Theme'
+import EditStaffMemberForm from '../Forms/editStaffMemberDetails.jsx'
+import { useAuth } from '../../Security/AuthContext.js'
 
 export default function NursesTable() {
-  const theme = Theme();
-  const [nurses, setNurses] = useState([]);
-  const [filteredNurses, setFilteredNurses] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [loggedUserPosition, setLoggedUserPosition] = useState();
+  const theme = Theme()
+  const [nurses, setNurses] = useState([])
+  const [filteredNurses, setFilteredNurses] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [loggedUserPosition, setLoggedUserPosition] = useState()
+
+  const authContext = useAuth()
 
   useEffect(() => {
     const fetchNurses = async () => {
       try {
-        const fetchedNurses = await getNurses();
-        const position = await fetchPosition();
-        setNurses(fetchedNurses);
-        setFilteredNurses(fetchedNurses); // Initially set filteredNurses to all nurses
-        setLoggedUserPosition(position);
+        const fetchedNurses = await getNurses()
+        const position = authContext.position
+        setNurses(fetchedNurses)
+        setFilteredNurses(fetchedNurses) // Initially set filteredNurses to all nurses
+        setLoggedUserPosition(position)
       } catch (error) {
-        console.error("Error fetching nurses:", error);
+        console.error('Error fetching nurses:', error)
       }
-    };
+    }
 
-    fetchNurses();
-  }, []);
+    fetchNurses()
+  }, [])
 
   useEffect(() => {
     // Filter nurses based on the search query when it changes
@@ -42,32 +44,32 @@ export default function NursesTable() {
       (nurse) =>
         nurse.fullName &&
         nurse.fullName.toLowerCase().includes(searchQuery?.toLowerCase())
-    );
-    setFilteredNurses(filtered);
-  }, [searchQuery, nurses]);
+    )
+    setFilteredNurses(filtered)
+  }, [searchQuery, nurses])
 
   //Function for delete button
   const handleDelete = (serviceId) => {
-    console.log(`Delete clicked for ID ${serviceId}`);
-  };
+    console.log(`Delete clicked for ID ${serviceId}`)
+  }
 
   //Function for edit button
-  const [isEditFormOpen, setIsEditFormOpen] = useState(false);
-  const [selectedNurseId, setSelectedNurseId] = useState(null);
+  const [isEditFormOpen, setIsEditFormOpen] = useState(false)
+  const [selectedNurseId, setSelectedNurseId] = useState(null)
 
   const handleEdit = (serviceId) => {
-    console.log(`Edit clicked for ID ${serviceId}`);
-    setIsEditFormOpen(true);
-    setSelectedNurseId(serviceId);
-  };
+    console.log(`Edit clicked for ID ${serviceId}`)
+    setIsEditFormOpen(true)
+    setSelectedNurseId(serviceId)
+  }
 
   //Function for search button
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+    setSearchQuery(event.target.value)
+  }
 
   return (
-    <div style={{ width: "100%", margin: "0" }}>
+    <div style={{ width: '100%', margin: '0' }}>
       {/* Search Bar */}
       <TextField
         label="Search"
@@ -89,7 +91,7 @@ export default function NursesTable() {
             <TableRow>
               <TableCell
                 style={{
-                  color: "white",
+                  color: 'white',
                 }}
               >
                 ID
@@ -97,7 +99,7 @@ export default function NursesTable() {
 
               <TableCell
                 style={{
-                  color: "white",
+                  color: 'white',
                 }}
               >
                 Service ID
@@ -105,7 +107,7 @@ export default function NursesTable() {
 
               <TableCell
                 style={{
-                  color: "white",
+                  color: 'white',
                 }}
               >
                 Name
@@ -113,7 +115,7 @@ export default function NursesTable() {
 
               <TableCell
                 style={{
-                  color: "white",
+                  color: 'white',
                 }}
               >
                 Mobile No
@@ -121,24 +123,24 @@ export default function NursesTable() {
 
               <TableCell
                 style={{
-                  color: "white",
+                  color: 'white',
                 }}
               >
                 Email
               </TableCell>
 
-              {loggedUserPosition !== "nurse" && (
+              {loggedUserPosition !== 'nurse' && (
                 <>
                   <TableCell
                     style={{
-                      color: "white",
+                      color: 'white',
                     }}
                   >
                     Edit details
                   </TableCell>
                   <TableCell
                     style={{
-                      color: "white",
+                      color: 'white',
                     }}
                   >
                     Delete
@@ -155,7 +157,7 @@ export default function NursesTable() {
                 <TableCell>{nurse.fullName}</TableCell>
                 <TableCell>{nurse.mobileNo}</TableCell>
                 <TableCell>{nurse.email}</TableCell>
-                {loggedUserPosition !== "nurse" && (
+                {loggedUserPosition !== 'nurse' && (
                   <>
                     <TableCell>
                       <Button
@@ -169,7 +171,7 @@ export default function NursesTable() {
                     <TableCell>
                       <Button
                         variant="outlined"
-                        style={{ color: "red", borderColor: "red" }}
+                        style={{ color: 'red', borderColor: 'red' }}
                         onClick={() => handleDelete(nurse.serviceId)}
                       >
                         Delete
@@ -191,5 +193,5 @@ export default function NursesTable() {
         // Add other necessary props
       />
     </div>
-  );
+  )
 }
