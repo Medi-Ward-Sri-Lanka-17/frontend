@@ -91,18 +91,18 @@ export const addNurseValidation = Yup.object().shape({
     .matches(/^[0-9]{10}$/, '*Invalid phone number')
     .required('*Phone number is required'),
 
-  serviceStartDate: Yup.date().when('birthdate', (birthdate, schema) => {
-    const twentyYearsAfterBirth = new Date(birthdate)
-    twentyYearsAfterBirth.setFullYear(twentyYearsAfterBirth.getFullYear() + 20)
+  // serviceStartDate: Yup.date().when('birthdate', (birthdate, schema) => {
+  //   const twentyYearsAfterBirth = new Date(birthdate)
+  //   twentyYearsAfterBirth.setFullYear(twentyYearsAfterBirth.getFullYear() + 20)
 
-    return schema
-      .required('*Service start date is required')
-      .typeError('*Invalid date type')
-      .min(
-        twentyYearsAfterBirth,
-        'Service start date must be greater than 20 years from birthdate'
-      )
-  }),
+  //   return schema
+  //     .required('*Service start date is required')
+  //     .typeError('*Invalid date type')
+  //     .min(
+  //       twentyYearsAfterBirth,
+  //       'Service start date must be greater than 20 years from birthdate'
+  //     )
+  // }),
 
   remainingVacationLeaves: Yup.number()
     .required('*Remaining vacation leaves are required')

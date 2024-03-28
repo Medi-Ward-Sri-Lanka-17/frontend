@@ -15,7 +15,7 @@ import AddNewWardForm from '../Forms/newWard'
 import { addNurseService } from '../../Data/wardDetails/nursesService'
 import { useAuth } from '../../Security/AuthContext'
 
-export default function Matron() {
+export default function WardManagement() {
   const [wardName, setWardName] = useState('')
   const [wardNumber, setWardNumber] = useState('')
   const [sisterName, setSisterName] = useState('')
@@ -59,7 +59,7 @@ export default function Matron() {
     }
 
     fetchData()
-  }, []) //dependency array empty means useEffeect run only one time
+  }, [position]) //dependency array empty means useEffeect
 
   {
     /*=======================Add a staff member form=============================*/

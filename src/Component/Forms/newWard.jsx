@@ -60,6 +60,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
       validationSchema={EditBasicWardDetailsValidation}
       onSubmit={async (values, { setSubmitting }) => {
         try {
+          console.log(values)
           const status = await addWard(values)
           if (status == 200) {
             showSuccessAlert()
