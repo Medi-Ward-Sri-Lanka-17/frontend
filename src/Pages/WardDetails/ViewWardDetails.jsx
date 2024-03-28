@@ -2,7 +2,8 @@ import React from 'react'
 import Header from '../../Component/Header'
 import { Box } from '@mui/material'
 import SideBar from '../../Component/SideBar'
-import Matron from '../../Component/wardDetails/Matron'
+import Matron from '../../Component/wardDetails/WardManagement'
+import WardManagement from '../../Component/wardDetails/WardManagement'
 
 const ViewWardDetails = () => {
   return (
@@ -10,8 +11,7 @@ const ViewWardDetails = () => {
       <SideBar />
       <div className="PageContent" style={{ width: '100%' }}>
         <Header title="WARD DETAILS" />
-        <Matron></Matron> 
-
+        <WardManagement />
       </div>
     </Box>
   )

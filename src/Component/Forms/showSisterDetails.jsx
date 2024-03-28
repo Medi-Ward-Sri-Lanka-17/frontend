@@ -291,8 +291,8 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
             <Button
               color="primary"
               disabled={
-                loggedUserPosition === 'sister' ||
-                loggedUserPosition === 'nurse'
+                loggedUserPosition === 'Sister' ||
+                loggedUserPosition === 'Nurse'
               }
               onClick={manualSubmit}
             >
@@ -302,8 +302,8 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
             <Button
               color="primary"
               disabled={
-                loggedUserPosition === 'sister' ||
-                loggedUserPosition === 'nurse'
+                loggedUserPosition === 'Sister' ||
+                loggedUserPosition === 'Nurse'
               }
               onClick={() => {
                 handleEdit()
