@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,71 +6,71 @@ import {
   DialogActions,
   TextField,
   Button,
-} from '@mui/material'
-import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik'
-import Swal from 'sweetalert2'
+} from "@mui/material";
+import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import Swal from "sweetalert2";
 import {
   fetchWardData,
   fetchShiftData,
-} from '../../Data/wardDetails/wardService'
-import { EditBasicWardDetailsValidation } from '../../Validation/wardDetailsValidation'
-import { useAuth } from '../../Security/AuthContext'
+} from "../../Data/wardDetails/wardService";
+import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+import { useAuth } from "../../Security/AuthContext";
 
 const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
-  const [loggedUserPosition, setLoggedUserPosition] = useState('')
+  const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
-    wardName: '',
-    wardNumber: '',
-    sisterName: '',
-    numberOfNurses: '',
-    morningShift: '',
-    eveningShift: '',
-    nightShift: '',
-  })
+    wardName: "",
+    wardNo: "",
+    sisterName: "",
+    numberOfNurses: "",
+    morningShift: "",
+    eveningShift: "",
+    nightShift: "",
+  });
 
-  const authContext = useAuth()
+  const authContext = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = authContext.position
-        setLoggedUserPosition(positionData)
+        const positionData = authContext.position;
+        setLoggedUserPosition(positionData);
 
-        const data = await fetchWardData()
+        const data = await fetchWardData();
         setWardData({
           wardName: data.wardName,
           sisterName: data.sisterName,
-          wardNumber: data.wardNumber,
+          wardNo: data.wardNo,
           sisterName: data.sisterName,
           numberOfNurses: data.numberOfNurses,
-        })
+        });
 
-        const shiftData = await fetchShiftData()
+        const shiftData = await fetchShiftData();
         setWardData((prevData) => ({
           ...prevData,
           morningShift: shiftData.morningShift,
           eveningShift: shiftData.eveningShift,
           nightShift: shiftData.nightShift,
-        }))
+        }));
       } catch (error) {
-        console.error('Error fetching data:', error.message)
+        console.error("Error fetching data:", error.message);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   {
     /*=======================success alert============================*/
   }
   const showSuccessAlert = () => {
-    handleClose()
+    handleClose();
     Swal.fire({
-      text: 'Staff member successfully added!',
-      icon: 'success',
-      confirmButtonColor: '#243e4f',
-    })
-  }
+      text: "Staff member successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
+  };
 
   return (
     <Formik
@@ -80,13 +80,13 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
       validateOnChange={false}
       onSubmit={async (values, { setSubmitting }) => {
         try {
-          handleWardDetails(values) //Update the values according to the editBasicWardDetails form
-          showSuccessAlert()
-          handleClose()
+          handleWardDetails(values); //Update the values according to the editBasicWardDetails form
+          showSuccessAlert();
+          handleClose();
         } catch (error) {
-          console.error('Error submitting form:', error.message)
+          console.error("Error submitting form:", error.message);
         } finally {
-          setSubmitting(false)
+          setSubmitting(false);
         }
       }}
     >
@@ -112,7 +112,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.wardName}
-                disabled={loggedUserPosition === 'sister'}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.wardName && Boolean(errors.wardName)}
                 helperText={touched.wardName && errors.wardName}
               />
@@ -123,13 +123,13 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="wardNumber"
+                name="wardNo"
                 required
                 onChange={handleChange}
-                value={values.wardNumber}
-                disabled={loggedUserPosition === 'sister'}
-                error={touched.wardNumber && Boolean(errors.wardNumber)}
-                helperText={touched.wardNumber && errors.wardNumber}
+                value={values.wardNo}
+                disabled={loggedUserPosition === "sister"}
+                error={touched.wardNo && Boolean(errors.wardNo)}
+                helperText={touched.wardNo && errors.wardNo}
               />
 
               <label>Sister Name</label>
@@ -142,7 +142,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.sisterName}
-                disabled={loggedUserPosition === 'sister'}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.sisterName && Boolean(errors.sisterName)}
                 helperText={touched.sisterName && errors.sisterName}
               />
@@ -157,7 +157,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.numberOfNurses}
-                disabled={loggedUserPosition === 'sister'}
+                disabled={loggedUserPosition === "sister"}
                 error={touched.numberOfNurses && Boolean(errors.numberOfNurses)}
                 helperText={touched.numberOfNurses && errors.numberOfNurses}
               />
@@ -172,7 +172,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.morningShift}
-                disabled={loggedUserPosition === 'matron'}
+                disabled={loggedUserPosition === "matron"}
                 error={touched.morningShift && Boolean(errors.morningShift)}
                 helperText={touched.morningShift && errors.morningShift}
               />
@@ -187,7 +187,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.eveningShift}
-                disabled={loggedUserPosition === 'matron'}
+                disabled={loggedUserPosition === "matron"}
                 error={touched.eveningShift && Boolean(errors.eveningShift)}
                 helperText={touched.eveningShift && errors.eveningShift}
               />
@@ -202,7 +202,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.nightShift}
-                disabled={loggedUserPosition === 'matron'}
+                disabled={loggedUserPosition === "matron"}
                 error={touched.nightShift && Boolean(errors.nightShift)}
                 helperText={touched.nightShift && errors.nightShift}
               />
@@ -216,10 +216,10 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 color="primary"
                 disabled={isSubmitting}
                 onClick={() => {
-                  handleSubmit()
+                  handleSubmit();
                   Object.keys(values).forEach((field) => {
-                    touched[field] = true
-                  })
+                    touched[field] = true;
+                  });
                 }}
               >
                 Submit
@@ -229,7 +229,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
         </Form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default AddWardDetailsForm
+export default AddWardDetailsForm;
