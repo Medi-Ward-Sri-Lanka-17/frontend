@@ -14,6 +14,9 @@ import {
 import Header from "../../Component/Header";
 import SideBar from "../../Component/SideBar";
 import Swal from "sweetalert2"; // Import Swal library
+import { getUserDetails } from "../../Services/LeaveManagement/LeaveRequestServices";
+import { useAuth } from "../../Security/AuthContext";
+import { saveLeaveRequest } from "../../Services/LeaveManagement/LeaveRequestServices";
 
 const RequestLeave = () => {
   const getCurrentDateTime = () => {
@@ -37,7 +40,7 @@ const RequestLeave = () => {
     fullName: "pushpa silva",
     nic: "12345",
     position: "Nurse",
-    leaveNo: "19",
+    leaveNum: "19",
     numberOfTakenCasualLeaves: "20",
     numberOfTakenVacationLeaves: "10",
     requestedDateAndTime: getCurrentDateTime(),
@@ -45,6 +48,40 @@ const RequestLeave = () => {
     leaveEndDate: "",
     reason: "",
   });
+
+  const showSuccessAlert = (text) => {
+    Swal.fire({
+      text: text,
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
+  };
+
+  //=================Service related functionalities===========================
+
+  //Get the logged user username
+  const authContext = useAuth();
+  const userName = authContext.username;
+
+  useEffect(() => {
+    getUserDetails(userName)
+      .then((responseData) => {
+        // Update state with the fetched data
+        setFormData(responseData);
+      })
+      .catch((error) => {
+        console.log("user details fetched error");
+        // Update state with the error
+        //setError(error.message);
+      });
+  }, [userName]);
+
+  // // Log the formData after it has been updated
+  // useEffect(() => {
+  //   console.log("formData", formData);
+  // }, [formData]);
+
+  //============================================================================
 
   const [exceedCapacityDialogOpen, setExceedCapacityDialogOpen] =
     useState(false);
@@ -83,6 +120,29 @@ const RequestLeave = () => {
     setPastCommencingDateError(false);
   };
 
+  //Change the user filled data
+  const handleLeaveBeginDateChange = (e) => {
+    setFormData({
+      ...formData,
+      leaveBeginDate: e.target.value,
+    });
+  };
+
+  const handleLeaveEndDateChange = (e) => {
+    setFormData({
+      ...formData,
+      leaveEndDate: e.target.value,
+    });
+  };
+
+  const handleReasonChange = (e) => {
+    setFormData({
+      ...formData,
+      reason: e.target.value,
+    });
+  };
+
+  //Handle functionality when user press the submit button
   const handleSubmit = () => {
     const commencingDate = new Date(formData.leaveBeginDate);
     const endingLeavesDate = new Date(formData.leaveEndDate);
@@ -134,18 +194,14 @@ const RequestLeave = () => {
       return;
     }
 
-    // If all validations pass, show success alert
-    showSuccessAlert("Your Leave Request Has Successfully Submitted !");
-    handleReset();
-  };
-
-  // Function to show success alert
-  const showSuccessAlert = (message) => {
-    Swal.fire({
-      text: message,
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
+    if (saveLeaveRequest(formData)) {
+      // If all validations pass, show success alert
+      showSuccessAlert("Your Leave Request Has Successfully Submitted !");
+      handleReset();
+    } else {
+      showSuccessAlert("Submision Fail");
+      handleReset();
+    }
   };
 
   return (
@@ -236,7 +292,7 @@ const RequestLeave = () => {
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">Leave No</Typography>
-                      <TextField fullWidth value={formData.leaveNo} readOnly />
+                      <TextField fullWidth value={formData.leaveNum} readOnly />
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">
@@ -246,12 +302,7 @@ const RequestLeave = () => {
                         type="date"
                         fullWidth
                         value={formData.leaveBeginDate}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            leaveBeginDate: e.target.value,
-                          })
-                        }
+                        onChange={handleLeaveBeginDateChange}
                         error={requiredFieldsError || pastCommencingDateError}
                         required
                         helperText={
@@ -271,12 +322,7 @@ const RequestLeave = () => {
                         type="date"
                         fullWidth
                         value={formData.leaveEndDate}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            leaveEndDate: e.target.value,
-                          })
-                        }
+                        onChange={handleLeaveEndDateChange}
                         error={requiredFieldsError}
                         required
                         helperText={requiredFieldsError ? "*Required" : ""}
@@ -291,12 +337,7 @@ const RequestLeave = () => {
                         rows={4}
                         fullWidth
                         value={formData.reason}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            reason: e.target.value,
-                          })
-                        }
+                        onChange={handleReasonChange}
                         error={requiredFieldsError}
                         required
                         helperText={requiredFieldsError ? "*Required" : ""}
