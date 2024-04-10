@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useFormik } from "formik";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from 'react'
+import { useFormik } from 'formik'
+import Swal from 'sweetalert2'
 import {
   Dialog,
   DialogTitle,
@@ -8,71 +8,73 @@ import {
   DialogActions,
   TextField,
   Button,
-} from "@mui/material";
-import { fetchSisterData } from "../../Data/wardDetails/sisterService";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
-import { addSisterValidation } from "../../Validation/wardDetailsValidation";
+} from '@mui/material'
+import { fetchSisterData } from '../../Data/wardDetails/sisterService'
+import { addSisterValidation } from '../../Validation/wardDetailsValidation'
+import { useAuth } from '../../Security/AuthContext'
 
 const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
   const [formValues, setFormValues] = useState({
-    fullName: "",
-    serviceId: "",
-    birthdate: "",
-    email: "",
-    position: "Sister",
-    leaveNo: "",
-    mobileNo: "",
-    serviceStartDate: "",
-  });
+    fullName: '',
+    serviceId: '',
+    birthdate: '',
+    email: '',
+    position: 'Sister',
+    leaveNo: '',
+    mobileNo: '',
+    serviceStartDate: '',
+  })
 
-  const [loggedUserPosition, setLoggedUserPosition] = useState("");
-  const [editMode, setEditMode] = useState(false); // State variable for edit mode
+  const [loggedUserPosition, setLoggedUserPosition] = useState('')
+  const [editMode, setEditMode] = useState(false) // State variable for edit mode
+
+  const authContext = useAuth()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sisterData = await fetchSisterData();
-        const loggedPositionData = await fetchPosition();
+        const sisterData = await fetchSisterData()
+        const loggedPositionData = authContext.position
         setFormValues({
           ...sisterData,
-        });
-        setLoggedUserPosition(loggedPositionData);
+        })
+        setLoggedUserPosition(loggedPositionData)
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error('Error fetching data:', error.message)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const handleEdit = () => {
-    setEditMode(!editMode);
-  };
+    setEditMode(!editMode)
+  }
 
   const showSuccessAlert = () => {
-    let alertText = "";
-    if (loggedUserPosition === "sister") {
-      alertText = "Your details successfully updated";
+    let alertText = ''
+    if (loggedUserPosition === 'sister') {
+      alertText = 'Your details successfully updated'
     } else {
-      alertText = "Sister details successfully updated";
+      alertText = 'Sister details successfully updated'
     }
-    handleClose();
+    handleClose()
     Swal.fire({
       text: alertText,
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
-  };
+      icon: 'success',
+      confirmButtonColor: '#243e4f',
+    })
+  }
 
   const manualSubmit = async () => {
     try {
-      console.log("manualSubmit called");
-      console.log("Form errors:", sisterFormik.errors);
-      sisterFormik.submitForm();
+      console.log('manualSubmit called')
+      console.log('Form errors:', sisterFormik.errors)
+      sisterFormik.submitForm()
     } catch (error) {
-      console.error("Error during manualSubmit:", error);
+      console.error('Error during manualSubmit:', error)
     }
-  };
+  }
 
   const sisterFormik = useFormik({
     initialValues: formValues,
@@ -80,13 +82,13 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
     enableReinitialize: true,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
-        console.log(values);
-        showSuccessAlert();
-        handleClose();
-        actions.setSubmitting(false);
-      }, 700);
+        console.log(values)
+        showSuccessAlert()
+        handleClose()
+        actions.setSubmitting(false)
+      }, 700)
     },
-  });
+  })
 
   return (
     <form>
@@ -181,7 +183,7 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
               sisterFormik.touched.mobileNo && sisterFormik.errors.mobileNo
             }
           />
-          {loggedUserPosition && loggedUserPosition === "matron" && (
+          {loggedUserPosition && loggedUserPosition === 'matron' && (
             <>
               <label>Service ID</label>
               <TextField
@@ -289,8 +291,8 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
             <Button
               color="primary"
               disabled={
-                loggedUserPosition === "sister" ||
-                loggedUserPosition === "nurse"
+                loggedUserPosition === 'Sister' ||
+                loggedUserPosition === 'Nurse'
               }
               onClick={manualSubmit}
             >
@@ -300,17 +302,17 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
             <Button
               color="primary"
               disabled={
-                loggedUserPosition === "sister" ||
-                loggedUserPosition === "nurse"
+                loggedUserPosition === 'Sister' ||
+                loggedUserPosition === 'Nurse'
               }
               onClick={() => {
-                handleEdit();
+                handleEdit()
                 fetchSisterData().then((sisterData) => {
                   setFormValues({
                     ...sisterData,
-                    position: "Sister",
-                  });
-                });
+                    position: 'Sister',
+                  })
+                })
               }}
             >
               Edit
@@ -319,7 +321,7 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
         </DialogActions>
       </Dialog>
     </form>
-  );
-};
+  )
+}
 
-export default StaffDetailsForm;
+export default StaffDetailsForm

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
 import {
   Dialog,
   DialogTitle,
@@ -11,18 +10,42 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import Swal from "sweetalert2";
-//import "react-toastify/dist/ReactToastify.css";
-import { addNurseValidation } from "../../Validation/wardDetailsValidation";
-//import "./style.css";
+import { addSatffValidation } from "../../Validation/wardDetailsValidation";
+import { useAuth } from "../../Security/AuthContext";
+import { addStaff } from "../../Services/WardDetails/WardDetailsServices";
+import { retrieveWardNumbers } from "../../Services/WardDetails/WardDetailsServices";
 
 const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [WardNumbers, setWardNumbers] = useState([]);
+  const [nurseData, setNurseData] = useState({
+    firstName: "",
+    lastName: "",
+    fullName: "",
+    nic: "",
+    dob: "",
+    email: "",
+    position: "",
+    leaveNum: "",
+    mobileNo: "",
+    serviceStartedDate: "",
+    wardNo: "",
+    remainingVacationLeave: "",
+    remainingCasualLeaves: "",
+  });
+
+  //=====Retrieve the logged user position and ward numbers======
+
+  const authContext = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
+        const positionData = authContext.position;
         setLoggedUserPosition(positionData);
+        const response = await retrieveWardNumbers();
+        const wardNumbersArray = response.wardNumbers; //retreive the ward numbers array from the response
+        setWardNumbers(wardNumbersArray); // set the ward numbers array to wardNumbers use state in frontend
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -31,24 +54,7 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
     fetchData();
   }, []);
 
-  const initialValues = {
-    firstName: "",
-    lastName: "",
-    fullName: "",
-    serviceId: "",
-    birthdate: "",
-    email: "",
-    position: "",
-    leaveNo: "",
-    mobileNo: "",
-    serviceStartDate: "",
-    wardNo: "",
-    remainingVacationLeaves: "",
-    remainingCasualLeaves: "",
-  };
-
   const showSuccessAlert = () => {
-    handleClose();
     Swal.fire({
       text: "Staff member successfully added!",
       icon: "success",
@@ -56,13 +62,17 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
     });
   };
 
+  const handleCancel = () => {
+    handleClose();
+    formikAddNurse.resetForm();
+  };
+
   const formikAddNurse = useFormik({
-    initialValues: initialValues,
-    validationSchema: addNurseValidation,
+    initialValues: nurseData,
+    validationSchema: addSatffValidation,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
-        console.log(values);
-        handleAddNurse(values);
+        addStaff(values);
         showSuccessAlert();
         handleClose();
         actions.resetForm();
@@ -75,7 +85,6 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
   const handleManualSubmit = () => {
     console.log(formikAddNurse.errors);
     formikAddNurse.submitForm();
-    // handleAddNurse(formikAddNurse.values);
   };
 
   return (
@@ -146,19 +155,15 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="serviceId"
-            value={formikAddNurse.values.serviceId}
+            name="nic"
+            value={formikAddNurse.values.nic}
             required
             onChange={formikAddNurse.handleChange}
             onBlur={formikAddNurse.handleBlur}
             error={
-              formikAddNurse.touched.serviceId &&
-              Boolean(formikAddNurse.errors.serviceId)
+              formikAddNurse.touched.nic && Boolean(formikAddNurse.errors.nic)
             }
-            helperText={
-              formikAddNurse.touched.serviceId &&
-              formikAddNurse.errors.serviceId
-            }
+            helperText={formikAddNurse.touched.nic && formikAddNurse.errors.nic}
           />
 
           <label>Birthday</label>
@@ -167,19 +172,15 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
             margin="normal"
             fullWidth
             type="date"
-            name="birthdate"
-            value={formikAddNurse.values.birthdate}
+            name="dob"
+            value={formikAddNurse.values.dob}
             required
             onChange={formikAddNurse.handleChange}
             onBlur={formikAddNurse.handleBlur}
             error={
-              formikAddNurse.touched.birthdate &&
-              Boolean(formikAddNurse.errors.birthdate)
+              formikAddNurse.touched.dob && Boolean(formikAddNurse.errors.dob)
             }
-            helperText={
-              formikAddNurse.touched.birthdate &&
-              formikAddNurse.errors.birthdate
-            }
+            helperText={formikAddNurse.touched.dob && formikAddNurse.errors.dob}
           />
 
           <label>Email</label>
@@ -233,8 +234,8 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
             margin="normal"
             fullWidth
             name="wardNo"
+            select
             value={formikAddNurse.values.wardNo}
-            required
             onChange={formikAddNurse.handleChange}
             onBlur={formikAddNurse.handleBlur}
             error={
@@ -244,24 +245,30 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
             helperText={
               formikAddNurse.touched.wardNo && formikAddNurse.errors.wardNo
             }
-          />
+          >
+            {WardNumbers.map((wardNumber) => (
+              <MenuItem key={wardNumber} value={wardNumber}>
+                {wardNumber}
+              </MenuItem>
+            ))}
+          </TextField>
 
           <label>Leave No</label>
           <TextField
             variant="outlined"
             margin="normal"
             fullWidth
-            name="leaveNo"
-            value={formikAddNurse.values.leaveNo}
+            name="leaveNum"
+            value={formikAddNurse.values.leaveNum}
             required
             onChange={formikAddNurse.handleChange}
             onBlur={formikAddNurse.handleBlur}
             error={
-              formikAddNurse.touched.leaveNo &&
-              Boolean(formikAddNurse.errors.leaveNo)
+              formikAddNurse.touched.leaveNum &&
+              Boolean(formikAddNurse.errors.leaveNum)
             }
             helperText={
-              formikAddNurse.touched.leaveNo && formikAddNurse.errors.leaveNo
+              formikAddNurse.touched.leaveNum && formikAddNurse.errors.leaveNum
             }
           />
 
@@ -290,18 +297,18 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
             margin="normal"
             fullWidth
             type="date"
-            name="serviceStartDate"
-            value={formikAddNurse.values.serviceStartDate}
+            name="serviceStartedDate"
+            value={formikAddNurse.values.serviceStartedDate}
             required
             onChange={formikAddNurse.handleChange}
             onBlur={formikAddNurse.handleBlur}
             error={
-              formikAddNurse.touched.serviceStartDate &&
-              Boolean(formikAddNurse.errors.serviceStartDate)
+              formikAddNurse.touched.serviceStartedDate &&
+              Boolean(formikAddNurse.errors.serviceStartedDate)
             }
             helperText={
-              formikAddNurse.touched.serviceStartDate &&
-              formikAddNurse.errors.serviceStartDate
+              formikAddNurse.touched.serviceStartedDate &&
+              formikAddNurse.errors.serviceStartedDate
             }
           />
 
@@ -310,18 +317,18 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="remainingVacationLeaves"
-            value={formikAddNurse.values.remainingVacationLeaves}
+            name="remainingVacationLeave"
+            value={formikAddNurse.values.remainingVacationLeave}
             required
             onChange={formikAddNurse.handleChange}
             onBlur={formikAddNurse.handleBlur}
             error={
-              formikAddNurse.touched.remainingVacationLeaves &&
-              Boolean(formikAddNurse.errors.remainingVacationLeaves)
+              formikAddNurse.touched.remainingVacationLeave &&
+              Boolean(formikAddNurse.errors.remainingVacationLeave)
             }
             helperText={
-              formikAddNurse.touched.remainingVacationLeaves &&
-              formikAddNurse.errors.remainingVacationLeaves
+              formikAddNurse.touched.remainingVacationLeave &&
+              formikAddNurse.errors.remainingVacationLeave
             }
           />
 
@@ -346,7 +353,7 @@ const AddStaffMemberForm = ({ open, handleClose, handleAddNurse }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCancel} color="primary">
             Cancel
           </Button>
           <Button color="primary" onClick={handleManualSubmit}>

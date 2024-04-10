@@ -58,7 +58,8 @@ const Profile = () => {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <div className="PageContent" style={{ width: "100%" }}>
-        <Header title="PROFILE" />
+        {/* Pass the profilePicture prop to the Header component */}
+        <Header title="PROFILE" profilePicture={userData.profilePicture} />
 
         <Grid container spacing={4}>
           {/* Left Column */}
@@ -92,7 +93,7 @@ const Profile = () => {
                 onClick={handleChangeProfilePicture}
                 sx={{ mt: 1 }}
               >
-                pdate Profile Picture
+                Update Profile Picture
               </Button>
               <Button
                 variant="contained"

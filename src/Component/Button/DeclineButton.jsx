@@ -9,14 +9,17 @@ const DeclineButton = (props) => {
     <>
       <Button
         style={{
-          height: '35px',
+          height: props.height,
+          width: props.width,
         }}
+        endIcon={props.iconEnd}
+        startIcon={props.iconStart}
         variant="outlined"
         color="error"
         size="small"
         onClick={props.onClick}
       >
-        Decline
+        {props.title}
       </Button>
     </>
   )

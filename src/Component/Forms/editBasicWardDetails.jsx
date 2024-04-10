@@ -12,15 +12,15 @@ import Swal from "sweetalert2";
 import {
   fetchWardData,
   fetchShiftData,
-  fetchPosition,
 } from "../../Data/wardDetails/wardService";
 import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+import { useAuth } from "../../Security/AuthContext";
 
 const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [wardData, setWardData] = useState({
     wardName: "",
-    wardNumber: "",
+    wardNo: "",
     sisterName: "",
     numberOfNurses: "",
     morningShift: "",
@@ -28,17 +28,19 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
     nightShift: "",
   });
 
+  const authContext = useAuth();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
+        const positionData = authContext.position;
         setLoggedUserPosition(positionData);
 
         const data = await fetchWardData();
         setWardData({
           wardName: data.wardName,
           sisterName: data.sisterName,
-          wardNumber: data.wardNumber,
+          wardNo: data.wardNo,
           sisterName: data.sisterName,
           numberOfNurses: data.numberOfNurses,
         });
@@ -121,13 +123,13 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="wardNumber"
+                name="wardNo"
                 required
                 onChange={handleChange}
-                value={values.wardNumber}
+                value={values.wardNo}
                 disabled={loggedUserPosition === "sister"}
-                error={touched.wardNumber && Boolean(errors.wardNumber)}
-                helperText={touched.wardNumber && errors.wardNumber}
+                error={touched.wardNo && Boolean(errors.wardNo)}
+                helperText={touched.wardNo && errors.wardNo}
               />
 
               <label>Sister Name</label>

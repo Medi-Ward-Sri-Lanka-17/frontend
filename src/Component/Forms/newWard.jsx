@@ -14,13 +14,26 @@ import { Formik, Form, Field } from "formik";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+import { addWard } from "../../Services/WardDetails/WardDetailsServices";
+import { useAuth } from "../../Security/AuthContext";
 
 const AddNewWardForm = ({ open, handleClose }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [wardData, setWardData] = useState({
+    wardName: "",
+    wardNo: "",
+    matron: "",
+    numberOfNurses: "",
+    morningShift: "",
+    eveningShift: "",
+    nightShift: "",
+  });
+
+  const authContext = useAuth();
 
   const showSuccessAlert = () => {
-    handleClose();
+    console.log("success aleert function");
     Swal.fire({
       text: "New ward successfully added!",
       icon: "success",
@@ -31,7 +44,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = await fetchPosition();
+        const positionData = authContext.position;
         setLoggedUserPosition(positionData);
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -41,36 +54,61 @@ const AddNewWardForm = ({ open, handleClose }) => {
     fetchData();
   }, []);
 
-  const onSubmit = () => {
-    return null;
+  const handleReset = () => {
+    setWardData({
+      wardName: "",
+      wardNo: "",
+      matron: "",
+      numberOfNurses: "",
+      morningShift: "",
+      eveningShift: "",
+      nightShift: "",
+    });
   };
 
-  const initialValues = {
-    wardName: "",
-    wardNumber: "",
-    sisterName: "",
-    numberOfNurses: "",
-    morningShift: "",
-    eveningShift: "",
-    nightShift: "",
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      console.log("HandleSubmit method");
+      console.log(values);
+      await addWard(values);
+      showSuccessAlert();
+      handleClose();
+      resetForm(); // Reset the form fields
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={wardData}
       validationSchema={EditBasicWardDetailsValidation}
-      onSubmit={async (values, { setSubmitting }) => {
-        try {
-          console.log(values);
-          showSuccessAlert();
-          handleClose();
-        } catch (error) {
-          console.error("Error submitting form:", error.message);
-        } finally {
-          setSubmitting(false);
-        }
-      }}
+      onSubmit={handleSubmit}
+      //   try {
+      //     console.log(values);
+      //     const status = await addWard(values);
+      //     if (status == 200) {
+      //       showSuccessAlert();
+      //       handleClose();
+      //     }
+      //     console.log(values);
+      //   } catch (error) {
+      //     console.error("Error submitting form:", error.message);
+      //   } finally {
+      //     setSubmitting(false);
+      //   }
+      // }}
     >
-      {({ handleChange, isSubmitting, handleSubmit, touched, errors }) => (
+      {({
+        handleChange,
+        isSubmitting,
+        handleSubmit,
+        touched,
+        errors,
+        resetForm,
+      }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add ward details</DialogTitle>
@@ -93,23 +131,23 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="wardNumber"
+                name="wardNo"
                 required
                 onChange={handleChange}
-                error={touched.wardNumber && Boolean(errors.wardNumber)}
-                helperText={touched.wardNumber && errors.wardNumber}
+                error={touched.wardNo && Boolean(errors.wardNo)}
+                helperText={touched.wardNo && errors.wardNo}
               />
-              <label>Sister name</label>
+              <label>Matron NIC</label>
               <Field
                 as={TextField}
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="sisterName"
+                name="matron"
                 required
                 onChange={handleChange}
-                error={touched.sisterName && Boolean(errors.sisterName)}
-                helperText={touched.sisterName && errors.sisterName}
+                error={touched.matron && Boolean(errors.matron)}
+                helperText={touched.matron && errors.matron}
               />
 
               <label>Total number of nurses in ward</label>
@@ -171,9 +209,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
               <Button
                 color="primary"
                 disabled={isSubmitting}
-                onClick={() => {
-                  handleSubmit();
-                }}
+                onClick={handleSubmit}
               >
                 Save
               </Button>
