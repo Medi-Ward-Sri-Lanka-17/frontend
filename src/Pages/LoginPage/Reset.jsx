@@ -94,6 +94,7 @@ export default function Reset({reset,setReset,openAlertSuccess}) {
     }
 
     const initialValues={
+        otp:"",
         newpassword:"",
         confirmpassword:""
     }
@@ -141,6 +142,57 @@ export default function Reset({reset,setReset,openAlertSuccess}) {
                             Reset Password 
                     </Typography>
                 </TitleBox>
+                <Stack spacing={2} textAlign="left" sx={{
+                    width:"80%",
+                    [theme.breakpoints.down("md")]:{
+                        width:"65%",
+                    },
+                    }}
+
+
+                    >
+                        <Typography variant='h6'
+                            sx={{
+                                [theme.breakpoints.down('md')]: {
+                                    fontSize: '1rem',
+                                },
+                            }}
+                        >
+                            Enter OTP
+                        </Typography>
+                </Stack>
+                <Stack spacing={1.5} sx={{
+                         width:500,
+                        alignItems:"center",
+                    }}>
+                        <Stack sx={{ 
+                            width:"80%",
+                            [theme.breakpoints.down("md")]:{
+                            width:"50%",
+                            }
+                            }} 
+                        >
+                            
+                            <TextField id="otp" name="otp" variant="outlined" size='small' placeholder="xxx-xxx"
+
+                                                    type="text"
+                                                    helperText={formik.errors.otp}
+                                                    FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
+                                                    value={formik.values.otp}
+                                                    onChange={formik.handleChange}
+                                                    sx={{
+                                                        size:'small',
+                                                        width:"100%",
+                                                        borderRadius:theme.shape.borderRadius,
+                                                        "&:hover":{
+                                                            borderBlockColor:theme.palette.success.main
+                                                        }
+                                                        }}
+                                                    />
+                        </Stack>
+
+                       
+                    </Stack>
 
                 <UserText>
                     <Typography variant="subtitle2">Password must be:</Typography>

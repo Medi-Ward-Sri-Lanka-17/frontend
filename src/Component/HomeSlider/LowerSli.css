@@ -1,0 +1,17 @@
+.lower-slider{
+    width:13rem;
+    height:5rem;
+    margin: 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:0.5rem;
+
+}
+
+.lower-slide{
+    width:5rem;
+    height:3rem;
+}
+
+
