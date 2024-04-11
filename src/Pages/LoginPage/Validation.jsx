@@ -46,7 +46,7 @@ export const validationSchemaResetPwd = Yup.object({
 //Customer Support page validation
 
 export const validationSchemaCustonerSupport = Yup.object({
-  name: Yup.string().required("Required*"),
+  nic: Yup.string().required("Required*"),
   username: Yup.string().required("Required*"),
   email: Yup.string()
     .email("Invalid email address")

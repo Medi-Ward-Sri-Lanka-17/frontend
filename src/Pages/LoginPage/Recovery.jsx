@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom'
 import { useFormik } from 'formik';
 import {validationSchemaRecoveryEmail} from './Validation';
 import { validationSchemaOtp } from './Validation';
+import {sendMail} from '../../Services/ResetPassword/SendEmail'
 
 const theme=Theme();
 
@@ -87,7 +88,15 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
     //define onsubmit on send Otp
     const onSubmitEmail=(values)=>{
         console.log(values)
-        resetPasswordModelOn()
+        sendMail(values)
+        .then(response=>{
+            console.log(response)
+            if(response.status==200){
+                resetPasswordModelOn() 
+            }
+        })
+        .catch(error=>{console.log(error)})
+        
 
     }
 

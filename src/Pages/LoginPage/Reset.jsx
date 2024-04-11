@@ -8,6 +8,7 @@ import { BtnTypography } from './Recovery';
 import { validationSchemaResetPwd } from './Validation'; 
 import ReactDOM from 'react-dom'
 import { useFormik } from 'formik';
+import {updateNewPassword} from '../../Services/ResetPassword/SendEmail'
 
 const theme=Theme();
 
@@ -90,7 +91,15 @@ export default function Reset({reset,setReset,openAlertSuccess}) {
 
     const onSubmit=(values)=>{
         console.log(values)
-        openAlertSuccess();
+        updateNewPassword(values)
+        .then(response=>{
+            console.log(response)
+            if(response.status==200){
+                openAlertSuccess();
+            }
+        })
+        .catch(error=>{console.log(error)})
+        
     }
 
     const initialValues={
