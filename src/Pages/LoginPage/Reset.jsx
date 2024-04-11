@@ -8,6 +8,7 @@ import { BtnTypography } from './Recovery';
 import { validationSchemaResetPwd } from './Validation'; 
 import ReactDOM from 'react-dom'
 import { useFormik } from 'formik';
+import {updateNewPassword} from '../../Services/ResetPassword/SendEmail'
 
 const theme=Theme();
 
@@ -90,10 +91,19 @@ export default function Reset({reset,setReset,openAlertSuccess}) {
 
     const onSubmit=(values)=>{
         console.log(values)
-        openAlertSuccess();
+        updateNewPassword(values)
+        .then(response=>{
+            console.log(response)
+            if(response.status==200){
+                openAlertSuccess();
+            }
+        })
+        .catch(error=>{console.log(error)})
+        
     }
 
     const initialValues={
+        otp:"",
         newpassword:"",
         confirmpassword:""
     }
@@ -141,6 +151,57 @@ export default function Reset({reset,setReset,openAlertSuccess}) {
                             Reset Password 
                     </Typography>
                 </TitleBox>
+                <Stack spacing={2} textAlign="left" sx={{
+                    width:"80%",
+                    [theme.breakpoints.down("md")]:{
+                        width:"65%",
+                    },
+                    }}
+
+
+                    >
+                        <Typography variant='h6'
+                            sx={{
+                                [theme.breakpoints.down('md')]: {
+                                    fontSize: '1rem',
+                                },
+                            }}
+                        >
+                            Enter OTP
+                        </Typography>
+                </Stack>
+                <Stack spacing={1.5} sx={{
+                         width:500,
+                        alignItems:"center",
+                    }}>
+                        <Stack sx={{ 
+                            width:"80%",
+                            [theme.breakpoints.down("md")]:{
+                            width:"50%",
+                            }
+                            }} 
+                        >
+                            
+                            <TextField id="otp" name="otp" variant="outlined" size='small' placeholder="xxx-xxx"
+
+                                                    type="text"
+                                                    helperText={formik.errors.otp}
+                                                    FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
+                                                    value={formik.values.otp}
+                                                    onChange={formik.handleChange}
+                                                    sx={{
+                                                        size:'small',
+                                                        width:"100%",
+                                                        borderRadius:theme.shape.borderRadius,
+                                                        "&:hover":{
+                                                            borderBlockColor:theme.palette.success.main
+                                                        }
+                                                        }}
+                                                    />
+                        </Stack>
+
+                       
+                    </Stack>
 
                 <UserText>
                     <Typography variant="subtitle2">Password must be:</Typography>
