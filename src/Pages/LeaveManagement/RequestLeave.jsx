@@ -13,10 +13,12 @@ import {
 } from "@mui/material";
 import Header from "../../Component/Header";
 import SideBar from "../../Component/SideBar";
-import Swal from "sweetalert2"; // Import Swal library
-import { getUserDetails } from "../../Services/LeaveManagement/LeaveRequestServices";
+import Swal from "sweetalert2";
 import { useAuth } from "../../Security/AuthContext";
-import { saveLeaveRequest } from "../../Services/LeaveManagement/LeaveRequestServices";
+import {
+  getUserDetails,
+  saveLeaveRequest,
+} from "../../Services/LeaveManagement/LeaveRequestServices";
 
 const RequestLeave = () => {
   const getCurrentDateTime = () => {

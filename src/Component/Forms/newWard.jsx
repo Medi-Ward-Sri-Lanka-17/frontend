@@ -54,17 +54,24 @@ const AddNewWardForm = ({ open, handleClose }) => {
     fetchData();
   }, []);
 
-  const handleReset = () => {
-    setWardData({
-      wardName: "",
-      wardNo: "",
-      matron: "",
-      numberOfNurses: "",
-      morningShift: "",
-      eveningShift: "",
-      nightShift: "",
-    });
+  const handleCancel = (resetForm) => {
+    handleClose();
+    resetForm();
   };
+
+  // const handleCancel = () => {
+  //   handleClose(); // Close the dialog
+  //   setWardData({
+  //     // Reset the form fields
+  //     wardName: "",
+  //     wardNo: "",
+  //     matron: "",
+  //     numberOfNurses: "",
+  //     morningShift: "",
+  //     eveningShift: "",
+  //     nightShift: "",
+  //   });
+  // };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -86,20 +93,6 @@ const AddNewWardForm = ({ open, handleClose }) => {
       initialValues={wardData}
       validationSchema={EditBasicWardDetailsValidation}
       onSubmit={handleSubmit}
-      //   try {
-      //     console.log(values);
-      //     const status = await addWard(values);
-      //     if (status == 200) {
-      //       showSuccessAlert();
-      //       handleClose();
-      //     }
-      //     console.log(values);
-      //   } catch (error) {
-      //     console.error("Error submitting form:", error.message);
-      //   } finally {
-      //     setSubmitting(false);
-      //   }
-      // }}
     >
       {({
         handleChange,
@@ -203,7 +196,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} color="primary">
+              <Button onClick={() => handleCancel(resetForm)} color="primary">
                 Cancel
               </Button>
               <Button

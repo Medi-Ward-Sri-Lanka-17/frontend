@@ -1,134 +1,135 @@
-import React, { useState, useEffect } from 'react'
-import { Grid, TextField, Button, MenuItem, Paper } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import NursesTable from './table'
-import AddIcon from '@mui/icons-material/Add'
-import {
-  fetchWardData,
-  fetchAllWards,
-  fetchWardData_matron as fetchSelectedWardData,
-} from '../../Data/wardDetails/wardService'
-import AddStaffMemberForm from '../Forms/addNurses'
-import StaffDetailsForm from '../Forms/showSisterDetails'
-import AddWardDetailsForm from '../Forms/editBasicWardDetails'
-import AddNewWardForm from '../Forms/newWard'
-import { addNurseService } from '../../Data/wardDetails/nursesService'
-import { useAuth } from '../../Security/AuthContext'
+import React, { useState, useEffect } from "react";
+import { Grid, TextField, Button, MenuItem, Paper } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import NursesTable from "./table";
+import AddIcon from "@mui/icons-material/Add";
+import { fetchWardData } from "../../Data/wardDetails/wardService";
+import AddStaffMemberForm from "../Forms/addNurses";
+import StaffDetailsForm from "../Forms/showSisterDetails";
+import AddWardDetailsForm from "../Forms/editBasicWardDetails";
+import AddNewWardForm from "../Forms/newWard";
+import { addNurseService } from "../../Data/wardDetails/nursesService";
+import { useAuth } from "../../Security/AuthContext";
+import { retrieveWardNames } from "../../Services/WardDetails/WardDetailsServices";
+import { retrieveWardData } from "../../Services/WardDetails/WardDetailsServices";
 
 export default function WardManagement() {
-  const [wardName, setWardName] = useState('')
-  const [wardNumber, setWardNumber] = useState('')
-  const [sisterName, setSisterName] = useState('')
-  const [numberOfNurses, setNumberOfNurses] = useState('')
-  const [position, setPosition] = useState()
-  const [wards, setWard] = useState([])
-  const [selectedWard, setSelectedWard] = useState('')
+  const [wardName, setWardName] = useState("");
+  const [wardNo, setwardNo] = useState("");
+  const [sisterName, setSisterName] = useState("");
+  const [numberOfNurses, setNumberOfNurses] = useState("");
+  const [position, setPosition] = useState();
+  const [wards, setWard] = useState([]);
+  const [selectedWard, setSelectedWard] = useState("");
 
   {
     /*============================Initial field values fetching====================*/
   }
-  const authContext = useAuth()
+  const authContext = useAuth();
 
   useEffect(() => {
     //fetchData is a asynchronous function. That means operations are those that don't block the execution of code.
     //Instead of waiting for one operation to complete before moving on to the next.
     const fetchData = async () => {
       try {
-        const allWards = await fetchAllWards() //This line calls a function fetchAllWards() and waits for it to complete before moving on to the next line
-        const positionData = authContext.position
-        const data = await fetchWardData()
-        setWard(allWards)
-        setPosition(positionData)
+        const loggedUsername = authContext.username;
+        const response = await retrieveWardNames(loggedUsername);
+        const allWards = response.wardName;
+        const positionData = authContext.position;
 
-        if (positionData === 'matron') {
-          setWardName('')
-          setWardNumber('')
-          setSisterName('')
-          setNumberOfNurses('')
+        const data = await fetchWardData();
+        setWard(allWards);
+        setPosition(positionData);
+
+        if (positionData === "matron") {
+          setWardName("");
+          setwardNo("");
+          setSisterName("");
+          setNumberOfNurses("");
         } else {
-          setWardName(data.wardName)
-          setWardNumber(data.wardNumber)
-          setSisterName(data.sisterName)
-          setNumberOfNurses(data.numberOfNurses)
+          setWardName(data.wardName);
+          setwardNo(data.wardNo);
+          setSisterName(data.sisterName);
+          setNumberOfNurses(data.numberOfNurses);
         }
 
-        console.log(positionData)
+        console.log(positionData);
       } catch (error) {
-        console.error('Error fetching data:', error.message)
+        console.error("Error fetching data:", error.message);
       }
-    }
+    };
 
-    fetchData()
-  }, [position]) //dependency array empty means useEffeect
+    fetchData();
+  }, [position]); //dependency array empty means useEffeect
 
   {
     /*=======================Add a staff member form=============================*/
   }
-  const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false)
-  const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false)
+  const [isAddNurseFormOpen, setAddNurseFormOpen] = useState(false);
+  const [isStaffDetailsFormOpen, setStaffDetailsFormOpen] = useState(false);
   // Add this state variable at the beginning of your Matron component
   // const [isNursesTableVisible, setNursesTableVisible] = useState(true);
-  const [nursesTableKey, setNursesTableKey] = useState(0)
+  const [nursesTableKey, setNursesTableKey] = useState(0);
 
   const handleAddNurse = (values) => {
     // Handle adding nurse logic here
-    addNurseService(values)
+    addNurseService(values);
 
     // // Update the state to make NursesTable visible
     // setNursesTableVisible(true);
 
     // Change the key to trigger a reload of the NursesTable
-    setNursesTableKey((prevKey) => prevKey + 1)
+    setNursesTableKey((prevKey) => prevKey + 1);
 
     // Close the form
-    setAddNurseFormOpen(false)
-  }
+    setAddNurseFormOpen(false);
+  };
 
   {
     /*================================add new ward=======================*/
   }
 
-  const [isNewWardFormOpen, setNewWardFormOpen] = useState(false)
+  const [isNewWardFormOpen, setNewWardFormOpen] = useState(false);
 
   const handleNewWardForm = () => {
-    setNewWardFormOpen(false)
-  }
+    setNewWardFormOpen(false);
+  };
 
   {
     /*=====================edit Ward details form related========================*/
   }
 
   const [isEditBasicWardDetailsDialogOpen, setEditBasicWardDetailsDialogOpen] =
-    useState(false)
+    useState(false);
 
   const handleEditBasicWardDetailsSave = async (editedValues) => {
-    console.log('edited values : ', editedValues)
+    console.log("edited values : ", editedValues);
     try {
-      setWardName(editedValues.wardName)
-      setWardNumber(editedValues.wardNumber)
-      setSisterName(editedValues.sisterName)
-      setNumberOfNurses(editedValues.numberOfNurses)
+      setWardName(editedValues.wardName);
+      setwardNo(editedValues.wardNo);
+      setSisterName(editedValues.sisterName);
+      setNumberOfNurses(editedValues.numberOfNurses);
     } catch (error) {
-      console.error('Error updating state:', error.message)
+      console.error("Error updating state:", error.message);
     } finally {
-      setEditBasicWardDetailsDialogOpen(false)
+      setEditBasicWardDetailsDialogOpen(false);
     }
-  }
+  };
 
   {
     /*===================selected ward field function=========================*/
   }
   const handleWardChange = async (selectedWard) => {
     try {
-      const data = await fetchSelectedWardData(selectedWard)
-      setWardName(data.wardName)
-      setWardNumber(data.wardNumber)
-      setSisterName(data.sisterName)
-      setNumberOfNurses(data.numberOfNurses)
+      const data = await retrieveWardData(selectedWard);
+      setWardName(data.wardName);
+      setwardNo(data.wardNo);
+      setSisterName(data.sisterName);
+      setNumberOfNurses(data.numberOfNurses);
     } catch (error) {
-      console.error('Error fetching ward data:', error.message)
+      console.error("Error fetching ward data:", error.message);
     }
-  }
+  };
 
   {
     /*=======================User interrface==============================*/
@@ -139,7 +140,7 @@ export default function WardManagement() {
       <Grid item xs={12}>
         <Paper elevation={3} style={{ padding: 16, margin: 30 }}>
           <form>
-            {position && position !== 'Nurse' && wards && (
+            {position && position !== "Nurse" && wards && (
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <TextField
@@ -150,10 +151,10 @@ export default function WardManagement() {
                     label="Select the ward"
                     name="ward"
                     select
-                    disabled={position === 'Sister'}
+                    disabled={position === "Sister"}
                     onChange={(e) => {
-                      setSelectedWard(e.target.value)
-                      handleWardChange(e.target.value)
+                      setSelectedWard(e.target.value);
+                      handleWardChange(e.target.value);
                     }}
                   >
                     {wards.map((ward) => (
@@ -168,11 +169,11 @@ export default function WardManagement() {
                   <Button
                     variant="outlined"
                     size="medium"
-                    style={{ margin: '20px' }}
+                    style={{ margin: "20px" }}
                     startIcon={<EditIcon />}
-                    disabled={selectedWard === '' && position === 'Matron'}
+                    disabled={selectedWard === "" && position === "Matron"}
                     onClick={() => {
-                      setEditBasicWardDetailsDialogOpen(true)
+                      setEditBasicWardDetailsDialogOpen(true);
                     }}
                   >
                     Edit basic ward details
@@ -182,9 +183,9 @@ export default function WardManagement() {
                   {/*add new ward form*/}
                   <Button
                     variant="outlined"
-                    disabled={position === 'Sister'}
+                    disabled={position === "Sister"}
                     size="medium"
-                    style={{ margin: '20px' }}
+                    style={{ margin: "20px" }}
                     startIcon={<AddIcon />}
                     onClick={() => setNewWardFormOpen(true)}
                   >
@@ -202,7 +203,7 @@ export default function WardManagement() {
                   name="wardName"
                   value={wardName}
                   fullWidth
-                  disabled={selectedWard === '' && true}
+                  disabled={selectedWard === "" && true}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -210,10 +211,10 @@ export default function WardManagement() {
                   variant="outlined"
                   margin="normal"
                   label="Ward number"
-                  name="wardNumber"
-                  value={wardNumber}
+                  name="wardNo"
+                  value={wardNo}
                   fullWidth
-                  disabled={selectedWard === '' && true}
+                  disabled={selectedWard === "" && true}
                 />
               </Grid>
             </Grid>
@@ -228,15 +229,15 @@ export default function WardManagement() {
                   name="sisterName"
                   value={sisterName}
                   fullWidth
-                  disabled={selectedWard === '' && true}
+                  disabled={selectedWard === "" && true}
                   InputProps={{
                     endAdornment: (
                       //sister detail form
                       <Button
                         variant="outlined"
                         size="medium"
-                        style={{ margin: '20px' }}
-                        disabled={selectedWard === '' && position === 'Matron'}
+                        style={{ margin: "20px" }}
+                        disabled={selectedWard === "" && position === "Matron"}
                         onClick={() => setStaffDetailsFormOpen(true)}
                       >
                         More
@@ -254,18 +255,18 @@ export default function WardManagement() {
                   name="numberOfNurses"
                   value={numberOfNurses}
                   fullWidth
-                  disabled={selectedWard === '' && true}
+                  disabled={selectedWard === "" && true}
                 />
               </Grid>
             </Grid>
-            {position !== 'Nurse' && (
+            {position !== "Nurse" && (
               //add nurse or sister form
               <Button
                 variant="outlined"
                 size="medium"
-                style={{ margin: '20px' }}
+                style={{ margin: "20px" }}
                 startIcon={<AddIcon />}
-                disabled={selectedWard === '' && position === 'Matron'}
+                disabled={selectedWard === "" && position === "Matron"}
                 onClick={() => setAddNurseFormOpen(true)}
               >
                 Add staff member
@@ -309,5 +310,5 @@ export default function WardManagement() {
         handleWardDetails={handleNewWardForm}
       />
     </Grid>
-  )
+  );
 }
