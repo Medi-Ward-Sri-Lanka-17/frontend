@@ -1,12 +1,13 @@
 
 import { Box, Button, Stack, TextField, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import Theme from '../../Component/Theme';
 import styled from '@emotion/styled';
 import ReactDOM from 'react-dom'
 import { BtnTypography } from './Recovery';
 import { useFormik } from 'formik';
 import { validationSchemaCustonerSupport } from './Validation';
+import {sendCustomerDetails} from '../../Services/CustomerSupport/SendDetails'
 
 const theme=Theme();
 
@@ -50,15 +51,29 @@ export default function CustomerSup({closeCustom,responseSuccessAlert}) {
     //Define initialvalues for formik
 
     const initialValues={
-        name:"",
+        nic:"",
         username:"",
         email:"",
         description:"",
     }
 
+    const [ok,setOk]=useState(null)
+
     const onSubmit=(values)=>{
-        console.log(values)
-        responseSuccessAlert()
+        //console.log(values)
+        sendCustomerDetails(values)
+        .then(response=>{
+            //console.log(response)
+            if(response.status==200){
+                responseSuccessAlert()
+            }
+        })
+        .catch(error=>{console.log(error)})
+
+
+
+
+        
 
     }
 
@@ -109,14 +124,14 @@ export default function CustomerSup({closeCustom,responseSuccessAlert}) {
                                 width:"65%",
                             },
                             }}>
-                            <Typography variant='h6'>Name:</Typography>
+                            <Typography variant='h6'>Nic No:</Typography>
                         </Stack>
 
                         <Styledstack>
-                            <TextField id="name" name="name" variant="outlined" size='small' placeholder="Enter your name"
-                                                    helperText={formik.errors.name}
+                            <TextField id="nic" name="nic" variant="outlined" size='small' placeholder="Enter your nic"
+                                                    helperText={formik.errors.nic}
                                                     FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
-                                                    value={formik.values.name}
+                                                    value={formik.values.nic}
                                                     onChange={formik.handleChange}
                                                     type="text"
                                                     sx={{

@@ -15,11 +15,11 @@ export const validationSchemaRecoveryEmail = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  mobile: Yup.string()
+    mobile: Yup.string()
     .matches(/^[0-9]+$/, "Mobile number must only contain digits")
     .min(10, "Mobile number must be at least 10 digits")
     .max(10, "Mobile number must not exceed 10 digits")
-    .required("Mobile number is required"),
+  
 });
 
 //Recover Password button control validation
@@ -33,6 +33,8 @@ export const validationSchemaOtp = Yup.object({
 //Reset Password validation
 
 export const validationSchemaResetPwd = Yup.object({
+  otp:Yup.string()
+    .required("OTP is required"),
   newpassword: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
@@ -44,7 +46,7 @@ export const validationSchemaResetPwd = Yup.object({
 //Customer Support page validation
 
 export const validationSchemaCustonerSupport = Yup.object({
-  name: Yup.string().required("Required*"),
+  nic: Yup.string().required("Required*"),
   username: Yup.string().required("Required*"),
   email: Yup.string()
     .email("Invalid email address")
