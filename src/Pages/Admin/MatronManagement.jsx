@@ -10,18 +10,36 @@ import SuccessButton from '../../Component/Button/SuccessButton'
 import DeclineButton from '../../Component/Button/DeclineButton'
 import DataGridComponent from '../../Component/DataGridComponent'
 
+import {
+  deleteMatron,
+  getMatronDetails,
+} from '../../Services/Admin/AdminMatronServices'
+import { showSuccessAlert } from '../../Component/ShowAlert'
+
 const MatronManagement = () => {
   const [isAddMatronOpen, setIsAddMatronOpen] = useState(false)
   const [rows, setRows] = useState([])
+  const [deleteTrigger, setDeleteTrigger] = useState(false)
+  const [editTrigger, seteditTrigger] = useState(false)
 
   // More button aciton on click
-  const handleButton = (selectedRow) => {
-    console.log('Selected Row Details:', selectedRow)
-    const leaveId = selectedRow.leaveId
+  const handleEdit = (selectedRow) => {
+    seteditTrigger((prev) => !prev)
   }
   // Decline button aciton on click
-  const handleDeclineButton = (selectedRow) => {
-    console.log('Selected Row Details:', selectedRow)
+  const handleDeleteButton = (selectedRow) => {
+    deleteMatron(selectedRow.nic)
+      .then((response) => {
+        if (response.status === '200') {
+          var message = 'Delete Data of the metron : ' + response.data
+          showSuccessAlert(message)
+          setDeleteTrigger((prev) => !prev)
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   const initialValuesForSave = {
@@ -39,25 +57,25 @@ const MatronManagement = () => {
     {
       field: 'nic',
       headerName: 'Service ID',
-      width: 180,
+      width: 150,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'firstName',
       headerName: 'First Name',
-      width: 180,
+      width: 150,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'lastName',
       headerName: 'Last Name',
-      width: 180,
+      width: 150,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'email',
       headerName: 'Email',
-      width: 200,
+      width: 290,
       headerClassName: 'colored-data-grid',
     },
     {
@@ -76,7 +94,7 @@ const MatronManagement = () => {
           title="More"
           height="35px"
           width="80px"
-          onClick={() => handleButton(params.row)}
+          onClick={() => handleEdit(params.row)}
         />
       ),
     },
@@ -88,7 +106,7 @@ const MatronManagement = () => {
       renderCell: (params) => (
         <DeclineButton
           title="Delete"
-          onClick={() => handleDeclineButton(params.row)}
+          onClick={() => handleDeleteButton(params.row)}
         />
       ),
     },
@@ -97,7 +115,19 @@ const MatronManagement = () => {
   // Calculate the total width of all columns
   const totalWidth = columns.reduce((acc, column) => acc + column.width, 0)
 
-  React.useEffect(() => {})
+  React.useEffect(() => {
+    const fetchMAtronDetails = async () => {
+      try {
+        const response = await getMatronDetails()
+        setRows(response.data)
+        console.log(response)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    fetchMAtronDetails()
+  }, [isAddMatronOpen, deleteTrigger, editTrigger])
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -118,6 +148,7 @@ const MatronManagement = () => {
               totalWidth={totalWidth}
               rows={rows}
               columns={columns}
+              getRowId={(row) => row.nic}
             />
           </Grid>
 

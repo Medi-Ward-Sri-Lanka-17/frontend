@@ -53,8 +53,8 @@ const AddMatron = ({ open, handleClose, initialValues }) => {
         }
         handleClose()
         console.log(response)
-        //actions.resetForm()
-        //actions.setSubmitting(false)
+        actions.resetForm()
+        actions.setSubmitting(false)
       } catch (error) {
         console.error('Error while submitting form:', error)
       }
