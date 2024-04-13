@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { fetchPosition } from '../../Data/wardDetails/wardService'
+import React, { useState, useEffect } from "react";
+import { fetchPosition } from "../../Data/wardDetails/wardService";
 import {
   Dialog,
   DialogTitle,
@@ -9,72 +9,99 @@ import {
   Button,
   MenuItem,
   Alert as MuiAlert,
-} from '@mui/material'
-import { Formik, Form, Field } from 'formik'
-import 'react-toastify/dist/ReactToastify.css'
-import Swal from 'sweetalert2'
-import { EditBasicWardDetailsValidation } from '../../Validation/wardDetailsValidation'
-import { addWard } from '../../Services/WardDetails/WardDetailsServices'
-import { useAuth } from '../../Security/AuthContext'
+} from "@mui/material";
+import { Formik, Form, Field } from "formik";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
+import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+import { addWard } from "../../Services/WardDetails/WardDetailsServices";
+import { useAuth } from "../../Security/AuthContext";
 
 const AddNewWardForm = ({ open, handleClose }) => {
-  const [successMessage, setSuccessMessage] = useState(null)
-  const [loggedUserPosition, setLoggedUserPosition] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [wardData, setWardData] = useState({
+    wardName: "",
+    wardNo: "",
+    matron: "",
+    numberOfNurses: "",
+    morningShift: "",
+    eveningShift: "",
+    nightShift: "",
+  });
 
-  const authContext = useAuth()
+  const authContext = useAuth();
 
   const showSuccessAlert = () => {
-    handleClose()
+    console.log("success aleert function");
     Swal.fire({
-      text: 'New ward successfully added!',
-      icon: 'success',
-      confirmButtonColor: '#243e4f',
-    })
-  }
+      text: "New ward successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = authContext.position
-        setLoggedUserPosition(positionData)
+        const positionData = authContext.position;
+        setLoggedUserPosition(positionData);
       } catch (error) {
-        console.error('Error fetching data:', error.message)
+        console.error("Error fetching data:", error.message);
       }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleCancel = (resetForm) => {
+    handleClose();
+    resetForm();
+  };
+
+  // const handleCancel = () => {
+  //   handleClose(); // Close the dialog
+  //   setWardData({
+  //     // Reset the form fields
+  //     wardName: "",
+  //     wardNo: "",
+  //     matron: "",
+  //     numberOfNurses: "",
+  //     morningShift: "",
+  //     eveningShift: "",
+  //     nightShift: "",
+  //   });
+  // };
+
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      console.log("HandleSubmit method");
+      console.log(values);
+      await addWard(values);
+      showSuccessAlert();
+      handleClose();
+      resetForm(); // Reset the form fields
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    fetchData()
-  }, [])
-
-  const initialValues = {
-    wardName: '',
-    wardNumber: '',
-    matron: '',
-    numberOfNurses: '',
-    morningShift: '',
-    eveningShift: '',
-    nightShift: '',
-  }
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={wardData}
       validationSchema={EditBasicWardDetailsValidation}
-      onSubmit={async (values, { setSubmitting }) => {
-        try {
-          console.log(values)
-          const status = await addWard(values)
-          if (status == 200) {
-            showSuccessAlert()
-            handleClose()
-          }
-          console.log(values)
-        } catch (error) {
-          console.error('Error submitting form:', error.message)
-        } finally {
-          setSubmitting(false)
-        }
-      }}
+      onSubmit={handleSubmit}
     >
-      {({ handleChange, isSubmitting, handleSubmit, touched, errors }) => (
+      {({
+        handleChange,
+        isSubmitting,
+        handleSubmit,
+        touched,
+        errors,
+        resetForm,
+      }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Add ward details</DialogTitle>
@@ -97,11 +124,11 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="wardNumber"
+                name="wardNo"
                 required
                 onChange={handleChange}
-                error={touched.wardNumber && Boolean(errors.wardNumber)}
-                helperText={touched.wardNumber && errors.wardNumber}
+                error={touched.wardNo && Boolean(errors.wardNo)}
+                helperText={touched.wardNo && errors.wardNo}
               />
               <label>Matron NIC</label>
               <Field
@@ -169,15 +196,13 @@ const AddNewWardForm = ({ open, handleClose }) => {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} color="primary">
+              <Button onClick={() => handleCancel(resetForm)} color="primary">
                 Cancel
               </Button>
               <Button
                 color="primary"
                 disabled={isSubmitting}
-                onClick={() => {
-                  handleSubmit()
-                }}
+                onClick={handleSubmit}
               >
                 Save
               </Button>
@@ -186,7 +211,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
         </Form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default AddNewWardForm
+export default AddNewWardForm;
