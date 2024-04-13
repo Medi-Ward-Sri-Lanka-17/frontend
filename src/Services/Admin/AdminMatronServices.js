@@ -21,3 +21,13 @@ export const getMatronDetails = async () => {
     throw err
   }
 }
+
+export const deleteMatron = async (nic) => {
+  try {
+    const response = await apiClient.delete(`/admin/matron/delete/${nic}`)
+    console.log(response)
+    return response
+  } catch (err) {
+    return err
+  }
+}
