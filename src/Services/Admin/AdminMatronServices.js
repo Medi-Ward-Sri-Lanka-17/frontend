@@ -1,4 +1,5 @@
 import { apiClient } from '../../Api/ApiClient'
+import { showUnsuccessAlert } from '../../Component/ShowAlert'
 
 export const addMatron = async (values) => {
   try {
@@ -25,9 +26,18 @@ export const getMatronDetails = async () => {
 export const deleteMatron = async (nic) => {
   try {
     const response = await apiClient.delete(`/admin/matron/delete/${nic}`)
-    console.log(response)
+    console.log(response.data)
     return response
-  } catch (err) {
-    return err
+  } catch (error) {
+    if (error.response) {
+      console.error('Error Response:', error.response.data)
+      showUnsuccessAlert(error.response.data)
+    } else if (error.request) {
+      console.error('Error Request:', error.request)
+      showUnsuccessAlert('No response from server')
+    } else {
+      console.error('Error Message:', error.message)
+      showUnsuccessAlert('Error: ' + error.message)
+    }
   }
 }

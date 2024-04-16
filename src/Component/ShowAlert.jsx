@@ -11,7 +11,7 @@ export const showSuccessAlert = (message) => {
 export const showUnsuccessAlert = (message) => {
   Swal.fire({
     text: message,
-    icon: 'success',
+    icon: 'error',
     confirmButtonColor: '#243e4f',
   })
 }
