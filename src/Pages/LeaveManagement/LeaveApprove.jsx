@@ -25,7 +25,8 @@ const LeaveApprove = () => {
   const theme = Theme()
 
   // To get ward no using selection
-  const [wardNo, setWardNo] = useState(null)
+  const [wards, setWards] = useState([])
+  const [wardNo, setWardNo] = useState('All')
 
   // Use naviagete
   const navigate = useNavigate()
@@ -210,8 +211,8 @@ const LeaveApprove = () => {
                 value={wardNo}
                 label="Select Ward No"
               >
-                <MenuItem value="">
-                  <em>None</em>
+                <MenuItem value="All" defaultChecked>
+                  <em>All</em>
                 </MenuItem>
               </Select>
             </FormControl>

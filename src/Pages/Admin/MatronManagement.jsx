@@ -14,7 +14,7 @@ import {
   deleteMatron,
   getMatronDetails,
 } from '../../Services/Admin/AdminMatronServices'
-import { showSuccessAlert } from '../../Component/ShowAlert'
+import { showSuccessAlert, showUnsuccessAlert } from '../../Component/ShowAlert'
 
 const MatronManagement = () => {
   const [isAddMatronOpen, setIsAddMatronOpen] = useState(false)
@@ -30,16 +30,11 @@ const MatronManagement = () => {
   const handleDeleteButton = (selectedRow) => {
     deleteMatron(selectedRow.nic)
       .then((response) => {
-        if (response.status === '200') {
-          var message = 'Delete Data of the metron : ' + response.data
-          showSuccessAlert(message)
-          setDeleteTrigger((prev) => !prev)
-        } else {
-        }
+        var message = 'Delete Data of the metron : ' + response.data
+        showSuccessAlert(message)
+        setDeleteTrigger((prev) => !prev)
       })
-      .catch((error) => {
-        console.error(error)
-      })
+      .catch((error) => {})
   }
 
   const initialValuesForSave = {
