@@ -24,6 +24,7 @@ export default function WardManagement() {
   /*Re render the use effect after the new ward form*/
   const [isAddNewSubmitted, setIsAddNewSubmitted] = useState(false);
   const [isWardDataEdited, setIsWardDataEdited] = useState(false);
+  const [isWardSelect, setIsWardSelect] = useState(false);
 
   {
     /*============================Initial field values fetching====================*/
@@ -44,12 +45,7 @@ export default function WardManagement() {
           const response = await retrieveWardNames(loggedUsername);
           const allWards = response.wardName;
           setWard(allWards);
-          if (selectedWard === "") {
-            setWardName("");
-            setwardNo("");
-            setSisterName("");
-            setNumberOfNurses("");
-          } else {
+          if (isWardSelect === true) {
             const response = await retrieveWardData(selectedWard);
             setWardName(response.wardName);
             setwardNo(response.wardNo);
@@ -126,6 +122,7 @@ export default function WardManagement() {
   }
   const handleWardChange = async (selectedWard) => {
     try {
+      setIsWardSelect(true);
       const data = await retrieveWardData(selectedWard);
       setWardName(data.wardName);
       setwardNo(data.wardNo);
@@ -309,6 +306,7 @@ export default function WardManagement() {
         handleClose={() => setEditBasicWardDetailsDialogOpen(false)}
         handleWardDetails={handleEditBasicWardDetailsSave}
         selectedWard={selectedWard}
+        isWardSelect={isWardSelect}
         onClose={() => handleWardChange(selectedWard)}
       />
 

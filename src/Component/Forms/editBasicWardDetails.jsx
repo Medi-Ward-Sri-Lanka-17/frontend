@@ -15,7 +15,13 @@ import { retrieveBasicWardData } from "../../Services/WardDetails/WardDetailsSer
 import { sendEditedWardDetails } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveBasicWardDataSister } from "../../Services/WardDetails/WardDetailsServices";
 
-const AddWardDetailsForm = ({ open, handleClose, selectedWard, onClose }) => {
+const AddWardDetailsForm = ({
+  open,
+  handleClose,
+  selectedWard,
+  onClose,
+  isWardSelect,
+}) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [isCancelButtonPress, setIsCancelButtonPress] = useState(false);
   const [wardData, setWardData] = useState({
@@ -38,17 +44,19 @@ const AddWardDetailsForm = ({ open, handleClose, selectedWard, onClose }) => {
         setLoggedUserPosition(positionData);
 
         if (positionData === "Matron") {
-          const data = await retrieveBasicWardData(selectedWard);
+          if (isWardSelect === true) {
+            const data = await retrieveBasicWardData(selectedWard);
 
-          setWardData({
-            wardName: data.wardName,
-            sisterNic: data.sisterNic,
-            wardNo: data.wardNo,
-            numberOfNurses: data.numberOfNurses,
-            morningShift: data.morningShift,
-            eveningShift: data.eveningShift,
-            nightShift: data.nightShift,
-          });
+            setWardData({
+              wardName: data.wardName,
+              sisterNic: data.sisterNic,
+              wardNo: data.wardNo,
+              numberOfNurses: data.numberOfNurses,
+              morningShift: data.morningShift,
+              eveningShift: data.eveningShift,
+              nightShift: data.nightShift,
+            });
+          }
         } else {
           const data = await retrieveBasicWardDataSister(username);
 
