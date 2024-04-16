@@ -13,13 +13,15 @@ import {
 import { Formik, Form, Field } from "formik";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
-import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
 import { addWard } from "../../Services/WardDetails/WardDetailsServices";
 import { useAuth } from "../../Security/AuthContext";
+import { AddNewWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+import { retrieveMatronNics } from "../../Services/WardDetails/WardDetailsServices";
 
 const AddNewWardForm = ({ open, handleClose }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [matrons, setMatrons] = useState([]);
   const [wardData, setWardData] = useState({
     wardName: "",
     wardNo: "",
@@ -46,6 +48,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
       try {
         const positionData = authContext.position;
         setLoggedUserPosition(positionData);
+        const response = await retrieveMatronNics();
+        setMatrons(response);
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -91,7 +95,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
   return (
     <Formik
       initialValues={wardData}
-      validationSchema={EditBasicWardDetailsValidation}
+      validationSchema={AddNewWardDetailsValidation}
       onSubmit={handleSubmit}
     >
       {({
@@ -133,6 +137,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
               <label>Matron NIC</label>
               <Field
                 as={TextField}
+                select
                 variant="outlined"
                 margin="normal"
                 fullWidth
@@ -141,7 +146,13 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 error={touched.matron && Boolean(errors.matron)}
                 helperText={touched.matron && errors.matron}
-              />
+              >
+                {matrons.map((matron) => (
+                  <MenuItem key={matron} value={matron}>
+                    {matron}
+                  </MenuItem>
+                ))}
+              </Field>
 
               <label>Total number of nurses in ward</label>
               <Field

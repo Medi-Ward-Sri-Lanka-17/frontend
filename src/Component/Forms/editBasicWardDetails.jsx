@@ -6,22 +6,33 @@ import {
   DialogActions,
   TextField,
   Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
 import Swal from "sweetalert2";
-import {
-  fetchWardData,
-  fetchShiftData,
-} from "../../Data/wardDetails/wardService";
 import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
 import { useAuth } from "../../Security/AuthContext";
+import { retrieveBasicWardData } from "../../Services/WardDetails/WardDetailsServices";
+import { sendEditedWardDetails } from "../../Services/WardDetails/WardDetailsServices";
+import { retrieveBasicWardDataSister } from "../../Services/WardDetails/WardDetailsServices";
+import { retrieveSistersNics } from "../../Services/WardDetails/WardDetailsServices";
 
-const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
+const AddWardDetailsForm = ({
+  open,
+  handleClose,
+  selectedWard,
+  onClose,
+  isWardSelect,
+}) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [isCancelButtonPress, setIsCancelButtonPress] = useState(false);
+  const [sistersNics, setSisterNics] = useState([]);
+  const [isSisterNicDropdown, setIsSisterNicDropdown] = useState(false);
   const [wardData, setWardData] = useState({
     wardName: "",
     wardNo: "",
-    sisterName: "",
+    sisterNic: "",
     numberOfNurses: "",
     morningShift: "",
     eveningShift: "",
@@ -34,31 +45,46 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
     const fetchData = async () => {
       try {
         const positionData = authContext.position;
+        const username = authContext.username;
         setLoggedUserPosition(positionData);
 
-        const data = await fetchWardData();
-        setWardData({
-          wardName: data.wardName,
-          sisterName: data.sisterName,
-          wardNo: data.wardNo,
-          sisterName: data.sisterName,
-          numberOfNurses: data.numberOfNurses,
-        });
+        if (positionData === "Matron") {
+          if (isWardSelect === true) {
+            const data = await retrieveBasicWardData(selectedWard);
+            const sisterNics = await retrieveSistersNics();
 
-        const shiftData = await fetchShiftData();
-        setWardData((prevData) => ({
-          ...prevData,
-          morningShift: shiftData.morningShift,
-          eveningShift: shiftData.eveningShift,
-          nightShift: shiftData.nightShift,
-        }));
+            setSisterNics(sisterNics);
+
+            setWardData({
+              wardName: data.wardName,
+              sisterNic: data.sisterNic,
+              wardNo: data.wardNo,
+              numberOfNurses: data.numberOfNurses,
+              morningShift: data.morningShift,
+              eveningShift: data.eveningShift,
+              nightShift: data.nightShift,
+            });
+          }
+        } else {
+          const data = await retrieveBasicWardDataSister(username);
+
+          setWardData({
+            wardName: data.wardName,
+            sisterNic: data.sisterNic,
+            wardNo: data.wardNo,
+            numberOfNurses: data.numberOfNurses,
+            morningShift: data.morningShift,
+            eveningShift: data.eveningShift,
+            nightShift: data.nightShift,
+          });
+        }
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
     };
 
     fetchData();
-  }, []);
+  }, [selectedWard, isCancelButtonPress]);
 
   {
     /*=======================success alert============================*/
@@ -72,6 +98,27 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
     });
   };
 
+  const handleWardDetails = async (values) => {
+    try {
+      const response = await sendEditedWardDetails(values);
+      showSuccessAlert();
+      handleClose(); // Close the dialog
+      onClose();
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+    }
+  };
+
+  /*=============Cancel button========================= */
+  const handleCancel = () => {
+    handleClose(); // Close the dialog
+    setIsCancelButtonPress(true);
+  };
+
+  const handleSisterNicClick = () => {
+    setIsSisterNicDropdown(true);
+  };
+
   return (
     <Formik
       initialValues={wardData}
@@ -81,8 +128,6 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
       onSubmit={async (values, { setSubmitting }) => {
         try {
           handleWardDetails(values); //Update the values according to the editBasicWardDetails form
-          showSuccessAlert();
-          handleClose();
         } catch (error) {
           console.error("Error submitting form:", error.message);
         } finally {
@@ -112,7 +157,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.wardName}
-                disabled={loggedUserPosition === "sister"}
+                disabled={loggedUserPosition === "Sister"}
                 error={touched.wardName && Boolean(errors.wardName)}
                 helperText={touched.wardName && errors.wardName}
               />
@@ -127,25 +172,48 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.wardNo}
-                disabled={loggedUserPosition === "sister"}
+                disabled={loggedUserPosition === "Sister"}
                 error={touched.wardNo && Boolean(errors.wardNo)}
                 helperText={touched.wardNo && errors.wardNo}
               />
 
-              <label>Sister Name</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="sisterName"
-                required
-                onChange={handleChange}
-                value={values.sisterName}
-                disabled={loggedUserPosition === "sister"}
-                error={touched.sisterName && Boolean(errors.sisterName)}
-                helperText={touched.sisterName && errors.sisterName}
-              />
+              <label>Sister NIC</label>
+              {isSisterNicDropdown ? (
+                <Field
+                  as={Select}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="sisterNic"
+                  required
+                  disabled={loggedUserPosition === "Sister"}
+                  onChange={handleChange}
+                  value={values.sisterNic}
+                  error={touched.sisterNic && Boolean(errors.sisterNic)}
+                  helperText={touched.sisterNic && errors.sisterNic}
+                >
+                  {sistersNics.map((nic) => (
+                    <MenuItem key={nic} value={nic}>
+                      {nic}
+                    </MenuItem>
+                  ))}
+                </Field>
+              ) : (
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="sisterNic"
+                  required
+                  onChange={handleChange}
+                  value={values.sisterNic}
+                  disabled={loggedUserPosition === "Sister"}
+                  onClick={handleSisterNicClick}
+                  error={touched.sisterNic && Boolean(errors.sisterNic)}
+                  helperText={touched.sisterNic && errors.sisterNic}
+                />
+              )}
 
               <label>Total number of nurses in ward</label>
               <Field
@@ -157,7 +225,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.numberOfNurses}
-                disabled={loggedUserPosition === "sister"}
+                disabled={loggedUserPosition === "Sister"}
                 error={touched.numberOfNurses && Boolean(errors.numberOfNurses)}
                 helperText={touched.numberOfNurses && errors.numberOfNurses}
               />
@@ -172,7 +240,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.morningShift}
-                disabled={loggedUserPosition === "matron"}
+                disabled={loggedUserPosition === "Matron"}
                 error={touched.morningShift && Boolean(errors.morningShift)}
                 helperText={touched.morningShift && errors.morningShift}
               />
@@ -187,7 +255,7 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.eveningShift}
-                disabled={loggedUserPosition === "matron"}
+                disabled={loggedUserPosition === "Matron"}
                 error={touched.eveningShift && Boolean(errors.eveningShift)}
                 helperText={touched.eveningShift && errors.eveningShift}
               />
@@ -202,13 +270,13 @@ const AddWardDetailsForm = ({ open, handleClose, handleWardDetails }) => {
                 required
                 onChange={handleChange}
                 value={values.nightShift}
-                disabled={loggedUserPosition === "matron"}
+                disabled={loggedUserPosition === "Matron"}
                 error={touched.nightShift && Boolean(errors.nightShift)}
                 helperText={touched.nightShift && errors.nightShift}
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} color="primary">
+              <Button onClick={() => handleCancel()} color="primary">
                 Cancel
               </Button>
               <Button
