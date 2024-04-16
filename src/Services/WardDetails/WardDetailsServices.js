@@ -1,5 +1,6 @@
 import { apiClient } from "../../Api/ApiClient";
 
+//==============================ADD NEW WARD============================
 //add a new ward
 export const addWard = async (value) => {
   try {
@@ -11,6 +12,18 @@ export const addWard = async (value) => {
     throw new Error("Couldn't add a new ward");
   }
 };
+
+//retirve available matrons
+export const retrieveMatronNics = async (username) => {
+  try {
+    const response = await apiClient.get("/ward/get-all-matrons");
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't retrieve matron nics");
+  }
+};
+
+//=======================ADD A STAFF MEMBER==============================
 
 //add a new staff member
 export const addStaff = async (value) => {
@@ -31,6 +44,8 @@ export const retrieveWardNumbers = async () => {
     throw new Error("Couldn't retieve ward numbers");
   }
 };
+
+//=========================BASIC WARD DETAILS===========================
 
 //retieve all ward names relevant to a matron
 export const retrieveWardNames = async (username) => {
@@ -66,6 +81,8 @@ export const retrieveWardDataOfLoggedUser = async (username) => {
     throw new Error("Couldn't retrieve selected ward data");
   }
 };
+
+//=========================EDIT WARD DATA==============================
 
 //retrive full ward details for edit
 export const retrieveBasicWardData = async (wardName) => {
@@ -108,12 +125,12 @@ export const sendEditedWardDetails = async (values) => {
   }
 };
 
-//retirve available matrons
-export const retrieveMatronNics = async (username) => {
+//retirve available sisters
+export const retrieveSistersNics = async (username) => {
   try {
-    const response = await apiClient.get("/ward/get-all-matrons");
+    const response = await apiClient.get("/show-available-sisters");
     return response.data;
   } catch (err) {
-    throw new Error("Couldn't retrieve matron nics");
+    throw new Error("Couldn't retrieve sister nics");
   }
 };

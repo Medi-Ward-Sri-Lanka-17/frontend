@@ -6,6 +6,8 @@ import {
   DialogActions,
   TextField,
   Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
 import Swal from "sweetalert2";
@@ -14,6 +16,7 @@ import { useAuth } from "../../Security/AuthContext";
 import { retrieveBasicWardData } from "../../Services/WardDetails/WardDetailsServices";
 import { sendEditedWardDetails } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveBasicWardDataSister } from "../../Services/WardDetails/WardDetailsServices";
+import { retrieveSistersNics } from "../../Services/WardDetails/WardDetailsServices";
 
 const AddWardDetailsForm = ({
   open,
@@ -24,6 +27,8 @@ const AddWardDetailsForm = ({
 }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [isCancelButtonPress, setIsCancelButtonPress] = useState(false);
+  const [sistersNics, setSisterNics] = useState([]);
+  const [isSisterNicDropdown, setIsSisterNicDropdown] = useState(false);
   const [wardData, setWardData] = useState({
     wardName: "",
     wardNo: "",
@@ -46,6 +51,9 @@ const AddWardDetailsForm = ({
         if (positionData === "Matron") {
           if (isWardSelect === true) {
             const data = await retrieveBasicWardData(selectedWard);
+            const sisterNics = await retrieveSistersNics();
+
+            setSisterNics(sisterNics);
 
             setWardData({
               wardName: data.wardName,
@@ -107,6 +115,10 @@ const AddWardDetailsForm = ({
     setIsCancelButtonPress(true);
   };
 
+  const handleSisterNicClick = () => {
+    setIsSisterNicDropdown(true);
+  };
+
   return (
     <Formik
       initialValues={wardData}
@@ -166,19 +178,42 @@ const AddWardDetailsForm = ({
               />
 
               <label>Sister NIC</label>
-              <Field
-                as={TextField}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="sisterNic"
-                required
-                onChange={handleChange}
-                value={values.sisterNic}
-                disabled={loggedUserPosition === "Sister"}
-                error={touched.sisterNic && Boolean(errors.sisterNic)}
-                helperText={touched.sisterNic && errors.sisterNic}
-              />
+              {isSisterNicDropdown ? (
+                <Field
+                  as={Select}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="sisterNic"
+                  required
+                  disabled={loggedUserPosition === "Sister"}
+                  onChange={handleChange}
+                  value={values.sisterNic}
+                  error={touched.sisterNic && Boolean(errors.sisterNic)}
+                  helperText={touched.sisterNic && errors.sisterNic}
+                >
+                  {sistersNics.map((nic) => (
+                    <MenuItem key={nic} value={nic}>
+                      {nic}
+                    </MenuItem>
+                  ))}
+                </Field>
+              ) : (
+                <Field
+                  as={TextField}
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  name="sisterNic"
+                  required
+                  onChange={handleChange}
+                  value={values.sisterNic}
+                  disabled={loggedUserPosition === "Sister"}
+                  onClick={handleSisterNicClick}
+                  error={touched.sisterNic && Boolean(errors.sisterNic)}
+                  helperText={touched.sisterNic && errors.sisterNic}
+                />
+              )}
 
               <label>Total number of nurses in ward</label>
               <Field
