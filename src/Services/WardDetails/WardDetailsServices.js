@@ -82,6 +82,46 @@ export const retrieveWardDataOfLoggedUser = async (username) => {
   }
 };
 
+//retrieve sister details when logged user position not matron
+export const retrieveSisterDetailsForOther = async (wardNo) => {
+  try {
+    console.log();
+    const response = await apiClient.get(`/get-sister-details/${wardNo}`);
+    console.log(response.data);
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't retrieve sister details");
+  }
+};
+
+//retrieve sister details when logged user position is matron
+export const retrieveSisterDetailsForMatron = async (wardName) => {
+  try {
+    console.log();
+    const response = await apiClient.get(
+      `/get-sister-details-matron/${wardName}`
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't retrieve sister details");
+  }
+};
+
+//send edited sister details values when matron logged
+export const sendEditedSisterDetailsForMatron = async (values) => {
+  try {
+    // console.log("new ward details values");
+    const response = await apiClient.put(
+      "/update-sister-details-matron",
+      values
+    );
+    console.log(response);
+  } catch (err) {
+    throw new Error("Couldn't edit ward details");
+  }
+};
+
 //=========================EDIT WARD DATA==============================
 
 //retrive full ward details for edit

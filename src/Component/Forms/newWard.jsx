@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
 import {
   Dialog,
   DialogTitle,
@@ -19,7 +18,6 @@ import { AddNewWardDetailsValidation } from "../../Validation/wardDetailsValidat
 import { retrieveMatronNics } from "../../Services/WardDetails/WardDetailsServices";
 
 const AddNewWardForm = ({ open, handleClose }) => {
-  const [successMessage, setSuccessMessage] = useState(null);
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [matrons, setMatrons] = useState([]);
   const [wardData, setWardData] = useState({
@@ -62,20 +60,6 @@ const AddNewWardForm = ({ open, handleClose }) => {
     handleClose();
     resetForm();
   };
-
-  // const handleCancel = () => {
-  //   handleClose(); // Close the dialog
-  //   setWardData({
-  //     // Reset the form fields
-  //     wardName: "",
-  //     wardNo: "",
-  //     matron: "",
-  //     numberOfNurses: "",
-  //     morningShift: "",
-  //     eveningShift: "",
-  //     nightShift: "",
-  //   });
-  // };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
