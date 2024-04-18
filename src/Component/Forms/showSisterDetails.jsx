@@ -45,9 +45,6 @@ const StaffDetailsForm = ({
       try {
         const loggedPositionData = authContext.position;
         setLoggedUserPosition(loggedPositionData);
-
-        console.log(isPressMore);
-
         if (isPressMore === true) {
           const sisterData2 = await retrieveSisterDetailsForMatron(
             sisterWardNo
@@ -93,12 +90,34 @@ const StaffDetailsForm = ({
     });
   };
 
+  const showErrorAlert = () => {
+    let alertText = "";
+    if (loggedUserPosition === "sister") {
+      alertText = "Your details update failed";
+    } else {
+      alertText = "Sister details update failed";
+    }
+    Swal.fire({
+      text: alertText,
+      icon: "warning",
+      confirmButtonColor: "#243e4f",
+    });
+  };
+
   const manualSubmit = async () => {
     try {
+      await sisterFormik.handleSubmit();
+
+      // After submission, the form values are updated in the values argument of the onSubmit handler
+      const valuesToUpdate = sisterFormik.values;
+
       if (loggedUserPosition === "Matron") {
-        console.log("manual submit :", formValues);
-        const response = await sendEditedSisterDetailsForMatron(formValues);
-        console.log(response);
+        const response = await sendEditedSisterDetailsForMatron(valuesToUpdate);
+        if (response == true) {
+          showSuccessAlert();
+        } else {
+          showErrorAlert();
+        }
       }
       sisterFormik.submitForm();
     } catch (error) {
