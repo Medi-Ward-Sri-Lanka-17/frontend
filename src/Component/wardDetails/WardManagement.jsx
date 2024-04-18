@@ -25,6 +25,7 @@ export default function WardManagement() {
   const [isAddNewSubmitted, setIsAddNewSubmitted] = useState(false);
   const [isWardDataEdited, setIsWardDataEdited] = useState(false);
   const [isWardSelect, setIsWardSelect] = useState(false);
+  const [isPressMore, setIsPressMore] = useState(false);
 
   {
     /*============================Initial field values fetching====================*/
@@ -133,8 +134,6 @@ export default function WardManagement() {
     }
   };
 
-  //===============================================================
-
   {
     /*=======================User interrface==============================*/
   }
@@ -207,7 +206,6 @@ export default function WardManagement() {
                   name="wardName"
                   value={wardName}
                   fullWidth
-                  // disabled={selectedWard === "" && true}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -218,7 +216,6 @@ export default function WardManagement() {
                   name="wardNo"
                   value={wardNo}
                   fullWidth
-                  // disabled={selectedWard === "" && true}
                 />
               </Grid>
             </Grid>
@@ -233,7 +230,6 @@ export default function WardManagement() {
                   name="sisterName"
                   value={sisterName}
                   fullWidth
-                  // disabled={selectedWard === "" && true}
                   InputProps={{
                     endAdornment: (
                       //sister detail form
@@ -242,7 +238,10 @@ export default function WardManagement() {
                         size="medium"
                         style={{ margin: "20px" }}
                         disabled={selectedWard === "" && position === "Matron"}
-                        onClick={() => setStaffDetailsFormOpen(true)}
+                        onClick={() => {
+                          setStaffDetailsFormOpen(true);
+                          setIsPressMore(true);
+                        }}
                       >
                         More
                       </Button>
@@ -259,7 +258,6 @@ export default function WardManagement() {
                   name="numberOfNurses"
                   value={numberOfNurses}
                   fullWidth
-                  // disabled={selectedWard === "" && true}
                 />
               </Grid>
             </Grid>
@@ -297,7 +295,9 @@ export default function WardManagement() {
       <StaffDetailsForm
         open={isStaffDetailsFormOpen}
         handleClose={() => setStaffDetailsFormOpen(false)}
-        initialSisterName={sisterName}
+        sisterWardNo={wardNo}
+        isPressMore={isPressMore}
+        isWardSelect={isWardSelect}
       />
 
       {/* Integrate AddWardDetailsForm as a popup */}
@@ -305,7 +305,6 @@ export default function WardManagement() {
         open={isEditBasicWardDetailsDialogOpen}
         handleClose={() => setEditBasicWardDetailsDialogOpen(false)}
         handleWardDetails={handleEditBasicWardDetailsSave}
-        selectedWard={selectedWard}
         isWardSelect={isWardSelect}
         onClose={() => handleWardChange(selectedWard)}
       />
