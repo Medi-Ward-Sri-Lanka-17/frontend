@@ -4,8 +4,6 @@ import { apiClient } from "../../Api/ApiClient";
 //add a new ward
 export const addWard = async (value) => {
   try {
-    // console.log("Add a ward data");
-    // console.log(value);
     const response = await apiClient.post("/ward/add-ward", value);
     return response.status;
   } catch (err) {
@@ -28,7 +26,6 @@ export const retrieveMatronNics = async (username) => {
 //add a new staff member
 export const addStaff = async (value) => {
   try {
-    // console.log(value);
     const response = await apiClient.post("/add-staff", value);
   } catch (err) {
     throw new Error("Couldn't add a new staff member");
@@ -51,8 +48,6 @@ export const retrieveWardNumbers = async () => {
 export const retrieveWardNames = async (username) => {
   try {
     const response = await apiClient.get(`/get-ward-names/${username}`);
-    // console.log("ward names in service file");
-    // console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve ward names");
@@ -63,7 +58,6 @@ export const retrieveWardNames = async (username) => {
 export const retrieveWardData = async (wardName) => {
   try {
     const response = await apiClient.get(`/show-ward/${wardName}`);
-    console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve selected ward data");
@@ -73,9 +67,7 @@ export const retrieveWardData = async (wardName) => {
 //retreive basic ward data of the logged user
 export const retrieveWardDataOfLoggedUser = async (username) => {
   try {
-    console.log();
     const response = await apiClient.get(`/show-logged-user-ward/${username}`);
-    // console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve selected ward data");
@@ -85,9 +77,7 @@ export const retrieveWardDataOfLoggedUser = async (username) => {
 //retrieve sister details when logged user position not matron
 export const retrieveSisterDetailsForOther = async (wardNo) => {
   try {
-    console.log();
     const response = await apiClient.get(`/get-sister-details/${wardNo}`);
-    console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve sister details");
@@ -97,11 +87,9 @@ export const retrieveSisterDetailsForOther = async (wardNo) => {
 //retrieve sister details when logged user position is matron
 export const retrieveSisterDetailsForMatron = async (wardName) => {
   try {
-    console.log();
     const response = await apiClient.get(
       `/get-sister-details-matron/${wardName}`
     );
-    console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve sister details");
@@ -111,12 +99,11 @@ export const retrieveSisterDetailsForMatron = async (wardName) => {
 //send edited sister details values when matron logged
 export const sendEditedSisterDetailsForMatron = async (values) => {
   try {
-    // console.log("new ward details values");
     const response = await apiClient.put(
       "/update-sister-details-matron",
       values
     );
-    console.log(response);
+    return response.data;
   } catch (err) {
     throw new Error("Couldn't edit ward details");
   }
@@ -127,9 +114,7 @@ export const sendEditedSisterDetailsForMatron = async (values) => {
 //retrive full ward details for edit
 export const retrieveBasicWardData = async (wardName) => {
   try {
-    console.log("edit ward details" + wardName);
     const response = await apiClient.get(`/show-fullward/${wardName}`);
-    // console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve selected ward data");
@@ -139,11 +124,9 @@ export const retrieveBasicWardData = async (wardName) => {
 //retrive full ward details for edit when sister log
 export const retrieveBasicWardDataSister = async (username) => {
   try {
-    console.log("edit ward details" + username);
     const response = await apiClient.get(
       `/show-fullward-By-Sister/${username}`
     );
-    // console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve selected ward data");
@@ -153,7 +136,6 @@ export const retrieveBasicWardDataSister = async (username) => {
 //send edited ward details values
 export const sendEditedWardDetails = async (values) => {
   try {
-    // console.log("new ward details values");
     const response = await apiClient.put("/ward-sister-update", values);
     if (response.status === 200) {
       return true;
