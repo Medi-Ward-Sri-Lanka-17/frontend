@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../Component/Header'
 import SideBar from '../../Component/SideBar'
 import {
@@ -27,6 +27,8 @@ const LeaveApprove = () => {
   // To get ward no using selection
   const [wards, setWards] = useState([])
   const [wardNo, setWardNo] = useState('All')
+  const [rows, setRows] = useState([])
+  const [position, setPosition] = useState('All')
 
   // Use naviagete
   const navigate = useNavigate()
@@ -56,54 +58,64 @@ const LeaveApprove = () => {
     console.log('Selected Row Details:', selectedRow)
   }
 
+  //Handle changes in filters
+
+  const handlePositionChange = (event) => {
+    setPosition(event.target.value)
+  }
+
+  //working when page loading
+  useEffect(() => {}, [])
+
   //Define tempory Raws in datagrid
-  const rows = [
-    {
-      id: 1,
-      leaveId: 'L001',
-      leaveNo: 'LN001',
-      name: 'John Doe',
-      leaveDate: '2022-12-01',
-      leaveEndDate: '2022-12-05',
-      requestedDate: '2022-11-25',
-    },
-    {
-      id: 2,
-      leaveId: 'L002',
-      leaveNo: 'LN002',
-      name: 'Jane Doe',
-      leaveDate: '2022-12-05',
-      leaveEndDate: '2022-12-10',
-      requestedDate: '2022-11-28',
-    },
-    {
-      id: 3,
-      leaveId: 'L003',
-      leaveNo: 'LN003',
-      name: 'Bob Smith',
-      leaveDate: '2022-12-10',
-      leaveEndDate: '2022-12-15',
-      requestedDate: '2022-12-01',
-    },
-    {
-      id: 4,
-      leaveId: 'L004',
-      leaveNo: 'LN004',
-      name: 'Alice Johnson',
-      leaveDate: '2022-12-15',
-      leaveEndDate: '2022-12-20',
-      requestedDate: '2022-12-05',
-    },
-    {
-      id: 5,
-      leaveId: 'L005',
-      leaveNo: 'LN005',
-      name: 'Charlie Brown',
-      leaveDate: '2022-12-20',
-      leaveEndDate: '2022-12-25',
-      requestedDate: '2022-12-10',
-    },
-  ]
+  // const rows =
+  // [
+  //   {
+  //     id: 1,
+  //     leaveId: 'L001',
+  //     leaveNo: 'LN001',
+  //     name: 'John Doe',
+  //     leaveDate: '2022-12-01',
+  //     leaveEndDate: '2022-12-05',
+  //     requestedDate: '2022-11-25',
+  //   },
+  //   {
+  //     id: 2,
+  //     leaveId: 'L002',
+  //     leaveNo: 'LN002',
+  //     name: 'Jane Doe',
+  //     leaveDate: '2022-12-05',
+  //     leaveEndDate: '2022-12-10',
+  //     requestedDate: '2022-11-28',
+  //   },
+  //   {
+  //     id: 3,
+  //     leaveId: 'L003',
+  //     leaveNo: 'LN003',
+  //     name: 'Bob Smith',
+  //     leaveDate: '2022-12-10',
+  //     leaveEndDate: '2022-12-15',
+  //     requestedDate: '2022-12-01',
+  //   },
+  //   {
+  //     id: 4,
+  //     leaveId: 'L004',
+  //     leaveNo: 'LN004',
+  //     name: 'Alice Johnson',
+  //     leaveDate: '2022-12-15',
+  //     leaveEndDate: '2022-12-20',
+  //     requestedDate: '2022-12-05',
+  //   },
+  //   {
+  //     id: 5,
+  //     leaveId: 'L005',
+  //     leaveNo: 'LN005',
+  //     name: 'Charlie Brown',
+  //     leaveDate: '2022-12-20',
+  //     leaveEndDate: '2022-12-25',
+  //     requestedDate: '2022-12-10',
+  //   },
+  // ]
 
   //Define Columns of the DataGrid
 
@@ -194,10 +206,10 @@ const LeaveApprove = () => {
       <SideBar />
       <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
         <Header title="LEAVE APPROVE" />
-        <Grid container spacing={2} style={{ marginTop: '2vh' }}>
-          <Grid item xs={3} sx={{ marginLeft: '5vh' }}>
-            <Typography variant="p" sx={{ fontWeight: '500' }}>
-              Ward No:
+        <Grid container spacing={2} style={{ marginTop: '4vh' }}>
+          <Grid item xs={6} style={{ paddingLeft: '6vw' }}>
+            <Typography variant="p" sx={{ fontWeight: '400' }}>
+              Filter By Ward No:
             </Typography>
             <FormControl
               sx={{ minWidth: 160 }}
@@ -213,6 +225,45 @@ const LeaveApprove = () => {
               >
                 <MenuItem value="All" defaultChecked>
                   <em>All</em>
+                </MenuItem>
+                {wards.map((ward) => (
+                  <MenuItem key={ward.id} value={ward.wardNo}>
+                    {ward.wardNo}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid
+            item
+            xs={5}
+            sx={{ marginLeft: 'auto', textAlign: 'right' }}
+            style={{ paddingRight: '6vw' }}
+          >
+            <Typography variant="p" sx={{ fontWeight: '400' }}>
+              Filter by Position:
+            </Typography>
+            <FormControl
+              sx={{ minWidth: 160 }}
+              style={{ marginLeft: '3vh', marginTop: '-1vh' }}
+              size="small"
+            >
+              <InputLabel id="ward-no-label">Select Position</InputLabel>
+              <Select
+                labelId="ward-no-label"
+                id="ward-no"
+                value={position}
+                label="Select Ward No"
+                onChange={handlePositionChange}
+              >
+                <MenuItem value="All" defaultChecked>
+                  <em>All</em>
+                </MenuItem>
+                <MenuItem value="Sister">
+                  <em>Sisters</em>
+                </MenuItem>
+                <MenuItem value="Nurse">
+                  <em>Nurses</em>
                 </MenuItem>
               </Select>
             </FormControl>
