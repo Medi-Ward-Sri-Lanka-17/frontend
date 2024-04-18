@@ -15,13 +15,7 @@ import { retrieveSisterDetailsForMatron } from "../../Services/WardDetails/WardD
 import { sendEditedSisterDetailsForMatron } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveSisterDetailsForOther } from "../../Services/WardDetails/WardDetailsServices";
 
-const StaffDetailsForm = ({
-  open,
-  handleClose,
-  sisterWardNo,
-  isPressMore,
-  selectedWard,
-}) => {
+const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
   const [formValues, setFormValues] = useState({
     fullName: "",
     firstName: "",
@@ -46,11 +40,10 @@ const StaffDetailsForm = ({
         const loggedPositionData = authContext.position;
         setLoggedUserPosition(loggedPositionData);
         if (isPressMore === true) {
-          const sisterData2 = await retrieveSisterDetailsForMatron(
-            sisterWardNo
-          );
+          const sisterData = await retrieveSisterDetailsForMatron(sisterWardNo);
+          console.log(sisterData);
           setFormValues({
-            ...sisterData2,
+            ...sisterData,
           });
         }
       } catch (error) {
@@ -77,7 +70,7 @@ const StaffDetailsForm = ({
 
   const showSuccessAlert = () => {
     let alertText = "";
-    if (loggedUserPosition === "sister") {
+    if (loggedUserPosition === "Sister") {
       alertText = "Your details successfully updated";
     } else {
       alertText = "Sister details successfully updated";
@@ -92,7 +85,7 @@ const StaffDetailsForm = ({
 
   const showErrorAlert = () => {
     let alertText = "";
-    if (loggedUserPosition === "sister") {
+    if (loggedUserPosition === "Sister") {
       alertText = "Your details update failed";
     } else {
       alertText = "Sister details update failed";
@@ -106,9 +99,8 @@ const StaffDetailsForm = ({
 
   const manualSubmit = async () => {
     try {
-      await sisterFormik.handleSubmit();
+      sisterFormik.handleSubmit();
 
-      // After submission, the form values are updated in the values argument of the onSubmit handler
       const valuesToUpdate = sisterFormik.values;
 
       if (loggedUserPosition === "Matron") {

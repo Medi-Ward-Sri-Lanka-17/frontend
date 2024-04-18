@@ -74,6 +74,8 @@ export const retrieveWardDataOfLoggedUser = async (username) => {
   }
 };
 
+//======================SISTER DATA=============================
+
 //retrieve sister details when logged user position not matron
 export const retrieveSisterDetailsForOther = async (wardNo) => {
   try {
@@ -90,6 +92,7 @@ export const retrieveSisterDetailsForMatron = async (wardName) => {
     const response = await apiClient.get(
       `/get-sister-details-matron/${wardName}`
     );
+    console.log(response.data);
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retrieve sister details");
