@@ -12,7 +12,7 @@ export const addWard = async (value) => {
 };
 
 //retirve available matrons
-export const retrieveMatronNics = async (username) => {
+export const retrieveMatronNics = async () => {
   try {
     const response = await apiClient.get("/ward/get-all-matrons");
     return response.data;
@@ -39,6 +39,27 @@ export const retrieveWardNumbers = async () => {
     return response.data;
   } catch (err) {
     throw new Error("Couldn't retieve ward numbers");
+  }
+};
+
+//existing user data retrieve
+export const retrieveExistingUser = async (nic) => {
+  try {
+    console.log(nic);
+    const response = await apiClient.get(`/get-existing-user/${nic}`);
+    console.log(response.data);
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't retieve user data");
+  }
+};
+
+export const retrieveAllUserNics = async () => {
+  try {
+    const response = await apiClient.get("/get-all-users-nics");
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't retieve user data");
   }
 };
 
@@ -86,8 +107,8 @@ export const retrieveSisterDetailsForOther = async (wardNo) => {
   }
 };
 
-//retrieve sister details when logged user position is matron
-export const retrieveSisterDetailsForMatron = async (wardName) => {
+//retrieve sister details for all posiitons
+export const retrieveSisterDetails = async (wardName) => {
   try {
     const response = await apiClient.get(
       `/get-sister-details-matron/${wardName}`
@@ -117,6 +138,7 @@ export const sendEditedSisterDetailsForMatron = async (values) => {
 //retrive full ward details for edit
 export const retrieveBasicWardData = async (wardName) => {
   try {
+    console.log(wardName);
     const response = await apiClient.get(`/show-fullward/${wardName}`);
     return response.data;
   } catch (err) {
