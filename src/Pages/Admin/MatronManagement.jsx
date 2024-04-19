@@ -69,13 +69,13 @@ const MatronManagement = () => {
     {
       field: 'email',
       headerName: 'Email',
-      width: 290,
+      width: 330,
       headerClassName: 'colored-data-grid',
     },
     {
       field: 'mobileNo',
       headerName: 'Mobile No.',
-      width: 150,
+      width: 170,
       headerClassName: 'colored-data-grid',
     },
     {
@@ -128,12 +128,16 @@ const MatronManagement = () => {
       <SideBar />
       <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
         <Header title="Admin - Matron Management" />
-        <Grid container spacing={2} style={{ padding: '3vh' }}>
+        <Grid
+          container
+          spacing={2}
+          style={{ padding: '3vh', paddingLeft: '6vw' }}
+        >
           <Grid item xs={6}>
             <DefaultButton
               title="Add Matron"
-              width="10vw"
-              height="50px"
+              width="8vw"
+              height="45px"
               onClick={() => setIsAddMatronOpen(true)}
             />
           </Grid>
