@@ -11,9 +11,8 @@ import {
 } from "@mui/material";
 import { addSisterValidation } from "../../Validation/wardDetailsValidation";
 import { useAuth } from "../../Security/AuthContext";
-import { retrieveSisterDetailsForMatron } from "../../Services/WardDetails/WardDetailsServices";
+import { retrieveSisterDetails } from "../../Services/WardDetails/WardDetailsServices";
 import { sendEditedSisterDetailsForMatron } from "../../Services/WardDetails/WardDetailsServices";
-import { retrieveSisterDetailsForOther } from "../../Services/WardDetails/WardDetailsServices";
 
 const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
   const [formValues, setFormValues] = useState({
@@ -40,7 +39,7 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
         const loggedPositionData = authContext.position;
         setLoggedUserPosition(loggedPositionData);
         if (isPressMore === true) {
-          const sisterData = await retrieveSisterDetailsForMatron(sisterWardNo);
+          const sisterData = await retrieveSisterDetails(sisterWardNo);
           console.log(sisterData);
           setFormValues({
             ...sisterData,
@@ -58,7 +57,7 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
     try {
       setEditMode(!editMode);
       if (isPressMore === true && loggedUserPosition === "Matron") {
-        const sisterData2 = await retrieveSisterDetailsForMatron(sisterWardNo);
+        const sisterData2 = await retrieveSisterDetails(sisterWardNo);
         setFormValues({
           ...sisterData2,
         });
@@ -165,11 +164,11 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
             required
             disabled={!editMode}
             error={
-              sisterFormik.touched.fisrtName &&
-              Boolean(sisterFormik.errors.fisrtName)
+              sisterFormik.touched.firstName &&
+              Boolean(sisterFormik.errors.firstName)
             }
             helperText={
-              sisterFormik.touched.fisrtName && sisterFormik.errors.firstName
+              sisterFormik.touched.firstName && sisterFormik.errors.firstName
             }
           />
           <label>Last Name</label>
