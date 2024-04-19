@@ -1,4 +1,5 @@
 import { apiClient } from "../../Api/ApiClient";
+import { showUnsuccessAlert } from "../../Component/ShowAlert";
 
 //==============================ADD NEW WARD============================
 //add a new ward
@@ -49,8 +50,17 @@ export const retrieveExistingUser = async (nic) => {
     const response = await apiClient.get(`/get-existing-user/${nic}`);
     console.log(response.data);
     return response.data;
-  } catch (err) {
-    throw new Error("Couldn't retieve user data");
+  } catch (error) {
+    if (error.response) {
+      console.error("Error Response:", error.response.data);
+      showUnsuccessAlert(error.response.data);
+    } else if (error.request) {
+      console.error("Error Request:", error.request);
+      showUnsuccessAlert("No response from server");
+    } else {
+      console.error("Error message:", error.message);
+      showUnsuccessAlert("Error" + error.message);
+    }
   }
 };
 
