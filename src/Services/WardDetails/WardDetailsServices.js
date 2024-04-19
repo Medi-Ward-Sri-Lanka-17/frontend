@@ -1,6 +1,24 @@
 import { apiClient } from "../../Api/ApiClient";
 import { showUnsuccessAlert } from "../../Component/ShowAlert";
 
+export const retriveAllWards = async () => {
+  try {
+    const response = await apiClient.get("/wards");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error Response:", error.response.data);
+      showUnsuccessAlert(error.response.data);
+    } else if (error.request) {
+      console.error("Error Request:", error.request);
+      showUnsuccessAlert("No response from server");
+    } else {
+      console.error("Error Message:", error.message);
+      showUnsuccessAlert("Error: " + error.message);
+    }
+  }
+};
+
 //==============================ADD NEW WARD============================
 //add a new ward
 export const addWard = async (value) => {
@@ -50,17 +68,8 @@ export const retrieveExistingUser = async (nic) => {
     const response = await apiClient.get(`/get-existing-user/${nic}`);
     console.log(response.data);
     return response.data;
-  } catch (error) {
-    if (error.response) {
-      console.error("Error Response:", error.response.data);
-      showUnsuccessAlert(error.response.data);
-    } else if (error.request) {
-      console.error("Error Request:", error.request);
-      showUnsuccessAlert("No response from server");
-    } else {
-      console.error("Error message:", error.message);
-      showUnsuccessAlert("Error" + error.message);
-    }
+  } catch (err) {
+    throw new Error("Couldn't retieve user data");
   }
 };
 
@@ -148,7 +157,6 @@ export const sendEditedSisterDetailsForMatron = async (values) => {
 //retrive full ward details for edit
 export const retrieveBasicWardData = async (wardName) => {
   try {
-    console.log(wardName);
     const response = await apiClient.get(`/show-fullward/${wardName}`);
     return response.data;
   } catch (err) {
