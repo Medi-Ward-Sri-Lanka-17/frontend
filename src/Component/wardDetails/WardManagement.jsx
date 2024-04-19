@@ -306,6 +306,7 @@ export default function WardManagement() {
         handleClose={() => setEditBasicWardDetailsDialogOpen(false)}
         handleWardDetails={handleEditBasicWardDetailsSave}
         isWardSelect={isWardSelect}
+        selectedWard={selectedWard}
         onClose={() => handleWardChange(selectedWard)}
       />
 
