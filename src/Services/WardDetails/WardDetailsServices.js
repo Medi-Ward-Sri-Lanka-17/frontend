@@ -199,3 +199,30 @@ export const retrieveSistersNics = async (username) => {
     throw new Error("Couldn't retrieve sister nics");
   }
 };
+
+//===============TABLE RELATED FUNCTIONS=================
+
+//Retrieve all nurses related to the ward
+export const retrieveAllStaffMembers = async (wardNo) => {
+  try {
+    console.log("service file");
+    const response = await apiClient.get(`/show-staff/${wardNo}`);
+    console.log("Response from API:", response.data);
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error Response:", error.response.data);
+      showUnsuccessAlert(error.response.data);
+      return null;
+    } else if (error.request) {
+      console.error("Error Request:", error.request);
+      showUnsuccessAlert("No response from server");
+      return null;
+    } else {
+      console.error("Error Message:", error.message);
+      showUnsuccessAlert("Error: " + error.message);
+      return null;
+    }
+  }
+};
