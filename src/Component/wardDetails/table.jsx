@@ -20,6 +20,7 @@ export default function NursesTable({ wardNo, isWardSelect }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [loggedUserPosition, setLoggedUserPosition] = useState();
   const [condition, setCondition] = useState(false);
+
   const authContext = useAuth();
 
   useEffect(() => {
@@ -75,6 +76,7 @@ export default function NursesTable({ wardNo, isWardSelect }) {
 
   const handleEdit = (nic) => {
     console.log(`Edit clicked for ID ${nic}`);
+
     setIsEditFormOpen(true);
     setSelectedNurseId(nic);
   };
@@ -210,6 +212,7 @@ export default function NursesTable({ wardNo, isWardSelect }) {
         open={isEditFormOpen}
         handleClose={() => setIsEditFormOpen(false)}
         staffId={selectedNurseId}
+        nic={selectedNurseId}
         // Add other necessary props
       />
     </div>

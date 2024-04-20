@@ -1,3 +1,4 @@
+import { responsiveProperty } from "@mui/material/styles/cssUtils";
 import { apiClient } from "../../Api/ApiClient";
 import { showUnsuccessAlert } from "../../Component/ShowAlert";
 
@@ -224,5 +225,26 @@ export const retrieveAllStaffMembers = async (wardNo) => {
       showUnsuccessAlert("Error: " + error.message);
       return null;
     }
+  }
+};
+
+//Retrieve nurse details for edit
+export const retrieveNurseData = async (nic) => {
+  try {
+    const response = await apiClient.get(`/get-nurse-details/${nic}`);
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't retrieve nurse data");
+  }
+};
+
+//send edited nurse details values when matron logged
+export const sendEditedNurseDetails = async (values) => {
+  try {
+    const response = await apiClient.put("/update-nurse-details", values);
+    console.log(response.data);
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't edit ward details");
   }
 };
