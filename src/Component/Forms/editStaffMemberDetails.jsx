@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { fetchPosition } from '../../Data/wardDetails/wardService'
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,88 +7,92 @@ import {
   TextField,
   Button,
   MenuItem,
-} from '@mui/material'
-import { Formik, Form, useFormik } from 'formik'
-import Swal from 'sweetalert2'
-import { addNurseValidation } from '../../Validation/wardDetailsValidation'
-import { getNurseById } from '../../Data/wardDetails/nursesService'
-import { useAuth } from '../../Security/AuthContext'
+} from "@mui/material";
+import { Formik, Form, useFormik } from "formik";
+import Swal from "sweetalert2";
+import { addSatffValidation } from "../../Validation/wardDetailsValidation";
+import { useAuth } from "../../Security/AuthContext";
+import { retrieveNurseData } from "../../Services/WardDetails/WardDetailsServices.js";
+import { sendEditedNurseDetails } from "../../Services/WardDetails/WardDetailsServices.js";
 
-const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
-  const [loggedUserPosition, setLoggedUserPosition] = useState('')
+const EditStaffMemberForm = ({ open, handleClose, nic }) => {
+  const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [nurse, setNurse] = useState({
-    firstName: '',
-    lastName: '',
-    fullName: '',
-    serviceId: '',
-    birthdate: '',
-    email: '',
-    position: '',
-    leaveNo: '',
-    mobileNo: '',
-    serviceStartDate: '',
-    wardNo: '',
-    remainingVacationLeaves: '',
-    remainingCasualLeaves: '',
-  })
+    firstName: "",
+    lastName: "",
+    fullName: "",
+    nic: "",
+    dob: "",
+    email: "",
+    position: "",
+    leaveNo: "",
+    mobileNo: "",
+    serviceStartedDate: "",
+    wardNo: "",
+    remainingVacationLeaves: "",
+    remainingCasualLeaves: "",
+  });
 
-  const authContext = useAuth()
+  const authContext = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const positionData = authContext.position
-        const nurseData = await getNurseById(staffMemberServiceId)
-        setNurse(nurseData)
-        setLoggedUserPosition(positionData)
+        const positionData = authContext.position;
+        const nurseData = await retrieveNurseData(nic);
+        console.log(nurseData);
+        setNurse(nurseData);
+        setLoggedUserPosition(positionData);
       } catch (error) {
-        console.error('Error fetching data:', error.message)
+        console.error("Error fetching data:", error.message);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, [nic]);
 
   const showSuccessAlert = () => {
-    handleClose()
+    handleClose();
     Swal.fire({
-      text: 'Staff member successfully added!',
-      icon: 'success',
-      confirmButtonColor: '#243e4f',
-    })
-  }
+      text: "Staff member successfully added!",
+      icon: "success",
+      confirmButtonColor: "#243e4f",
+    });
+  };
 
   const handleEditNurse = (values) => {
-    console.log('updated nurses data ', values)
-  }
+    var response = sendEditedNurseDetails(values);
+    console.log(response);
+  };
 
   const formikEditNurse = useFormik({
     initialValues: nurse,
     enableReinitialize: true,
-    validationSchema: addNurseValidation,
+    validationSchema: addSatffValidation,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
-        console.log(values)
+        console.log(values);
 
-        showSuccessAlert()
-        handleClose()
-        actions.resetForm()
-        actions.setSubmitting(false)
-      }, 700)
+        showSuccessAlert();
+        handleClose();
+        actions.resetForm();
+        actions.setSubmitting(false);
+      }, 700);
     },
-  })
+  });
 
   //Use a seperate method for validate, because there was a problem in the validating with the onSubmit button
-  const handleManualSubmit = () => {
-    console.log(formikEditNurse.errors)
-    formikEditNurse.submitForm()
+  const handleManualSubmit = (values) => {
+    handleEditNurse(values);
+    console.log(formikEditNurse.errors);
+    formikEditNurse.submitForm();
     // handleAddNurse(formikEditNurse.values);
-  }
+  };
 
   return (
     <form autoComplete="off">
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Nurse</DialogTitle>
+        <DialogTitle>Edit Nurse Details</DialogTitle>
         <DialogContent>
           <label>First Name</label>
           <TextField
@@ -156,18 +159,16 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="serviceId"
-            value={formikEditNurse.values.serviceId}
+            name="nic"
+            value={formikEditNurse.values.nic}
             required
             onChange={formikEditNurse.handleChange}
             onBlur={formikEditNurse.handleBlur}
             error={
-              formikEditNurse.touched.serviceId &&
-              Boolean(formikEditNurse.errors.serviceId)
+              formikEditNurse.touched.nic && Boolean(formikEditNurse.errors.nic)
             }
             helperText={
-              formikEditNurse.touched.serviceId &&
-              formikEditNurse.errors.serviceId
+              formikEditNurse.touched.nic && formikEditNurse.errors.nic
             }
           />
 
@@ -177,18 +178,16 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
             margin="normal"
             fullWidth
             type="date"
-            name="birthdate"
-            value={formikEditNurse.values.birthdate}
+            name="dob"
+            value={formikEditNurse.values.dob}
             required
             onChange={formikEditNurse.handleChange}
             onBlur={formikEditNurse.handleBlur}
             error={
-              formikEditNurse.touched.birthdate &&
-              Boolean(formikEditNurse.errors.birthdate)
+              formikEditNurse.touched.dob && Boolean(formikEditNurse.errors.dob)
             }
             helperText={
-              formikEditNurse.touched.birthdate &&
-              formikEditNurse.errors.birthdate
+              formikEditNurse.touched.dob && formikEditNurse.errors.dob
             }
           />
 
@@ -233,7 +232,7 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
             }
           >
             <MenuItem value="Nurse">Nurse</MenuItem>
-            <MenuItem value="Sister" disabled={loggedUserPosition === 'sister'}>
+            <MenuItem value="Sister" disabled={loggedUserPosition === "sister"}>
               Sister
             </MenuItem>
           </TextField>
@@ -302,18 +301,18 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
             margin="normal"
             fullWidth
             type="date"
-            name="serviceStartDate"
-            value={formikEditNurse.values.serviceStartDate}
+            name="serviceStartedDate"
+            value={formikEditNurse.values.serviceStartedDate}
             required
             onChange={formikEditNurse.handleChange}
             onBlur={formikEditNurse.handleBlur}
             error={
-              formikEditNurse.touched.serviceStartDate &&
-              Boolean(formikEditNurse.errors.serviceStartDate)
+              formikEditNurse.touched.serviceStartedDate &&
+              Boolean(formikEditNurse.errors.serviceStartedDate)
             }
             helperText={
-              formikEditNurse.touched.serviceStartDate &&
-              formikEditNurse.errors.serviceStartDate
+              formikEditNurse.touched.serviceStartedDate &&
+              formikEditNurse.errors.serviceStartedDate
             }
           />
 
@@ -361,13 +360,16 @@ const EditStaffMemberForm = ({ open, handleClose, staffMemberServiceId }) => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button color="primary" onClick={handleManualSubmit}>
+          <Button
+            color="primary"
+            onClick={() => handleManualSubmit(formikEditNurse.values)}
+          >
             Submit
           </Button>
         </DialogActions>
       </Dialog>
     </form>
-  )
-}
+  );
+};
 
-export default EditStaffMemberForm
+export default EditStaffMemberForm;

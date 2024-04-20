@@ -116,6 +116,13 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
     }
   };
 
+  const handleCancel = async () => {
+    sisterFormik.resetForm();
+    setFormValues(formValues);
+    setEditMode(false);
+    handleClose();
+  };
+
   const sisterFormik = useFormik({
     initialValues: formValues,
     validationSchema: addSisterValidation,
@@ -320,7 +327,7 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCancel} color="primary">
             Cancel
           </Button>
           {editMode ? (
