@@ -1,33 +1,41 @@
+// Existing imports...
 import React, { useState } from "react";
 import Header from "../../Component/Header";
 import { Box, Grid, Avatar, Button, TextField } from "@mui/material";
 import SideBar from "../../Component/SideBar";
-import profilePicture from "./propic.png"; // Import the profile picture
-import Swal from "sweetalert2"; // Import Swal for alerts
-import "./Validation";
+import profilePicture from "./propic.png";
+import Swal from "sweetalert2";
+import validationSchema from "./Validation";
 
 const Profile = () => {
   // Sample user data (replace with actual user data)
   const [userData, setUserData] = useState({
     nicNumber: "199922900820",
+    fullName: "Pushpa Silva",
+    userName: "Pushpa",
     dateOfBirth: "1999-08-16",
+    email: "",
+    mobileNumber: "0779201111",
+    address: "No:1,Kotuwegoda, Matara",
     position: "Nurse",
     serviceStartDate: "2020-01-01",
     remainingCasualLeaves: 5,
     remainingVacationLeaves: 10,
-    profilePicture: profilePicture, // Use the imported profile picture
+    profilePicture: profilePicture,
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
-  // Function to handle profile picture selection
+  const [formErrors, setFormErrors] = useState({});
+  const [changePasswordVisible, setChangePasswordVisible] = useState(false);
+
   const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
-    // Handle the selected file
     console.log("Selected file:", file);
-    // Update profile picture in state
     setUserData({ ...userData, profilePicture: URL.createObjectURL(file) });
   };
 
-  // Function to show success alert
   const showSuccessAlert = (message) => {
     Swal.fire({
       text: message,
@@ -36,35 +44,39 @@ const Profile = () => {
     });
   };
 
-  // Function to handle changing profile picture
   const handleChangeProfilePicture = () => {
-    // Simulating profile picture change
     showSuccessAlert("You have successfully updated the profile picture!");
   };
 
-  // Function to handle changing password
-  const handleChangePassword = () => {
-    // Handle changing password action
-    console.log("Change password clicked");
+  const toggleChangePasswordVisibility = () => {
+    setChangePasswordVisible(true); // Set visibility to true
   };
 
-  // Function to handle saving changes
-  const handleSaveChanges = () => {
-    // Handle saving changes action
-    showSuccessAlert("You have successfully changed the profile details!");
+  const handleChangePassword = () => {
+    console.log("handle save changes");
+    console.log(userData);
+    validationSchema
+      .validate(userData, { abortEarly: false })
+      .then(() => {
+        showSuccessAlert("You have successfully changed the profile details!");
+        setFormErrors({});
+      })
+      .catch((validationErrors) => {
+        const errors = {};
+        validationErrors.inner.forEach((error) => {
+          errors[error.path] = error.message;
+        });
+        setFormErrors(errors);
+      });
   };
 
   return (
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <div className="PageContent" style={{ width: "100%" }}>
-        {/* Pass the profilePicture prop to the Header component */}
         <Header title="PROFILE" profilePicture={userData.profilePicture} />
-
         <Grid container spacing={4}>
-          {/* Left Column */}
           <Grid item xs={6}>
-            {/* Profile Picture Section */}
             <Box
               sx={{
                 display: "flex",
@@ -98,35 +110,92 @@ const Profile = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleChangePassword}
+                onClick={toggleChangePasswordVisibility}
                 sx={{ mt: 1 }}
               >
                 Change Password
               </Button>
+              {changePasswordVisible && (
+                <Box>
+                  <TextField
+                    label="Current Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={userData.currentPassword}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        currentPassword: e.target.value,
+                      })
+                    }
+                    error={formErrors.hasOwnProperty("currentPassword")}
+                    helperText={formErrors["currentPassword"]}
+                  />
+                  <TextField
+                    label="New Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={userData.newPassword}
+                    onChange={(e) =>
+                      setUserData({ ...userData, newPassword: e.target.value })
+                    }
+                    error={formErrors.hasOwnProperty("newPassword")}
+                    helperText={formErrors["newPassword"]}
+                  />
+                  <TextField
+                    label="Confirm New Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={userData.confirmNewPassword}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        confirmNewPassword: e.target.value,
+                      })
+                    }
+                    error={formErrors.hasOwnProperty("confirmNewPassword")}
+                    helperText={formErrors["confirmNewPassword"]}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleChangePassword}
+                    sx={{ mt: 2 }}
+                  >
+                    Confirm Password Change
+                  </Button>
+                </Box>
+              )}
             </Box>
           </Grid>
-
-          {/* Right Column */}
           <Grid item xs={6}>
-            {/* Profile Information Section */}
             <Box>
               <TextField
                 label="NIC Number"
                 fullWidth
                 margin="normal"
                 value={userData.nicNumber}
+                error={formErrors.hasOwnProperty("nicNumber")}
+                helperText={formErrors["nicNumber"]}
               />
               <TextField
                 label="Full Name"
                 fullWidth
                 margin="normal"
-                value={userData.name}
+                value={userData.fullName}
+                error={formErrors.hasOwnProperty("fullName")}
+                helperText={formErrors["fullName"]}
               />
               <TextField
                 label="User Name"
                 fullWidth
                 margin="normal"
-                value={userData.name}
+                value={userData.userName}
+                error={formErrors.hasOwnProperty("userName")}
+                helperText={formErrors["userName"]}
               />
               <TextField
                 label="Date of Birth"
@@ -134,20 +203,40 @@ const Profile = () => {
                 fullWidth
                 margin="normal"
                 value={userData.dateOfBirth}
+                error={formErrors.hasOwnProperty("dateOfBirth")}
+                helperText={formErrors["dateOfBirth"]}
               />
               <TextField
                 label="Email"
                 fullWidth
                 margin="normal"
                 value={userData.email}
+                error={formErrors.hasOwnProperty("email")}
+                helperText={formErrors["email"]}
               />
-              <TextField label="Mobile Number" fullWidth margin="normal" />
-              <TextField label="Home Address" fullWidth margin="normal" />
+              <TextField
+                label="Mobile Number"
+                fullWidth
+                margin="normal"
+                value={userData.mobileNumber}
+                error={formErrors.hasOwnProperty("mobileNumber")}
+                helperText={formErrors["mobileNumber"]}
+              />
+              <TextField
+                label="Home Address"
+                fullWidth
+                margin="normal"
+                value={userData.address}
+                error={formErrors.hasOwnProperty("address")}
+                helperText={formErrors["address"]}
+              />
               <TextField
                 label="Designation"
                 fullWidth
                 margin="normal"
                 value={userData.position}
+                error={formErrors.hasOwnProperty("position")}
+                helperText={formErrors["position"]}
               />
               <TextField
                 label="Service Start Date"
@@ -155,23 +244,29 @@ const Profile = () => {
                 fullWidth
                 margin="normal"
                 value={userData.serviceStartDate}
+                error={formErrors.hasOwnProperty("serviceStartDate")}
+                helperText={formErrors["serviceStartDate"]}
               />
               <TextField
                 label="Remaining Casual Leaves"
                 fullWidth
                 margin="normal"
                 value={userData.remainingCasualLeaves}
+                error={formErrors.hasOwnProperty("remainingCasualLeaves")}
+                helperText={formErrors["remainingCasualLeaves"]}
               />
               <TextField
                 label="Remaining Vacation Leaves"
                 fullWidth
                 margin="normal"
                 value={userData.remainingVacationLeaves}
+                error={formErrors.hasOwnProperty("remainingVacationLeaves")}
+                helperText={formErrors["remainingVacationLeaves"]}
               />
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleSaveChanges}
+                onClick={handleChangePassword}
                 sx={{ mt: 2 }}
               >
                 Save Changes
