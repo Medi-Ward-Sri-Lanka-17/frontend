@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticate, setIsAuthenticate] = useState(false)
   const [token, setToken] = useState(null)
   const [position, setPosition] = useState(null)
+  const [username, setUsername] = useState(null)
 
   async function login(username, password) {
     try {
@@ -22,6 +23,7 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user)
         setToken(jwtToken)
         setPosition(response.data.user.position)
+        setUsername(response.data.user.username)
 
         apiClient.interceptors.request.use((config) => {
           console.log('intercepting and adding a token')
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticate,
         position,
         setPosition,
+        username,
       }}
     >
       {children}

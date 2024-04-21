@@ -1,0 +1,86 @@
+.container{
+    display: block;
+    width: 98%;
+    height: 100%;
+    margin-top:0.5rem;
+    gap:0.5rem;
+}
+
+.profile{
+    display:inline-flex;
+    gap:1rem;
+    align-items: center;
+    
+}
+
+.devider{
+    display: flex;
+    flex-direction: row;
+}
+
+.left{
+    flex: 35%;
+    height: 36vh;
+    background-color: rgb(231, 245, 245);
+}
+
+.right{
+    flex: 65%;
+    height: 36vh;
+    background-color: rgb(210, 216, 216);
+}
+
+.description-div{
+    padding: 0.5rem 0.5rem;
+}
+
+
+
+
+
+
+
+
+
+.lower-container{
+    display: block;
+    width: 13rem;
+    height: 5vh;
+    margin-top:0.25rem;
+}
+
+.lower-profile{
+    display:inline-flex;
+    gap:0.25rem;
+    align-items: center;
+    width:0.25rem;
+    height:0.25rem;
+    
+}
+
+.lower-avatar{
+    width:0.5rem;
+    height:0.5rem;
+}
+
+.lower-devider{
+    display: flex;
+    flex-direction: row;
+}
+
+.lower-left{
+    flex: 35%;
+    height: 5vh;
+    background-color: rgb(231, 245, 245);
+}
+
+
+.lower-right{
+    flex: 65%;
+    height: 5vh;
+    background-color: rgb(210, 216, 216);
+}
+
+.lower-description-div{
+    padding: 0.25rem 0.25rem;
+}

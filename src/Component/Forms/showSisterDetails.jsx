@@ -9,14 +9,17 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { fetchSisterData } from "../../Data/wardDetails/sisterService";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
 import { addSisterValidation } from "../../Validation/wardDetailsValidation";
+import { useAuth } from "../../Security/AuthContext";
+import { retrieveSisterDetails } from "../../Services/WardDetails/WardDetailsServices";
+import { sendEditedSisterDetailsForMatron } from "../../Services/WardDetails/WardDetailsServices";
 
-const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
+const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
   const [formValues, setFormValues] = useState({
     fullName: "",
-    serviceId: "",
+    firstName: "",
+    lastName: "",
+    nic: "",
     birthdate: "",
     email: "",
     position: "Sister",
@@ -28,30 +31,45 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [editMode, setEditMode] = useState(false); // State variable for edit mode
 
+  const authContext = useAuth();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sisterData = await fetchSisterData();
-        const loggedPositionData = await fetchPosition();
-        setFormValues({
-          ...sisterData,
-        });
+        const loggedPositionData = authContext.position;
         setLoggedUserPosition(loggedPositionData);
+        if (isPressMore === true) {
+          const sisterData = await retrieveSisterDetails(sisterWardNo);
+          console.log(sisterData);
+          setFormValues({
+            ...sisterData,
+          });
+        }
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
     };
 
     fetchData();
-  }, []);
+  }, [isPressMore]);
 
-  const handleEdit = () => {
-    setEditMode(!editMode);
+  const handleEdit = async () => {
+    try {
+      setEditMode(!editMode);
+      if (isPressMore === true && loggedUserPosition === "Matron") {
+        const sisterData2 = await retrieveSisterDetails(sisterWardNo);
+        setFormValues({
+          ...sisterData2,
+        });
+      }
+    } catch (error) {
+      console.error("Error during handleEdit:", error);
+    }
   };
 
   const showSuccessAlert = () => {
     let alertText = "";
-    if (loggedUserPosition === "sister") {
+    if (loggedUserPosition === "Sister") {
       alertText = "Your details successfully updated";
     } else {
       alertText = "Sister details successfully updated";
@@ -64,14 +82,45 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
     });
   };
 
+  const showErrorAlert = () => {
+    let alertText = "";
+    if (loggedUserPosition === "Sister") {
+      alertText = "Your details update failed";
+    } else {
+      alertText = "Sister details update failed";
+    }
+    Swal.fire({
+      text: alertText,
+      icon: "warning",
+      confirmButtonColor: "#243e4f",
+    });
+  };
+
   const manualSubmit = async () => {
     try {
-      console.log("manualSubmit called");
-      console.log("Form errors:", sisterFormik.errors);
+      sisterFormik.handleSubmit();
+
+      const valuesToUpdate = sisterFormik.values;
+
+      if (loggedUserPosition === "Matron") {
+        const response = await sendEditedSisterDetailsForMatron(valuesToUpdate);
+        if (response == true) {
+          showSuccessAlert();
+        } else {
+          showErrorAlert();
+        }
+      }
       sisterFormik.submitForm();
     } catch (error) {
       console.error("Error during manualSubmit:", error);
     }
+  };
+
+  const handleCancel = async () => {
+    sisterFormik.resetForm();
+    setFormValues(formValues);
+    setEditMode(false);
+    handleClose();
   };
 
   const sisterFormik = useFormik({
@@ -122,11 +171,11 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
             required
             disabled={!editMode}
             error={
-              sisterFormik.touched.fisrtName &&
-              Boolean(sisterFormik.errors.fisrtName)
+              sisterFormik.touched.firstName &&
+              Boolean(sisterFormik.errors.firstName)
             }
             helperText={
-              sisterFormik.touched.fisrtName && sisterFormik.errors.firstName
+              sisterFormik.touched.firstName && sisterFormik.errors.firstName
             }
           />
           <label>Last Name</label>
@@ -181,26 +230,22 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
               sisterFormik.touched.mobileNo && sisterFormik.errors.mobileNo
             }
           />
-          {loggedUserPosition && loggedUserPosition === "matron" && (
+          {loggedUserPosition && loggedUserPosition === "Matron" && (
             <>
               <label>Service ID</label>
               <TextField
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                name="serviceId"
+                name="nic"
                 onChange={sisterFormik.handleChange}
-                value={sisterFormik.values.serviceId}
+                value={sisterFormik.values.nic}
                 required
                 disabled={!editMode}
                 error={
-                  sisterFormik.touched.serviceId &&
-                  Boolean(sisterFormik.errors.serviceId)
+                  sisterFormik.touched.nic && Boolean(sisterFormik.errors.nic)
                 }
-                helperText={
-                  sisterFormik.touched.serviceId &&
-                  sisterFormik.errors.serviceId
-                }
+                helperText={sisterFormik.touched.nic && sisterFormik.errors.nic}
               />
               <label>Birthday</label>
               <TextField
@@ -282,15 +327,15 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCancel} color="primary">
             Cancel
           </Button>
           {editMode ? (
             <Button
               color="primary"
               disabled={
-                loggedUserPosition === "sister" ||
-                loggedUserPosition === "nurse"
+                loggedUserPosition === "Sister" ||
+                loggedUserPosition === "Nurse"
               }
               onClick={manualSubmit}
             >
@@ -300,18 +345,10 @@ const StaffDetailsForm = ({ open, handleClose, initialSisterName }) => {
             <Button
               color="primary"
               disabled={
-                loggedUserPosition === "sister" ||
-                loggedUserPosition === "nurse"
+                loggedUserPosition === "Sister" ||
+                loggedUserPosition === "Nurse"
               }
-              onClick={() => {
-                handleEdit();
-                fetchSisterData().then((sisterData) => {
-                  setFormValues({
-                    ...sisterData,
-                    position: "Sister",
-                  });
-                });
-              }}
+              onClick={() => handleEdit()}
             >
               Edit
             </Button>

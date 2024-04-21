@@ -13,6 +13,8 @@ const DefaultButton = (props) => {
           height: props.height,
           width: props.width,
         }}
+        endIcon={props.iconEnd}
+        startIcon={props.iconStart}
         variant="contained"
         size="small"
         onClick={props.onClick}

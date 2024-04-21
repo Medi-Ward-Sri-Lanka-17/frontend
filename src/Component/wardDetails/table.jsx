@@ -8,57 +8,77 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { getNurses } from "../../Data/wardDetails/nursesService.js";
 import Theme from "../Theme";
 import EditStaffMemberForm from "../Forms/editStaffMemberDetails.jsx";
-import { fetchPosition } from "../../Data/wardDetails/wardService.js";
+import { useAuth } from "../../Security/AuthContext.js";
+import { retrieveAllStaffMembers } from "../../Services/WardDetails/WardDetailsServices.js";
 
-export default function NursesTable() {
+export default function NursesTable({ wardNo, isWardSelect }) {
   const theme = Theme();
   const [nurses, setNurses] = useState([]);
   const [filteredNurses, setFilteredNurses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loggedUserPosition, setLoggedUserPosition] = useState();
+  const [condition, setCondition] = useState(false);
+
+  const authContext = useAuth();
 
   useEffect(() => {
     const fetchNurses = async () => {
       try {
-        const fetchedNurses = await getNurses();
-        const position = await fetchPosition();
-        setNurses(fetchedNurses);
-        setFilteredNurses(fetchedNurses); // Initially set filteredNurses to all nurses
-        setLoggedUserPosition(position);
+        if (isWardSelect === true) {
+          var fetchedNurses = await retrieveAllStaffMembers(wardNo);
+
+          if (fetchNurses !== null) {
+            setCondition(true);
+          }
+          const position = authContext.position;
+          setNurses(fetchedNurses);
+          setFilteredNurses(fetchedNurses); // Initially set filteredNurses to all nurses
+          setLoggedUserPosition(position);
+        } else {
+          setFilteredNurses(null);
+          console.log("no select ward");
+        }
       } catch (error) {
         console.error("Error fetching nurses:", error);
       }
     };
 
     fetchNurses();
-  }, []);
+  }, [wardNo]);
 
   useEffect(() => {
-    // Filter nurses based on the search query when it changes
-    const filtered = nurses.filter(
-      (nurse) =>
-        nurse.fullName &&
-        nurse.fullName.toLowerCase().includes(searchQuery?.toLowerCase())
-    );
-    setFilteredNurses(filtered);
-  }, [searchQuery, nurses]);
+    if (filteredNurses !== null) {
+      const filtered = nurses.filter((nurse) => {
+        const fullNameMatch =
+          nurse.fullName && nurse.fullName.toLowerCase().includes(searchQuery);
+        const nicMatch =
+          nurse.nic && nurse.nic.toString().toLowerCase().includes(searchQuery);
+        return fullNameMatch || nicMatch;
+      });
+      setFilteredNurses(filtered);
+    }
+  }, [searchQuery, nurses, wardNo]);
+
+  useEffect(() => {
+    setCondition(false);
+  }, [wardNo]);
 
   //Function for delete button
-  const handleDelete = (serviceId) => {
-    console.log(`Delete clicked for ID ${serviceId}`);
+  const handleDelete = (nic) => {
+    console.log(`Delete clicked for ID ${nic}`);
   };
 
   //Function for edit button
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [selectedNurseId, setSelectedNurseId] = useState(null);
 
-  const handleEdit = (serviceId) => {
-    console.log(`Edit clicked for ID ${serviceId}`);
+  const handleEdit = (nic) => {
+    console.log(`Edit clicked for ID ${nic}`);
+
     setIsEditFormOpen(true);
-    setSelectedNurseId(serviceId);
+    setSelectedNurseId(nic);
   };
 
   //Function for search button
@@ -87,13 +107,13 @@ export default function NursesTable() {
             }}
           >
             <TableRow>
-              <TableCell
+              {/* <TableCell
                 style={{
                   color: "white",
                 }}
               >
                 ID
-              </TableCell>
+              </TableCell> */}
 
               <TableCell
                 style={{
@@ -147,39 +167,43 @@ export default function NursesTable() {
               )}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {filteredNurses.map((nurse) => (
-              <TableRow key={nurse.serviceId}>
-                <TableCell>{nurse.id}</TableCell>
-                <TableCell>{nurse.serviceId}</TableCell>
-                <TableCell>{nurse.fullName}</TableCell>
-                <TableCell>{nurse.mobileNo}</TableCell>
-                <TableCell>{nurse.email}</TableCell>
-                {loggedUserPosition !== "nurse" && (
-                  <>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        style={{ backgroundColor: theme.palette.success.main }}
-                        onClick={() => handleEdit(nurse.serviceId)}
-                      >
-                        Edit
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outlined"
-                        style={{ color: "red", borderColor: "red" }}
-                        onClick={() => handleDelete(nurse.serviceId)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
+          {nurses !== null && filteredNurses !== null && (
+            <TableBody>
+              {filteredNurses.map((nurse) => (
+                <TableRow key={nurse.nic}>
+                  {/* <TableCell>{nurse.id}</TableCell> */}
+                  <TableCell>{nurse.nic}</TableCell>
+                  <TableCell>{nurse.fullName}</TableCell>
+                  <TableCell>{nurse.mobileNo}</TableCell>
+                  <TableCell>{nurse.email}</TableCell>
+                  {loggedUserPosition !== "nurse" && (
+                    <>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          style={{
+                            backgroundColor: theme.palette.success.main,
+                          }}
+                          onClick={() => handleEdit(nurse.nic)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          style={{ color: "red", borderColor: "red" }}
+                          onClick={() => handleDelete(nurse.nic)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
 
@@ -188,6 +212,7 @@ export default function NursesTable() {
         open={isEditFormOpen}
         handleClose={() => setIsEditFormOpen(false)}
         staffId={selectedNurseId}
+        nic={selectedNurseId}
         // Add other necessary props
       />
     </div>

@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom'
 import { useFormik } from 'formik';
 import {validationSchemaRecoveryEmail} from './Validation';
 import { validationSchemaOtp } from './Validation';
+import {sendMail} from '../../Services/ResetPassword/SendEmail'
 
 const theme=Theme();
 
@@ -87,6 +88,15 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
     //define onsubmit on send Otp
     const onSubmitEmail=(values)=>{
         console.log(values)
+        sendMail(values)
+        .then(response=>{
+            console.log(response)
+            if(response.status==200){
+                resetPasswordModelOn() 
+            }
+        })
+        .catch(error=>{console.log(error)})
+        
 
     }
 
@@ -101,23 +111,23 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
 
     //Define initial values of OTP
 
-    const initialValuesOtp={
-        otp:"",
-    }
+    // const initialValuesOtp={
+    //     otp:"",
+    // }
 
     //Define onsubmit function of Recovery password
-    const onSubmitOtp=(values)=>{
-        console.log(values)
-        resetPasswordModelOn();
+    // const onSubmitOtp=(values)=>{
+    //     console.log(values)
         
-    }
+        
+    // }
 
     //Define formik of Control Recovery password 
-    const formik2=useFormik({
-        initialValues:initialValuesOtp,
-        onSubmit:onSubmitOtp,
-        validationSchema:validationSchemaOtp,
-    })
+    // const formik2=useFormik({
+    //     initialValues:initialValuesOtp,
+    //     onSubmit:onSubmitOtp,
+    //     validationSchema:validationSchemaOtp,
+    // })
 
 
   return ReactDOM.createPortal(
@@ -127,9 +137,9 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
         }}>
         <ModelStack sx={{
             backgroundColor:theme.palette.background.paper,
-            marginTop:"3em",
+            marginTop:"6em",
             width:500,
-            height:"80vh",
+            height:"70vh",
             borderRadius:theme.shape.borderRadius,
             overflow:"hidden",
             overflowY:"auto",
@@ -146,7 +156,7 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                 </Button>
             </Stack>
 
-            <Stack alignItems="center" spacing={2}>
+            <Stack alignItems="center" spacing={5}>
                 <UserTitleBox>
                     <Typography variant="h5" sx={{
                                 [theme.breakpoints.down("md")]:{
@@ -189,158 +199,82 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                     {mobile&&<Typography variant='subtitle2'>We will send a OTP code for given mobile number to recover account</Typography>}
                 </Styledstack>
                 <form onSubmit={formik.handleSubmit}>
-                <Stack spacing={1.5} sx={{
-                    width:500,
-                        alignItems:"center",
-                }}>    
-                <Stack
-                sx={{ 
-                    width:"80%",
-                    [theme.breakpoints.down("md")]:{
-                    width:"50%",
-                    }
-            }}
-                >
-                {email&&<TextField id="email" name="email" variant="outlined" size='small' placeholder="Enter your email"
-                                        helperText={formik.errors.email}
-                                        FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
-                                        value={formik.values.email}
-                                        onChange={formik.handleChange}
-                            
-
-                                        type="text"
-                                        sx={{
-                                            size:'small',
-                                            width:"100%",
-                                            borderRadius:theme.shape.borderRadius,
-                                            "&:hover":{
-                                                borderBlockColor:theme.palette.success.main
-                                            }
-                                            }}
-                                        />}
-                
-                {mobile&&<TextField id="mobile-no" name="mobileNo" variant="outlined" size='small' placeholder="Enter your mobile number"
-                                        helperText={formik.errors.mobileNo}
-                                        FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
-
-                                        value={formik.values.mobileNo}
-                                        onChange={formik.handleChange}
-                                
-
-                                        type="text"
-                                        sx={{
-                                            size:'small',
-                                            width:"100%",
-                                            borderRadius:theme.shape.borderRadius,
-                                            "&:hover":{
-                                                borderBlockColor:theme.palette.success.main
-                                            }
-                                            }}
-                                        />}
-                </Stack>
-
-                <Stack sx={{
-                                        width:"80%",
-                    [theme.breakpoints.down("md")]:{
-                    width:"50%",
-                    }
-                }}>
-                    <Button 
-                    variant="contained" 
-                    type='submit'
-                    sx=
-                    {{
-                        width:"100%",
-                        "&:hover":{
-                            backgroundColor:theme.palette.secondary.main,
-                        }
-                    }}
-                    
-                    
-                    >
-                        <BtnTypography>Send OTP</BtnTypography></Button>
-                </Stack>
-                </Stack>
-                </form>
-
-                <Stack spacing={2} textAlign="left" sx={{
-                    width:"80%",
-                    [theme.breakpoints.down("md")]:{
-                        width:"65%",
-                    },
-                    }}
-
-
-                    >
-                        <Typography variant='h6'
-                            sx={{
-                                [theme.breakpoints.down('md')]: {
-                                    fontSize: '1rem',
-                                },
-                            }}
-                        >
-                            Enter OTP
-                        </Typography>
-                </Stack>
-                
-                <form onSubmit={formik2.handleSubmit}>
                     <Stack spacing={1.5} sx={{
-                         width:500,
-                        alignItems:"center",
-                    }}>
-                        <Stack sx={{ 
-                            width:"80%",
-                            [theme.breakpoints.down("md")]:{
-                            width:"50%",
-                            }
-                            }} 
-                        >
-                            
-                            <TextField id="otp" name="otp" variant="outlined" size='small' placeholder="xxx-xxx"
-
-                                                    type="text"
-                                                    helperText={formik2.errors.otp}
-                                                    FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
-                                                    value={formik2.values.otp}
-                                                    onChange={formik2.handleChange}
-                                                    sx={{
-                                                        size:'small',
-                                                        width:"100%",
-                                                        borderRadius:theme.shape.borderRadius,
-                                                        "&:hover":{
-                                                            borderBlockColor:theme.palette.success.main
-                                                        }
-                                                        }}
-                                                    />
-                        </Stack>
-
-                        <Stack 
-                            sx={{ 
-                                width:"80%",
-                                [theme.breakpoints.down("md")]:{
-                                width:"50%",
-                                }
-                                }} 
-                        >
-                            <Button
-                                variant="contained" 
-                                type='submit'
-                                sx={{
-                                width:"100%",
-                                "&:hover":{
-                                    backgroundColor:theme.palette.secondary.main,
-                                }
-                                }}
+                        width:500,
+                            alignItems:"center",
+                    }}>    
+                    <Stack
+                    sx={{ 
+                        width:"80%",
+                        [theme.breakpoints.down("md")]:{
+                        width:"50%",
+                        }
+                        }}
+                    >
+                    {email&&<TextField id="email" name="email" variant="outlined" size='small' placeholder="Enter your email"
+                                            helperText={formik.errors.email}
+                                            FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
+                                            value={formik.values.email}
+                                            onChange={formik.handleChange}
                                 
-                                >
-                                    <BtnTypography>
-                                        Recovery Password
-                                    </BtnTypography>
-                                </Button>
+
+                                            type="text"
+                                            sx={{
+                                                size:'small',
+                                                width:"100%",
+                                                borderRadius:theme.shape.borderRadius,
+                                                "&:hover":{
+                                                    borderBlockColor:theme.palette.success.main
+                                                }
+                                                }}
+                                            />}
                     
-                        </Stack>
+                    {mobile&&<TextField id="mobile-no" name="mobileNo" variant="outlined" size='small' placeholder="Enter your mobile number"
+                                            helperText={formik.errors.mobileNo}
+                                            FormHelperTextProps={{ style: { color:theme.palette.error.main} }}
+
+                                            value={formik.values.mobileNo}
+                                            onChange={formik.handleChange}
+                                    
+
+                                            type="text"
+                                            sx={{
+                                                size:'small',
+                                                width:"100%",
+                                                borderRadius:theme.shape.borderRadius,
+                                                "&:hover":{
+                                                    borderBlockColor:theme.palette.success.main
+                                                }
+                                                }}
+                                            />}
+                    </Stack>
+
+                    <Stack sx={{
+                                            width:"80%",
+                        [theme.breakpoints.down("md")]:{
+                        width:"50%",
+                        }
+                    }}>
+                        <Button 
+                        variant="contained" 
+                        type='submit'
+                        sx=
+                        {{
+                            width:"100%",
+                            "&:hover":{
+                                backgroundColor:theme.palette.secondary.main,
+                            }
+                        }}
+                        
+                        
+                        >
+                            <BtnTypography>Send OTP</BtnTypography></Button>
+                    </Stack>
                     </Stack>
                 </form>
+
+
+                
             </Stack>
 
 
