@@ -1,6 +1,9 @@
 import { responsiveProperty } from "@mui/material/styles/cssUtils";
 import { apiClient } from "../../Api/ApiClient";
-import { showUnsuccessAlert } from "../../Component/ShowAlert";
+import {
+  showSuccessAlert,
+  showUnsuccessAlert,
+} from "../../Component/ShowAlert";
 
 export const retriveAllWards = async () => {
   try {
@@ -246,5 +249,16 @@ export const sendEditedNurseDetails = async (values) => {
     return response.data;
   } catch (err) {
     throw new Error("Couldn't edit ward details");
+  }
+};
+
+//delete staff member
+export const deleteNurseFromWard = async (nic) => {
+  try {
+    const response = await apiClient.delete(`/delete-nurse/${nic}`);
+    showSuccessAlert(response.data);
+    return response.data;
+  } catch (err) {
+    throw new Error("Couldn't delete nurse ");
   }
 };
