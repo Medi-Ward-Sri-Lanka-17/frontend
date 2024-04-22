@@ -5,7 +5,7 @@ import { Box, Grid, Avatar, Button, TextField } from "@mui/material";
 import SideBar from "../../Component/SideBar";
 import profilePicture from "./propic.png";
 import Swal from "sweetalert2";
-import validationSchema from "./Validation";
+import { profileDetailsValidation, passwordValidation } from "./Validation"; // Import profileDetailsValidation and passwordValidation
 
 const Profile = () => {
   // Sample user data (replace with actual user data)
@@ -55,8 +55,8 @@ const Profile = () => {
   const handleChangePassword = () => {
     console.log("handle save changes");
     console.log(userData);
-    validationSchema
-      .validate(userData, { abortEarly: false })
+    passwordValidation
+      .validate(userData, { abortEarly: false }) // Use passwordValidation here
       .then(() => {
         showSuccessAlert("You have successfully changed the profile details!");
         setFormErrors({});
