@@ -1,5 +1,6 @@
+import { responsiveProperty } from '@mui/material/styles/cssUtils'
 import { apiClient } from '../../Api/ApiClient'
-import { showUnsuccessAlert } from '../../Component/ShowAlert'
+import { showSuccessAlert, showUnsuccessAlert } from '../../Component/ShowAlert'
 
 export const retriveAllWards = async () => {
   try {
@@ -195,6 +196,65 @@ export const retrieveSistersNics = async (username) => {
     return response.data
   } catch (err) {
     throw new Error("Couldn't retrieve sister nics")
+  }
+}
+
+//===============TABLE RELATED FUNCTIONS=================
+
+//Retrieve all nurses related to the ward
+export const retrieveAllStaffMembers = async (wardNo) => {
+  try {
+    console.log('service file')
+    const response = await apiClient.get(`/show-staff/${wardNo}`)
+    console.log('Response from API:', response.data)
+
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.error('Error Response:', error.response.data)
+      showUnsuccessAlert(error.response.data)
+      return null
+    } else if (error.request) {
+      console.error('Error Request:', error.request)
+      showUnsuccessAlert('No response from server')
+      return null
+    } else {
+      console.error('Error Message:', error.message)
+      showUnsuccessAlert('Error: ' + error.message)
+      return null
+    }
+  }
+}
+
+//Retrieve nurse details for edit
+export const retrieveNurseData = async (nic) => {
+  try {
+    const response = await apiClient.get(`/get-nurse-details/${nic}`)
+    return response.data
+  } catch (err) {
+    throw new Error("Couldn't retrieve nurse data")
+  }
+}
+
+//send edited nurse details values when matron logged
+export const sendEditedNurseDetails = async (values) => {
+  try {
+    const response = await apiClient.put('/update-nurse-details', values)
+    console.log(response.data)
+    return response.data
+  } catch (err) {
+    throw new Error("Couldn't edit ward details")
+  }
+}
+
+//delete staff member
+export const deleteNurseFromWard = async (nic) => {
+  try {
+    const response = await apiClient.delete(`/delete-nurse/${nic}`)
+    showSuccessAlert(response.data)
+    return response.data
+  } catch (err) {
+    throw new Error("Couldn't delete nurse ")
   }
 }
 
