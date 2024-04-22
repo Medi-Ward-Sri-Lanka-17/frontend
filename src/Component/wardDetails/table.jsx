@@ -12,6 +12,8 @@ import Theme from "../Theme";
 import EditStaffMemberForm from "../Forms/editStaffMemberDetails.jsx";
 import { useAuth } from "../../Security/AuthContext.js";
 import { retrieveAllStaffMembers } from "../../Services/WardDetails/WardDetailsServices.js";
+import { deleteNurseFromWard } from "../../Services/WardDetails/WardDetailsServices.js";
+import { showSuccessAlert } from "../ShowAlert.jsx";
 
 export default function NursesTable({ wardNo, isWardSelect }) {
   const theme = Theme();
@@ -68,6 +70,7 @@ export default function NursesTable({ wardNo, isWardSelect }) {
   //Function for delete button
   const handleDelete = (nic) => {
     console.log(`Delete clicked for ID ${nic}`);
+    var response = deleteNurseFromWard(nic);
   };
 
   //Function for edit button
@@ -76,7 +79,6 @@ export default function NursesTable({ wardNo, isWardSelect }) {
 
   const handleEdit = (nic) => {
     console.log(`Edit clicked for ID ${nic}`);
-
     setIsEditFormOpen(true);
     setSelectedNurseId(nic);
   };
