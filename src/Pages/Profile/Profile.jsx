@@ -148,7 +148,7 @@ const [formErrors, setFormErrors] = useState({});
     });
   };
 
-
+//...................................................Change Password..............................................................
 
   const toggleChangePasswordVisibility = () => {
     setChangePasswordVisible(true); // Set visibility to true
@@ -362,7 +362,7 @@ const [formErrors, setFormErrors] = useState({});
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleChangePassword}
+                onClick={handleSaveChanges}
                 sx={{ mt: 2 }}
               >
                 Save Changes
