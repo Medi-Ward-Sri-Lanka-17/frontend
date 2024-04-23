@@ -2,6 +2,7 @@ import { Avatar, Badge, Box, Grid, IconButton } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -9,6 +10,23 @@ const Header = (props) => {
   //   // const [numberOfNotifications, setNumberOfNotifications] = useState(0)
 
   //   //get auth context and get details from authContext
+
+  const [imgUrl,setImgUrl]=useState(null)
+
+  function dpLoad(data){
+    if(data==null){
+      setImgUrl("default-avatar.jpg")
+    }else{
+      setImgUrl(props.proImgUrl)
+    }
+    console.log(imgUrl)
+  }
+
+  useEffect(()=>{
+    dpLoad(props.proImgUrl);
+  })
+
+
 
   const handleOnClick = (event) => {
     navigate("/profile");
@@ -53,7 +71,7 @@ const Header = (props) => {
             {/* Updated Avatar to display the profile picture */}
             <Avatar
               alt={props.title} // Use the title as alt text
-              src={props.profilePicture} // Set the src attribute to the profile picture
+              src={imgUrl} // Set the src attribute to the profile picture
               sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
               //navigate to the profile page
               onClick={handleOnClick}

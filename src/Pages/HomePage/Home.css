@@ -2,7 +2,7 @@
 .main-container{
     display: flex;
     flex-direction: column;
-    gap:1em;
+    gap:0.5em;
     align-items: center;
 }
 
@@ -42,12 +42,9 @@ h1{
     font-size:large;
 }
 
-/* .news-container{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height:35vh;
-    background-color: aquamarine;
-
-} */
+.left{
+    flex:"10%";
+}
+.PageContent{
+    flex:"90%";
+}

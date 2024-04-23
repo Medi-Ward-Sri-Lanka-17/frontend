@@ -19,6 +19,12 @@ import SuccessButton from '../../Component/Button/SuccessButton'
 import DeclineButton from '../../Component/Button/DeclineButton'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../Security/AuthContext'
+import {
+  approveLeaveByMatron,
+  approveLeaveBySister,
+  getRequestLeaveDetails,
+  getWardList,
+} from '../../Services/LeaveManagement/LeaveApproveServices'
 
 const LeaveApprove = () => {
   // Load theme into the page
@@ -29,6 +35,7 @@ const LeaveApprove = () => {
   const [wardNo, setWardNo] = useState('All')
   const [rows, setRows] = useState([])
   const [position, setPosition] = useState('All')
+  const [isApprovedBtnTrigger, setIsApprovedBtnTrigger] = useState(false)
 
   // Use naviagete
   const navigate = useNavigate()
@@ -55,7 +62,12 @@ const LeaveApprove = () => {
   }
   // Approve button aciton on click
   const handleApproveButton = (selectedRow) => {
-    console.log('Selected Row Details:', selectedRow)
+    if (authContext.position === 'Sister') {
+      approveLeaveBySister(selectedRow.leaveId)
+    } else if (authContext.position === 'Matron') {
+      approveLeaveByMatron(selectedRow.leaveId)
+    }
+    setIsApprovedBtnTrigger((Prev) => !Prev)
   }
 
   //Handle changes in filters
@@ -65,59 +77,30 @@ const LeaveApprove = () => {
   }
 
   //working when page loading
-  useEffect(() => {}, [])
+  useEffect(() => {
+    const fetchWardList = async () => {
+      if (authContext.position == 'Matron') {
+        var nic = authContext.user.nic
+        var wardList = await getWardList(nic)
+        setWards(wardList || [])
+        console.log(wardList)
+      }
+    }
 
-  //Define tempory Raws in datagrid
-  // const rows =
-  // [
-  //   {
-  //     id: 1,
-  //     leaveId: 'L001',
-  //     leaveNo: 'LN001',
-  //     name: 'John Doe',
-  //     leaveDate: '2022-12-01',
-  //     leaveEndDate: '2022-12-05',
-  //     requestedDate: '2022-11-25',
-  //   },
-  //   {
-  //     id: 2,
-  //     leaveId: 'L002',
-  //     leaveNo: 'LN002',
-  //     name: 'Jane Doe',
-  //     leaveDate: '2022-12-05',
-  //     leaveEndDate: '2022-12-10',
-  //     requestedDate: '2022-11-28',
-  //   },
-  //   {
-  //     id: 3,
-  //     leaveId: 'L003',
-  //     leaveNo: 'LN003',
-  //     name: 'Bob Smith',
-  //     leaveDate: '2022-12-10',
-  //     leaveEndDate: '2022-12-15',
-  //     requestedDate: '2022-12-01',
-  //   },
-  //   {
-  //     id: 4,
-  //     leaveId: 'L004',
-  //     leaveNo: 'LN004',
-  //     name: 'Alice Johnson',
-  //     leaveDate: '2022-12-15',
-  //     leaveEndDate: '2022-12-20',
-  //     requestedDate: '2022-12-05',
-  //   },
-  //   {
-  //     id: 5,
-  //     leaveId: 'L005',
-  //     leaveNo: 'LN005',
-  //     name: 'Charlie Brown',
-  //     leaveDate: '2022-12-20',
-  //     leaveEndDate: '2022-12-25',
-  //     requestedDate: '2022-12-10',
-  //   },
-  // ]
+    const fetchRequestLeaveDetails = async () => {
+      var nic = authContext.user.nic
+      try {
+        const leaveDetails = await getRequestLeaveDetails(nic, position, wardNo)
+        setRows(leaveDetails || [])
+      } catch (err) {
+        console.error('Failed to fetch leave details:', err)
+        setRows([])
+      }
+    }
 
-  //Define Columns of the DataGrid
+    fetchWardList()
+    fetchRequestLeaveDetails()
+  }, [wardNo, position, isApprovedBtnTrigger])
 
   const columns = [
     {
@@ -222,13 +205,14 @@ const LeaveApprove = () => {
                 id="ward-no"
                 value={wardNo}
                 label="Select Ward No"
+                onChange={handleChangeOnSelection}
               >
-                <MenuItem value="All" defaultChecked>
+                <MenuItem value="All">
                   <em>All</em>
                 </MenuItem>
                 {wards.map((ward) => (
-                  <MenuItem key={ward.id} value={ward.wardNo}>
-                    {ward.wardNo}
+                  <MenuItem key={ward} value={ward}>
+                    {ward}
                   </MenuItem>
                 ))}
               </Select>
@@ -283,6 +267,7 @@ const LeaveApprove = () => {
                 disableDensitySelector
                 columns={columns}
                 rows={rows}
+                getRowId={(row) => row.leaveId}
                 initialState={{
                   pagination: { paginationModel: { pageSize: 10 } },
                 }}
