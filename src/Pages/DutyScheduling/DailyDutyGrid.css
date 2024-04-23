@@ -1,0 +1,10 @@
+.shift-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns */
+  gap: 10px; /* Gap between grid items */
+}
+
+.shift-grid-item {
+  padding: 10px;
+  border: 1px solid #ccc; /* Add borders */
+}

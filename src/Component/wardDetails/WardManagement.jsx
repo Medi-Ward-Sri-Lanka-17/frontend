@@ -59,6 +59,7 @@ export default function WardManagement() {
           setwardNo(data.wardNo);
           setSisterName(data.sisterName);
           setNumberOfNurses(data.numberOfNurses);
+          setIsWardSelect(true);
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -141,7 +142,7 @@ export default function WardManagement() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Paper elevation={3} style={{ padding: 16, margin: 30 }}>
+        <Paper elevation={3} style={{ padding: 15, margin: 30 }}>
           <form>
             {position && position !== "Nurse" && wards && (
               <Grid container spacing={3}>
