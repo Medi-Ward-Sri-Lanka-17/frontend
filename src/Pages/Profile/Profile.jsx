@@ -10,6 +10,7 @@ import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePictu
 import { retrieveDetails } from "../../Services/profile/retrieveDetails";
 import { UpdateUserDetails } from "../../Services/profile/UpdateUserDetails";
 import { uploadProfilePicture } from "../../Services/profile/UploadProfilePicture";
+import { profileDetailsValidation, passwordValidation } from "./Validation"; 
 
 const Profile = () => {
 //.......................................profile Picture Service...............................................
@@ -57,6 +58,8 @@ async function refreshUserDetails(nic){
 
 
 //............................................User Details Update...................................................
+const [formErrors, setFormErrors] = useState({});
+  const [changePasswordVisible, setChangePasswordVisible] = useState(false);
 
 
   // Function to handle saving changes
@@ -153,9 +156,7 @@ async function refreshUserDetails(nic){
 
   const handleChangePassword = () => {
     // Handle changing password action
-    console.log("Change password clicked");
-  };
-
+    
 
 
   
@@ -175,6 +176,7 @@ async function refreshUserDetails(nic){
         setFormErrors(errors);
       });
   };
+
 
   return (
     <Box sx={{ display: "flex" }}>
