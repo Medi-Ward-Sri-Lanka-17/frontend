@@ -23,6 +23,7 @@ const DataGridComponent = (props) => {
           disableDensitySelector
           columns={props.columns}
           rows={props.rows}
+          getRowId={props.getRowId}
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
           }}

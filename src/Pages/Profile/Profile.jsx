@@ -137,7 +137,6 @@ async function refreshUserDetails(nic){
     
 
 
-  // Function to show success alert
   const showSuccessAlert = (message) => {
     Swal.fire({
       text: message,
@@ -148,7 +147,10 @@ async function refreshUserDetails(nic){
 
 
 
-  // Function to handle changing password
+  const toggleChangePasswordVisibility = () => {
+    setChangePasswordVisible(true); // Set visibility to true
+  };
+
   const handleChangePassword = () => {
     // Handle changing password action
     console.log("Change password clicked");
@@ -166,9 +168,7 @@ async function refreshUserDetails(nic){
         <Header title="PROFILE" proImgUrl={proImgUrl} />
 
         <Grid container spacing={4}>
-          {/* Left Column */}
           <Grid item xs={6}>
-            {/* Profile Picture Section */}
             <Box
               sx={{
                 display: "flex",
@@ -202,17 +202,68 @@ async function refreshUserDetails(nic){
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleChangePassword}
+                onClick={toggleChangePasswordVisibility}
                 sx={{ mt: 1 }}
               >
                 Change Password
               </Button>
+              {changePasswordVisible && (
+                <Box>
+                  <TextField
+                    label="Current Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={userData.currentPassword}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        currentPassword: e.target.value,
+                      })
+                    }
+                    error={formErrors.hasOwnProperty("currentPassword")}
+                    helperText={formErrors["currentPassword"]}
+                  />
+                  <TextField
+                    label="New Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={userData.newPassword}
+                    onChange={(e) =>
+                      setUserData({ ...userData, newPassword: e.target.value })
+                    }
+                    error={formErrors.hasOwnProperty("newPassword")}
+                    helperText={formErrors["newPassword"]}
+                  />
+                  <TextField
+                    label="Confirm New Password"
+                    type="password"
+                    fullWidth
+                    margin="normal"
+                    value={userData.confirmNewPassword}
+                    onChange={(e) =>
+                      setUserData({
+                        ...userData,
+                        confirmNewPassword: e.target.value,
+                      })
+                    }
+                    error={formErrors.hasOwnProperty("confirmNewPassword")}
+                    helperText={formErrors["confirmNewPassword"]}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleChangePassword}
+                    sx={{ mt: 2 }}
+                  >
+                    Confirm Password Change
+                  </Button>
+                </Box>
+              )}
             </Box>
           </Grid>
-
-          {/* Right Column */}
           <Grid item xs={6}>
-            {/* Profile Information Section */}
             <Box>
               <TextField
                 label="NIC Number"
@@ -293,7 +344,7 @@ async function refreshUserDetails(nic){
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleSaveChanges}
+                onClick={handleChangePassword}
                 sx={{ mt: 2 }}
               >
                 Save Changes

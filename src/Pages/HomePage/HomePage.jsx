@@ -9,8 +9,7 @@ import { useAuth } from '../../Security/AuthContext'
 
 
 
-const img1 = require('../../Assest/mainlogo.png')
-
+const img1 = require("../../Assest/mainlogo.png");
 
 const HomePage = () => {
 
@@ -47,16 +46,10 @@ const HomePage = () => {
           <div>
             <h1>Upcomig Schedule</h1>
           </div>
-          <div className='schedule-container'>
-              <div className='today'>
-
-              </div>
-              <div className='tomorrow'>
-
-              </div>
-              <div className='day-after-tomorrow'>
-
-              </div>
+          <div className="schedule-container">
+            <div className="today"></div>
+            <div className="tomorrow"></div>
+            <div className="day-after-tomorrow"></div>
           </div>
           
               
@@ -68,7 +61,7 @@ const HomePage = () => {
         </div>
       </div>
     </Box>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

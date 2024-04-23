@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { fetchPosition } from "../../Data/wardDetails/wardService";
 import {
   Dialog,
   DialogTitle,
@@ -13,13 +12,14 @@ import {
 import { Formik, Form, Field } from "formik";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
-import { EditBasicWardDetailsValidation } from "../../Validation/wardDetailsValidation";
 import { addWard } from "../../Services/WardDetails/WardDetailsServices";
 import { useAuth } from "../../Security/AuthContext";
+import { AddNewWardDetailsValidation } from "../../Validation/wardDetailsValidation";
+import { retrieveMatronNics } from "../../Services/WardDetails/WardDetailsServices";
 
 const AddNewWardForm = ({ open, handleClose }) => {
-  const [successMessage, setSuccessMessage] = useState(null);
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
+  const [matrons, setMatrons] = useState([]);
   const [wardData, setWardData] = useState({
     wardName: "",
     wardNo: "",
@@ -46,6 +46,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
       try {
         const positionData = authContext.position;
         setLoggedUserPosition(positionData);
+        const response = await retrieveMatronNics();
+        setMatrons(response);
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -54,16 +56,9 @@ const AddNewWardForm = ({ open, handleClose }) => {
     fetchData();
   }, []);
 
-  const handleReset = () => {
-    setWardData({
-      wardName: "",
-      wardNo: "",
-      matron: "",
-      numberOfNurses: "",
-      morningShift: "",
-      eveningShift: "",
-      nightShift: "",
-    });
+  const handleCancel = (resetForm) => {
+    handleClose();
+    resetForm();
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -84,22 +79,8 @@ const AddNewWardForm = ({ open, handleClose }) => {
   return (
     <Formik
       initialValues={wardData}
-      validationSchema={EditBasicWardDetailsValidation}
+      validationSchema={AddNewWardDetailsValidation}
       onSubmit={handleSubmit}
-      //   try {
-      //     console.log(values);
-      //     const status = await addWard(values);
-      //     if (status == 200) {
-      //       showSuccessAlert();
-      //       handleClose();
-      //     }
-      //     console.log(values);
-      //   } catch (error) {
-      //     console.error("Error submitting form:", error.message);
-      //   } finally {
-      //     setSubmitting(false);
-      //   }
-      // }}
     >
       {({
         handleChange,
@@ -140,6 +121,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
               <label>Matron NIC</label>
               <Field
                 as={TextField}
+                select
                 variant="outlined"
                 margin="normal"
                 fullWidth
@@ -148,7 +130,13 @@ const AddNewWardForm = ({ open, handleClose }) => {
                 onChange={handleChange}
                 error={touched.matron && Boolean(errors.matron)}
                 helperText={touched.matron && errors.matron}
-              />
+              >
+                {matrons.map((matron) => (
+                  <MenuItem key={matron} value={matron}>
+                    {matron}
+                  </MenuItem>
+                ))}
+              </Field>
 
               <label>Total number of nurses in ward</label>
               <Field
@@ -203,7 +191,7 @@ const AddNewWardForm = ({ open, handleClose }) => {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} color="primary">
+              <Button onClick={() => handleCancel(resetForm)} color="primary">
                 Cancel
               </Button>
               <Button
