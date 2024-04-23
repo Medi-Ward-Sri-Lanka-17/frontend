@@ -159,6 +159,22 @@ async function refreshUserDetails(nic){
 
 
   
+    console.log("handle save changes");
+    console.log(userData);
+    passwordValidation
+      .validate(userData, { abortEarly: false }) // Use passwordValidation here
+      .then(() => {
+        showSuccessAlert("You have successfully changed the profile details!");
+        setFormErrors({});
+      })
+      .catch((validationErrors) => {
+        const errors = {};
+        validationErrors.inner.forEach((error) => {
+          errors[error.path] = error.message;
+        });
+        setFormErrors(errors);
+      });
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -356,5 +372,4 @@ async function refreshUserDetails(nic){
     </Box>
   );
 };
-
 export default Profile;
