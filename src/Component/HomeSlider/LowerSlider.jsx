@@ -15,7 +15,6 @@ function LowerSlider({news,setActiveSlide}) {
     <div className='lower-slider' >
         {news.map((item)=>(
             <div key={item} className='lower-slide' onClick={()=>setActiveSlide(item.key)}>
-                
             </div>
         ))}
     </div>
