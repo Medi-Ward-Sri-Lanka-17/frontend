@@ -1,9 +1,9 @@
 import React from 'react'
 import './LowerSli.css'
-import Post from './Post'
+import MinPost from './MinPost'
 import { useState } from 'react'
 
-function LowerSlider({data,setActiveSlide}) {
+function LowerSlider({news,setActiveSlide}) {
 
     const slideSelect=(i)=>{
         setActiveSlide(i)
@@ -13,9 +13,8 @@ function LowerSlider({data,setActiveSlide}) {
 
   return (
     <div className='lower-slider' >
-        {data.map((item)=>(
-            <div key={item} className='lower-slide' onClick={()=>setActiveSlide(item)}>
-                 <Post item={item} isLow={isLow} className='post'/>
+        {news.map((item)=>(
+            <div key={item} className='lower-slide' onClick={()=>setActiveSlide(item.key)}>
             </div>
         ))}
     </div>

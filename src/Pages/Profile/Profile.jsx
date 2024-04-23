@@ -1,40 +1,144 @@
-// Existing imports...
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../Component/Header";
 import { Box, Grid, Avatar, Button, TextField } from "@mui/material";
 import SideBar from "../../Component/SideBar";
-import profilePicture from "./propic.png";
-import Swal from "sweetalert2";
-import validationSchema from "./Validation";
+import profilePicture from "./propic.png"; // Import the profile picture
+import Swal from "sweetalert2"; // Import Swal for alerts
+import "./Validation";
+import { useAuth } from "../../Security/AuthContext";
+import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture";
+import { retrieveDetails } from "../../Services/profile/retrieveDetails";
+import { UpdateUserDetails } from "../../Services/profile/UpdateUserDetails";
+import { uploadProfilePicture } from "../../Services/profile/UploadProfilePicture";
+import { profileDetailsValidation, passwordValidation } from "./Validation"; 
 
 const Profile = () => {
+//.......................................profile Picture Service...............................................
+  const authContext = useAuth();
+  const nic = authContext.nic;
+
+  const [proImgUrl,setProImgUrl]=useState(null)
+
+  useEffect(()=>{
+    refreshPropilePicture(nic) 
+ },[nic])
+
+ async function refreshPropilePicture(nic){
+      const response= await retrieveProfilePicture(nic)
+      setProImgUrl(response)
+ }
+
+//......................................User Detail load Service.....................................................
+  
+useEffect(()=>{
+  refreshUserDetails(nic) 
+},[nic])
+
+async function refreshUserDetails(nic){
+    const response= await retrieveDetails(nic)
+    setUserData(response)
+}
+
+
+
+
   // Sample user data (replace with actual user data)
   const [userData, setUserData] = useState({
-    nicNumber: "199922900820",
-    fullName: "Pushpa Silva",
-    userName: "Pushpa",
-    dateOfBirth: "1999-08-16",
+    dob: "",
     email: "",
-    mobileNumber: "0779201111",
-    address: "No:1,Kotuwegoda, Matara",
-    position: "Nurse",
-    serviceStartDate: "2020-01-01",
-    remainingCasualLeaves: 5,
-    remainingVacationLeaves: 10,
-    profilePicture: profilePicture,
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
+    fullName: "",
+    mobileNo: "",
+    nic: "",
+    position: "",
+    remainingCasualLeaves: 0,
+    remainingVacationLeave: 0,
+    serviceStartedDate: "",
+    username: ""
   });
 
-  const [formErrors, setFormErrors] = useState({});
+
+//............................................User Details Update...................................................
+const [formErrors, setFormErrors] = useState({});
   const [changePasswordVisible, setChangePasswordVisible] = useState(false);
 
+
+  // Function to handle saving changes
+  const handleSaveChanges = () => {
+    updateUserProDetails(userData)
+
+  };
+
+
+  async function updateUserProDetails(updateData) {
+    try {
+      const response = await UpdateUserDetails(updateData);
+      if (response.status === 200) {
+        showSuccessAlert(response.data)  
+      } else {
+    
+        console.error("Update failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating user details:", error.message);
+    }
+  }
+
+
+  // Function to handle input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+
+
+//...............................................Upload Profile Picture Service.......................................................
+
+  const [selectFile,setSelectFile]=useState(null)
+  
+  // Function to handle profile picture selection
   const handleProfilePictureChange = (event) => {
+
     const file = event.target.files[0];
     console.log("Selected file:", file);
-    setUserData({ ...userData, profilePicture: URL.createObjectURL(file) });
+    setSelectFile(file)
+    console.log(selectFile)
+    setProImgUrl(URL.createObjectURL(file));
+
   };
+
+  useEffect(() => {
+    console.log("Updated selectFile:", selectFile);
+  }, [selectFile]); 
+
+
+    // Function to handle changing profile picture
+    const handleChangeProfilePicture = () => {
+        uploadDp(selectFile,nic)
+  
+    };
+
+
+    async function uploadDp(selectFile,nic) {
+      try {
+        const response = await uploadProfilePicture(selectFile,nic);
+        if (response.status === 200) {
+          showSuccessAlert(response.data)  
+        } else {
+      
+          console.error("Upload failed:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error updating user details:", error.message);
+      }
+    }
+
+    
+    
+
 
   const showSuccessAlert = (message) => {
     Swal.fire({
@@ -44,19 +148,22 @@ const Profile = () => {
     });
   };
 
-  const handleChangeProfilePicture = () => {
-    showSuccessAlert("You have successfully updated the profile picture!");
-  };
+
 
   const toggleChangePasswordVisibility = () => {
     setChangePasswordVisible(true); // Set visibility to true
   };
 
   const handleChangePassword = () => {
+    // Handle changing password action
+    
+
+
+  
     console.log("handle save changes");
     console.log(userData);
-    validationSchema
-      .validate(userData, { abortEarly: false })
+    passwordValidation
+      .validate(userData, { abortEarly: false }) // Use passwordValidation here
       .then(() => {
         showSuccessAlert("You have successfully changed the profile details!");
         setFormErrors({});
@@ -70,11 +177,14 @@ const Profile = () => {
       });
   };
 
+
   return (
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <div className="PageContent" style={{ width: "100%" }}>
-        <Header title="PROFILE" profilePicture={userData.profilePicture} />
+        {/* Pass the profilePicture prop to the Header component */}
+        <Header title="PROFILE" proImgUrl={proImgUrl} />
+
         <Grid container spacing={4}>
           <Grid item xs={6}>
             <Box
@@ -86,7 +196,7 @@ const Profile = () => {
             >
               <Avatar
                 alt={userData.name}
-                src={userData.profilePicture}
+                src={proImgUrl}
                 sx={{ width: 150, height: 150 }}
               />
               <Box sx={{ mt: 1 }}>
@@ -177,91 +287,77 @@ const Profile = () => {
                 label="NIC Number"
                 fullWidth
                 margin="normal"
-                value={userData.nicNumber}
-                error={formErrors.hasOwnProperty("nicNumber")}
-                helperText={formErrors["nicNumber"]}
+                name="nic"
+                value={userData.nic}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Full Name"
                 fullWidth
+                name="fullName"
                 margin="normal"
                 value={userData.fullName}
-                error={formErrors.hasOwnProperty("fullName")}
-                helperText={formErrors["fullName"]}
+                onChange={handleInputChange}
               />
               <TextField
                 label="User Name"
+                name="username"
                 fullWidth
                 margin="normal"
-                value={userData.userName}
-                error={formErrors.hasOwnProperty("userName")}
-                helperText={formErrors["userName"]}
+                value={userData.username}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Date of Birth"
+                name="dob"
                 type="date"
                 fullWidth
                 margin="normal"
-                value={userData.dateOfBirth}
-                error={formErrors.hasOwnProperty("dateOfBirth")}
-                helperText={formErrors["dateOfBirth"]}
+                value={userData.dob}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Email"
+                name="email"
                 fullWidth
                 margin="normal"
                 value={userData.email}
-                error={formErrors.hasOwnProperty("email")}
-                helperText={formErrors["email"]}
+                onChange={handleInputChange}
               />
-              <TextField
-                label="Mobile Number"
-                fullWidth
-                margin="normal"
-                value={userData.mobileNumber}
-                error={formErrors.hasOwnProperty("mobileNumber")}
-                helperText={formErrors["mobileNumber"]}
-              />
-              <TextField
-                label="Home Address"
-                fullWidth
-                margin="normal"
-                value={userData.address}
-                error={formErrors.hasOwnProperty("address")}
-                helperText={formErrors["address"]}
-              />
+              <TextField label="Mobile Number" fullWidth margin="normal" value={userData.mobileNo} onChange={handleInputChange} />
+              {/* <TextField label="Home Address" fullWidth margin="normal" value={use}/> */}
               <TextField
                 label="Designation"
+                name="position"
                 fullWidth
                 margin="normal"
                 value={userData.position}
-                error={formErrors.hasOwnProperty("position")}
-                helperText={formErrors["position"]}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Service Start Date"
+                name="serviceStartedDate"
                 type="date"
                 fullWidth
                 margin="normal"
-                value={userData.serviceStartDate}
-                error={formErrors.hasOwnProperty("serviceStartDate")}
-                helperText={formErrors["serviceStartDate"]}
+                value={userData.serviceStartedDate}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Remaining Casual Leaves"
+                name="remainingCasualLeaves"
                 fullWidth
                 margin="normal"
                 value={userData.remainingCasualLeaves}
-                error={formErrors.hasOwnProperty("remainingCasualLeaves")}
-                helperText={formErrors["remainingCasualLeaves"]}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Remaining Vacation Leaves"
+                name="remainingVacationLeave"
                 fullWidth
                 margin="normal"
-                value={userData.remainingVacationLeaves}
-                error={formErrors.hasOwnProperty("remainingVacationLeaves")}
-                helperText={formErrors["remainingVacationLeaves"]}
+                value={userData.remainingVacationLeave}
+                onChange={handleInputChange}
               />
               <Button
                 variant="contained"
@@ -278,5 +374,4 @@ const Profile = () => {
     </Box>
   );
 };
-
 export default Profile;

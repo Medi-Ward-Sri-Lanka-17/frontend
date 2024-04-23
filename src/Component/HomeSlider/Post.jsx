@@ -9,21 +9,38 @@ function Post({item,isLow}) {
     <div className={isLow ? 'lower-container':'container'}>
         <div className={isLow ?'lower-devider':'devider'}>
             <div className={isLow?'lower-left':'left'}>
-                <div className={isLow?'lower-profile':'profile'}>
-                <Avatar className={isLow?'lower-avatar':'avatar'}/>
-                <span>Name</span>
+                <div className='top-devider'>
+                    <div className={isLow?'lower-profile':'profile'}>
+                        <Avatar 
+                        className={isLow?'lower-avatar':'avatar'}
+                        alt={"news-dp-load -error"}
+                        src={item.proImgUrl}
+                        sx={{ width: 50, height: 50 }}
+                        />
+                    
+                    </div>
+                    <div className='details'>
+                        <span>{item.fullName  }</span>
+                        <span className='position'>{item.position}</span>
+                        <span className='time'>{item.pushedDate}</span>
+                    </div>
                 </div>
-                <div>
-                    <span>position</span>
-                </div>
+
                 <div className={isLow?'lower-image-div':'image-div'}>
-                    {item}
+                    <img src={item.imgUrl} alt="Description of the image" className='img'/>
                 </div>
             </div>
             <div className={isLow?'lower-right':'right'}>
-                <p className={isLow ?'lower-description-div':'description-div'}>
-                     {item}
-                </p>
+                <div className='date'>
+                    
+                </div>
+                <div className={isLow ?'lower-description-div':'description-div'}>
+                    <h1 className='header'>{item.newsHeader}</h1>
+                    <p className='news'>
+                        {item.newsDescription}
+                    </p>
+                </div>
+
                  
             </div>
         </div>

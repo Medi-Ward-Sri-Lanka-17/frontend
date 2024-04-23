@@ -1,17 +1,25 @@
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 export const showSuccessAlert = (message) => {
   Swal.fire({
     text: message,
-    icon: 'success',
-    confirmButtonColor: '#243e4f',
-  })
-}
+    icon: "success",
+    confirmButtonColor: "#243e4f",
+  });
+};
 
 export const showUnsuccessAlert = (message) => {
   Swal.fire({
     text: message,
-    icon: 'error',
-    confirmButtonColor: '#243e4f',
-  })
-}
+    icon: "error",
+    confirmButtonColor: "#243e4f",
+  });
+};
+
+export const showInfoAlert = (message) => {
+  Swal.fire({
+    text: message,
+    icon: "info",
+    confirmButtonColor: "#243e4f",
+  });
+};

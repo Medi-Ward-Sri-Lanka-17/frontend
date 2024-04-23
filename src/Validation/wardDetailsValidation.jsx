@@ -10,7 +10,7 @@ export const EditBasicWardDetailsValidation = Yup.object({
       '*Name must only contain letters, spaces, and hyphens'
     ),
 
-  wardNo: Yup.number().required('*Ward number is required'),
+  wardNo: Yup.string().required('*Ward number is required'),
 
   sisterNic: Yup.string()
     .required('*Sister nic is required')
@@ -55,7 +55,7 @@ export const AddNewWardDetailsValidation = Yup.object({
       '*Name must only contain letters, spaces, and hyphens'
     ),
 
-  wardNo: Yup.number().required('*Ward number is required'),
+  wardNo: Yup.string().required('*Ward number is required'),
 
   matron: Yup.string()
     .required('*Sister nic is required')
@@ -124,13 +124,13 @@ export const addNurseValidation = Yup.object().shape({
 
   wardNo: Yup.string().required('*Ward number is required'),
 
-  leaveNo: Yup.number()
-    .required('*Leave number is required')
-    .positive('*Leave number must be a positive integer')
-    .integer('*Leave number must be an integer'),
+  leaveNo: Yup.string().required('*Leave number is required'),
 
   mobileNo: Yup.string()
-    .matches(/^\d{3}-\d{3}-\d{4}$/, '*Invalid phone number')
+    .matches(
+      /^\d{3}-\d{3}-\d{4}$/,
+      "*Invalid phone number, enter the phone number in '07x-xxx-xxxx' format"
+    )
     .required('*Phone number is required'),
 
   serviceStartDate: Yup.date().when('birthdate', (birthdate, schema) => {
@@ -191,13 +191,13 @@ export const addSisterValidation = Yup.object().shape({
 
   position: Yup.string().required('*Position is required'),
 
-  leaveNo: Yup.number()
-    .required('*Leave number is required')
-    .positive('*Leave number must be a positive integer')
-    .integer('*Leave number must be an integer'),
+  leaveNo: Yup.string().required('*Leave number is required'),
 
   mobileNo: Yup.string()
-    .matches(/^\d{3}-\d{3}-\d{4}$/, '*Invalid phone number')
+    .matches(
+      /^\d{3}-\d{3}-\d{4}$/,
+      "*Invalid phone number, enter the phone number in '07x-xxx-xxxx' format"
+    )
     .required('*Phone number is required'),
 
   serviceStartDate: Yup.date().when('birthdate', (birthdate, schema) => {
@@ -254,13 +254,13 @@ export const addSatffValidation = Yup.object().shape({
 
   wardNo: Yup.string().required('*Ward number is required'),
 
-  leaveNum: Yup.number()
-    .required('*Leave number is required')
-    .positive('*Leave number must be a positive integer')
-    .integer('*Leave number must be an integer'),
+  leaveNum: Yup.string().required('*Leave number is required'),
 
   mobileNo: Yup.string()
-    .matches(/^\d{3}-\d{3}-\d{4}$/, '*Invalid phone number')
+    .matches(
+      /^\d{3}-\d{3}-\d{4}$/,
+      "*Invalid phone number, enter phone number in '07x-xxx-xxxx' format"
+    )
     .required('*Phone number is required'),
 
   serviceStartedDate: Yup.date()
