@@ -1,7 +1,7 @@
 .lower-slider{
-    width:13rem;
-    height:5rem;
-    margin: 1rem auto;
+    width:20rem;
+    height:13rem;
+    margin-left:2.5;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,8 +10,12 @@
 }
 
 .lower-slide{
-    width:5rem;
-    height:3rem;
+    width:25rem;
+    height:13rem;
+    position:static;
+}
+div.lower-slider{
+    margin-left:50rem;
 }
 
 

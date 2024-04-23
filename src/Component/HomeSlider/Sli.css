@@ -2,18 +2,22 @@
     display: grid;
     place-items: center;
     width: 100%;
-    height:50vh;
+    height:70vh;
 }
 
 .inner-container{
+    display:flex;
+    flex-direction:column;
     justify-content: center;
     align-items: center;
+    gap: 2rem;
 }
 
 .x{
-    width: 60rem;
+    width: 100%;
+    height:25rem;
     overflow-x: auto;
-    margin-left: 2.5rem ;
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,8 +30,9 @@
 
 .slide{
     width:60rem;
-    height: 18rem;
-    background-color: gray;
+    height: 26.5rem;
+    box-shadow: black;
+    background-color: #243E4F;
     display: none;
     /* place-items: center; */
 }

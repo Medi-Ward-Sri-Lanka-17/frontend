@@ -1,6 +1,6 @@
 import { apiClient } from "../../Api/ApiClient"
 
-import { Axios } from "axios"
+
 
 export const sendMail=(values)=>apiClient.post('/register/password-reset-request',values)
 

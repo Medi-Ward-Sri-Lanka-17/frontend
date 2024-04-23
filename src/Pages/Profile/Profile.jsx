@@ -1,31 +1,141 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../Component/Header";
 import { Box, Grid, Avatar, Button, TextField } from "@mui/material";
 import SideBar from "../../Component/SideBar";
 import profilePicture from "./propic.png"; // Import the profile picture
 import Swal from "sweetalert2"; // Import Swal for alerts
 import "./Validation";
+import { useAuth } from "../../Security/AuthContext";
+import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture";
+import { retrieveDetails } from "../../Services/profile/retrieveDetails";
+import { UpdateUserDetails } from "../../Services/profile/UpdateUserDetails";
+import { uploadProfilePicture } from "../../Services/profile/UploadProfilePicture";
 
 const Profile = () => {
+//.......................................profile Picture Service...............................................
+  const authContext = useAuth();
+  const nic = authContext.nic;
+
+  const [proImgUrl,setProImgUrl]=useState(null)
+
+  useEffect(()=>{
+    refreshPropilePicture(nic) 
+ },[nic])
+
+ async function refreshPropilePicture(nic){
+      const response= await retrieveProfilePicture(nic)
+      setProImgUrl(response)
+ }
+
+//......................................User Detail load Service.....................................................
+  
+useEffect(()=>{
+  refreshUserDetails(nic) 
+},[nic])
+
+async function refreshUserDetails(nic){
+    const response= await retrieveDetails(nic)
+    setUserData(response)
+}
+
+
+
+
   // Sample user data (replace with actual user data)
   const [userData, setUserData] = useState({
-    nicNumber: "199922900820",
-    dateOfBirth: "1999-08-16",
-    position: "Nurse",
-    serviceStartDate: "2020-01-01",
-    remainingCasualLeaves: 5,
-    remainingVacationLeaves: 10,
-    profilePicture: profilePicture, // Use the imported profile picture
+    dob: "",
+    email: "",
+    fullName: "",
+    mobileNo: "",
+    nic: "",
+    position: "",
+    remainingCasualLeaves: 0,
+    remainingVacationLeave: 0,
+    serviceStartedDate: "",
+    username: ""
   });
 
+
+//............................................User Details Update...................................................
+
+
+  // Function to handle saving changes
+  const handleSaveChanges = () => {
+    updateUserProDetails(userData)
+
+  };
+
+
+  async function updateUserProDetails(updateData) {
+    try {
+      const response = await UpdateUserDetails(updateData);
+      if (response.status === 200) {
+        showSuccessAlert(response.data)  
+      } else {
+    
+        console.error("Update failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating user details:", error.message);
+    }
+  }
+
+
+  // Function to handle input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+
+
+//...............................................Upload Profile Picture Service.......................................................
+
+  const [selectFile,setSelectFile]=useState(null)
+  
   // Function to handle profile picture selection
   const handleProfilePictureChange = (event) => {
+
     const file = event.target.files[0];
-    // Handle the selected file
     console.log("Selected file:", file);
-    // Update profile picture in state
-    setUserData({ ...userData, profilePicture: URL.createObjectURL(file) });
+    setSelectFile(file)
+    console.log(selectFile)
+    setProImgUrl(URL.createObjectURL(file));
+
   };
+
+  useEffect(() => {
+    console.log("Updated selectFile:", selectFile);
+  }, [selectFile]); 
+
+
+    // Function to handle changing profile picture
+    const handleChangeProfilePicture = () => {
+        uploadDp(selectFile,nic)
+  
+    };
+
+
+    async function uploadDp(selectFile,nic) {
+      try {
+        const response = await uploadProfilePicture(selectFile,nic);
+        if (response.status === 200) {
+          showSuccessAlert(response.data)  
+        } else {
+      
+          console.error("Upload failed:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error updating user details:", error.message);
+      }
+    }
+
+    
+    
+
 
   // Function to show success alert
   const showSuccessAlert = (message) => {
@@ -36,11 +146,7 @@ const Profile = () => {
     });
   };
 
-  // Function to handle changing profile picture
-  const handleChangeProfilePicture = () => {
-    // Simulating profile picture change
-    showSuccessAlert("You have successfully updated the profile picture!");
-  };
+
 
   // Function to handle changing password
   const handleChangePassword = () => {
@@ -48,18 +154,16 @@ const Profile = () => {
     console.log("Change password clicked");
   };
 
-  // Function to handle saving changes
-  const handleSaveChanges = () => {
-    // Handle saving changes action
-    showSuccessAlert("You have successfully changed the profile details!");
-  };
+
+
+  
 
   return (
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <div className="PageContent" style={{ width: "100%" }}>
         {/* Pass the profilePicture prop to the Header component */}
-        <Header title="PROFILE" profilePicture={userData.profilePicture} />
+        <Header title="PROFILE" proImgUrl={proImgUrl} />
 
         <Grid container spacing={4}>
           {/* Left Column */}
@@ -74,7 +178,7 @@ const Profile = () => {
             >
               <Avatar
                 alt={userData.name}
-                src={userData.profilePicture}
+                src={proImgUrl}
                 sx={{ width: 150, height: 150 }}
               />
               <Box sx={{ mt: 1 }}>
@@ -114,59 +218,77 @@ const Profile = () => {
                 label="NIC Number"
                 fullWidth
                 margin="normal"
-                value={userData.nicNumber}
+                name="nic"
+                value={userData.nic}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Full Name"
                 fullWidth
+                name="fullName"
                 margin="normal"
-                value={userData.name}
+                value={userData.fullName}
+                onChange={handleInputChange}
               />
               <TextField
                 label="User Name"
+                name="username"
                 fullWidth
                 margin="normal"
-                value={userData.name}
+                value={userData.username}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Date of Birth"
+                name="dob"
                 type="date"
                 fullWidth
                 margin="normal"
-                value={userData.dateOfBirth}
+                value={userData.dob}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Email"
+                name="email"
                 fullWidth
                 margin="normal"
                 value={userData.email}
+                onChange={handleInputChange}
               />
-              <TextField label="Mobile Number" fullWidth margin="normal" />
-              <TextField label="Home Address" fullWidth margin="normal" />
+              <TextField label="Mobile Number" fullWidth margin="normal" value={userData.mobileNo} onChange={handleInputChange} />
+              {/* <TextField label="Home Address" fullWidth margin="normal" value={use}/> */}
               <TextField
                 label="Designation"
+                name="position"
                 fullWidth
                 margin="normal"
                 value={userData.position}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Service Start Date"
+                name="serviceStartedDate"
                 type="date"
                 fullWidth
                 margin="normal"
-                value={userData.serviceStartDate}
+                value={userData.serviceStartedDate}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Remaining Casual Leaves"
+                name="remainingCasualLeaves"
                 fullWidth
                 margin="normal"
                 value={userData.remainingCasualLeaves}
+                onChange={handleInputChange}
               />
               <TextField
                 label="Remaining Vacation Leaves"
+                name="remainingVacationLeave"
                 fullWidth
                 margin="normal"
-                value={userData.remainingVacationLeaves}
+                value={userData.remainingVacationLeave}
+                onChange={handleInputChange}
               />
               <Button
                 variant="contained"
