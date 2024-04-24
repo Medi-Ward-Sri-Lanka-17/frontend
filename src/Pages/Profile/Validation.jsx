@@ -90,3 +90,19 @@ export const passwordValidation = yup.object().shape({
     .required("Confirm new password is required")
     .oneOf([yup.ref("newPassword")], "Passwords must match"),
 });
+
+export const validationSchema=yup.object().shape({
+  currentPassword:yup.string().required("Current Password Required"),
+  newPassword: yup
+  .string()
+  .required("New password is required")
+  .min(8, "Password must be at least 8 characters")
+  .matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+    "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+  ),
+  confirmPassword: yup
+    .string()
+    .required("Confirm new password is required")
+    .oneOf([yup.ref("newPassword")], "Passwords must match"),
+})

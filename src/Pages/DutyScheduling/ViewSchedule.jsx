@@ -12,8 +12,34 @@ import TextField from "@mui/material/TextField";
 import { retrieveShiftOfUserOnDay } from "../../Services/Scheduling/ViewSchedulingServices.js";
 import { showInfoAlert } from "../../Component/ShowAlert.jsx";
 import { Height } from "@mui/icons-material";
+import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
 
 const ViewSchedule = () => {
+
+  //.............................................Load Profile Picture........................................................
+
+  const authContext = useAuth()
+  const nic = authContext.nic
+
+  const [proImgUrl,setProImgUrl]=useState(null)
+
+  useEffect(()=>{
+    refreshPropilePicture(nic) 
+ },[])
+
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
+
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic)
+    setProImgUrl(response)
+  }
+
+//............................................................................................................................
+
+
+
   const [date, setDate] = useState(new Date());
   const [scheduleCreatedStatus, setScheduleCreatedStatus] = useState(0);
   const [isViewSelected, setIsViewSelected] = useState(false);
@@ -26,7 +52,7 @@ const ViewSchedule = () => {
   const [wardNumbers, setWardNumbers] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
   const [selectedWard, setSelectedWard] = useState(); //SELECTED WARD OF THE DROPDOWN
   const [userShiftOnDate, setUserShiftOnDate] = useState(""); // Shift of logged in user on selected date
-  const authContext = useAuth();
+  // const authContext = useAuth();
 
   useEffect(() => {
     setIsViewSelected(true);
@@ -150,7 +176,7 @@ const ViewSchedule = () => {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box className="PageContent" style={{ width: "100%" }}>
-        <Header title="CREATE SCHEDULE" />
+        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl}/>
         <Box>
           <Box
             style={{
