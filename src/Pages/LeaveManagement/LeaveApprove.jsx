@@ -22,6 +22,7 @@ import { useAuth } from '../../Security/AuthContext'
 import {
   approveLeaveByMatron,
   approveLeaveBySister,
+  declineLeaveRequest,
   getRequestLeaveDetails,
   getWardList,
 } from '../../Services/LeaveManagement/LeaveApproveServices'
@@ -36,6 +37,7 @@ const LeaveApprove = () => {
   const [rows, setRows] = useState([])
   const [position, setPosition] = useState('All')
   const [isApprovedBtnTrigger, setIsApprovedBtnTrigger] = useState(false)
+  const [isDeclineBtnTrigger, setIsDeclineBtnTrigger] = useState(false)
 
   // Use naviagete
   const navigate = useNavigate()
@@ -55,18 +57,25 @@ const LeaveApprove = () => {
     navigate(`/leave/approve/${leaveId}`)
   }
   // Decline button aciton on click
-  const handleDeclineButton = (selectedRow) => {
-    console.log('Selected Row Details:', selectedRow)
-    console.log(authContext.token)
-    console.log(authContext.position)
+  const handleDeclineButton = async (selectedRow) => {
+    declineLeaveRequest(selectedRow.leaveId).then(() => {
+      setIsDeclineBtnTrigger((Prev) => !Prev)
+    })
   }
   // Approve button aciton on click
-  const handleApproveButton = (selectedRow) => {
+  const handleApproveButton = async (selectedRow) => {
     if (authContext.position === 'Sister') {
-      approveLeaveBySister(selectedRow.leaveId)
+      approveLeaveBySister(selectedRow.leaveId).then(() => {
+        setIsApprovedBtnTrigger((Prev) => !Prev)
+      })
+      setIsApprovedBtnTrigger((Prev) => !Prev)
     } else if (authContext.position === 'Matron') {
-      approveLeaveByMatron(selectedRow.leaveId)
+      approveLeaveByMatron(selectedRow.leaveId).then(() => {
+        setIsApprovedBtnTrigger((Prev) => !Prev)
+      })
+      setIsApprovedBtnTrigger((Prev) => !Prev)
     }
+
     setIsApprovedBtnTrigger((Prev) => !Prev)
   }
 
@@ -79,12 +88,10 @@ const LeaveApprove = () => {
   //working when page loading
   useEffect(() => {
     const fetchWardList = async () => {
-      if (authContext.position == 'Matron') {
-        var nic = authContext.user.nic
-        var wardList = await getWardList(nic)
-        setWards(wardList || [])
-        console.log(wardList)
-      }
+      var nic = authContext.user.nic
+      var wardList = await getWardList(nic, authContext.position)
+      setWards(wardList || [])
+      console.log(wardList)
     }
 
     const fetchRequestLeaveDetails = async () => {
@@ -100,7 +107,7 @@ const LeaveApprove = () => {
 
     fetchWardList()
     fetchRequestLeaveDetails()
-  }, [wardNo, position, isApprovedBtnTrigger])
+  }, [wardNo, position, isApprovedBtnTrigger, isDeclineBtnTrigger])
 
   const columns = [
     {
