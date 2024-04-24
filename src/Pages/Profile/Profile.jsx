@@ -11,11 +11,21 @@ import { retrieveDetails } from "../../Services/profile/retrieveDetails";
 import { UpdateUserDetails } from "../../Services/profile/UpdateUserDetails";
 import { uploadProfilePicture } from "../../Services/profile/UploadProfilePicture";
 import { profileDetailsValidation, passwordValidation } from "./Validation"; 
+import { validationSchema } from "./Validation";
+import Theme from "../../Component/Theme";
+import { th } from "date-fns/locale";
+import { useFormik } from "formik";
+import { changePassword } from "../../Services/profile/changePassword";
+
+const theme = Theme();
 
 const Profile = () => {
+
+  
 //.......................................profile Picture Service...............................................
   const authContext = useAuth();
   const nic = authContext.nic;
+  const uname=authContext.username;
 
   const [proImgUrl,setProImgUrl]=useState(null)
 
@@ -128,7 +138,7 @@ const [formErrors, setFormErrors] = useState({});
         if (response.status === 200) {
           showSuccessAlert(response.data)  
         } else {
-      
+          showErrorAlert(response.data)
           console.error("Upload failed:", response.statusText);
         }
       } catch (error) {
@@ -148,34 +158,50 @@ const [formErrors, setFormErrors] = useState({});
     });
   };
 
+  const showErrorAlert = (message) => {
+    Swal.fire({
+      text: message,
+      icon: "error",
+      confirmButtonColor: "#243e4f",
+    });
+  };
 
+//...................................................Change Password..............................................................
 
   const toggleChangePasswordVisibility = () => {
     setChangePasswordVisible(true); // Set visibility to true
   };
 
-  const handleChangePassword = () => {
-    // Handle changing password action
-    
 
 
-  
-    console.log("handle save changes");
-    console.log(userData);
-    passwordValidation
-      .validate(userData, { abortEarly: false }) // Use passwordValidation here
-      .then(() => {
-        showSuccessAlert("You have successfully changed the profile details!");
-        setFormErrors({});
-      })
-      .catch((validationErrors) => {
-        const errors = {};
-        validationErrors.inner.forEach((error) => {
-          errors[error.path] = error.message;
-        });
-        setFormErrors(errors);
-      });
+  const initialValues={
+    currentPassword:"",
+    newPassword:"",
+    confirmPassword:"",
+    username:uname
   };
+
+  async function onSubmit(){
+    try {
+      const response = await changePassword(formik.values,nic);
+      if (response.status === 200) {
+        showSuccessAlert(response.data)  
+      } else {
+        showErrorAlert(response.data)
+        console.error("Upload failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error Chnaging password:", error.message);
+      showErrorAlert("Your Current Password is Incorrect")
+    }
+
+  }
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema,
+  });
 
 
   return (
@@ -221,62 +247,73 @@ const [formErrors, setFormErrors] = useState({});
                 variant="contained"
                 color="primary"
                 onClick={toggleChangePasswordVisibility}
-                sx={{ mt: 1 }}
+                sx={{ 
+                  mt: 1,
+                  backgroundColor:"#243E4F",
+                  "&:hover": {
+                    backgroundColor: theme.palette.secondary.main,
+                  },
+                }}
               >
                 Change Password
               </Button>
               {changePasswordVisible && (
-                <Box>
-                  <TextField
-                    label="Current Password"
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    value={userData.currentPassword}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        currentPassword: e.target.value,
-                      })
-                    }
-                    error={formErrors.hasOwnProperty("currentPassword")}
-                    helperText={formErrors["currentPassword"]}
-                  />
-                  <TextField
-                    label="New Password"
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    value={userData.newPassword}
-                    onChange={(e) =>
-                      setUserData({ ...userData, newPassword: e.target.value })
-                    }
-                    error={formErrors.hasOwnProperty("newPassword")}
-                    helperText={formErrors["newPassword"]}
-                  />
-                  <TextField
-                    label="Confirm New Password"
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    value={userData.confirmNewPassword}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        confirmNewPassword: e.target.value,
-                      })
-                    }
-                    error={formErrors.hasOwnProperty("confirmNewPassword")}
-                    helperText={formErrors["confirmNewPassword"]}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleChangePassword}
-                    sx={{ mt: 2 }}
-                  >
-                    Confirm Password Change
-                  </Button>
+                <Box sx={{width:"75%"}}>
+                  <form onSubmit={formik.handleSubmit}>
+                    <TextField
+                      label="Current Password"
+                      type="password"
+                      name="currentPassword"
+                      fullWidth
+                      margin="normal"
+                      value={formik.values.currentPassword}
+                      onChange={formik.handleChange}
+                      helperText={formik.errors.currentPassword}
+                      FormHelperTextProps={{
+                        style:{color:theme.palette.error.main}
+                      }}
+                    />
+                    <TextField
+                      label="New Password"
+                      type="password"
+                      name="newPassword"
+                      fullWidth
+                      margin="normal"
+                      value={formik.values.newPassword}
+                      onChange={formik.handleChange}
+                      helperText={formik.errors.newPassword}
+                      FormHelperTextProps={{
+                        style:{color:theme.palette.error.main}
+                      }}
+                    />
+                    <TextField
+                      label="Confirm New Password"
+                      type="password"
+                      name="confirmPassword"
+                      fullWidth
+                      margin="normal"
+                      value={formik.values.confirmPassword}
+                      onChange={formik.handleChange}
+                      helperText={formik.errors.confirmPassword}
+                      FormHelperTextProps={{
+                        style:{color:theme.palette.error.main}
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      sx={{ 
+                        mt: 2,
+                        backgroundColor:theme.palette.primary.main,
+                        ":hover":{
+                          backgroundColor:theme.palette.secondary.main
+                        }
+                      }}
+                    >
+                      Confirm Password Change
+                    </Button>
+                  </form>
                 </Box>
               )}
             </Box>
@@ -362,13 +399,21 @@ const [formErrors, setFormErrors] = useState({});
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleChangePassword}
-                sx={{ mt: 2 }}
+                onClick={handleSaveChanges}
+                sx={{ 
+                  mt: 2,
+                  backgroundColor:theme.palette.primary.main,
+                  ":hover":{
+                    backgroundColor:theme.palette.secondary.main
+                  }
+                
+                }}
               >
                 Save Changes
               </Button>
             </Box>
           </Grid>
+          
         </Grid>
       </div>
     </Box>
