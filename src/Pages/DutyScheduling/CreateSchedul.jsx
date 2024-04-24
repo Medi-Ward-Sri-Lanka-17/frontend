@@ -97,7 +97,7 @@ const CreateSchedule = () => {
     console.log(scheduleCreatedStatusForMonth)
   }
 
-  const handleShiftSelection = (shift) => {
+  const handleShiftSelection = async (shift) => {
     console.log(date)
     setSelectedShift(shift)
 
@@ -106,15 +106,13 @@ const CreateSchedule = () => {
       showInfoAlert('Pick a date')
       setCandidate([])
     } else {
-      console.log(authContext.user.nic)
-
-      // Call a function to handle the shift selection
-
-      const response = retrveCandidateList(
+      const response = await retrveCandidateList(
         authContext.user.nic,
         shift,
         formatDate(date)
       )
+
+      console.log(response)
 
       setCandidate(response)
     }
@@ -271,7 +269,7 @@ const CreateSchedule = () => {
                   maxHeight: '78%',
                 }}
               >
-                <ShiftGrid data={dummyData} />
+                <ShiftGrid data={candidate} />
               </Box>
             </Box>
             <Box
