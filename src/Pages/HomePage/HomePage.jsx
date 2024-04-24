@@ -14,9 +14,9 @@ const HomePage = () => {
   const nic = authContext.nic
 
 
-  const [proImgUrl, setProImgUrl] = useState(null)
-  const authContext = useAuth();
-  const nic = authContext.nic;
+  // const [proImgUrl, setProImgUrl] = useState(null)
+  // const authContext = useAuth();
+  // const nic = authContext.nic;
  
 
   const [proImgUrl,setProImgUrl]=useState(null)

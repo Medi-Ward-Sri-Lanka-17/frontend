@@ -23,6 +23,7 @@ const Header = (props) => {
   }
 
   useEffect(()=>{
+    console.log(props.proImgUrl)
     dpLoad(props.proImgUrl);
   })
 

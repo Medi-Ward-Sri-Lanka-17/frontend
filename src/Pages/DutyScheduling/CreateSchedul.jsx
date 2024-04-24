@@ -11,8 +11,34 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import { useAuth } from '../../Security/AuthContext.js'
 import { showInfoAlert } from '../../Component/ShowAlert'
+import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture.js'
 
 const CreateSchedule = () => {
+
+
+  //.............................................Load Profile Picture........................................................
+
+  const authContext = useAuth()
+  const nic = authContext.nic
+
+  const [proImgUrl,setProImgUrl]=useState(null)
+
+  useEffect(()=>{
+    refreshPropilePicture(nic) 
+ },[])
+
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
+
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic)
+    setProImgUrl(response)
+  }
+
+//............................................................................................................................
+
+
   const [date, setDate] = useState(null)
   const [scheduleCreatedStatusForDay, setScheduleCreatedStatusForDay] =
     useState(0)
@@ -26,7 +52,7 @@ const CreateSchedule = () => {
   const [loggedUserNic, setLoggedUserNic] = useState() //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState('') // CURRENT MONTH
 
-  const authContext = useAuth()
+  // const authContext = useAuth()
 
   useEffect(() => {
     var pos = authContext.position
@@ -149,7 +175,7 @@ const CreateSchedule = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <Box className="PageContent" style={{ width: '100%' }}>
-        <Header title="CREATE SCHEDULE" />
+        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl}/>
         <Box>
           <Box
             style={{
