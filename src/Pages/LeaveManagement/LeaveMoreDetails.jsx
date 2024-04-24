@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SideBar from '../../Component/SideBar'
-import { Box, Grid, InputLabel, TextField } from '@mui/material'
+import { Box, Grid, InputLabel, TextField, Typography } from '@mui/material'
 import Header from '../../Component/Header'
 import Theme from '../../Component/Theme'
 import { useNavigate, useParams } from 'react-router-dom'
 import DataGrid from '../../Component/DataGridComponent'
 import DataGridComponent from '../../Component/DataGridComponent'
 import DefaultButton from '../../Component/Button/DefaultButton'
+import {
+  getMoreLeaveDetails,
+  getPreiousLeaveDetails,
+} from '../../Services/LeaveManagement/LeaveApproveServices'
 
 const LeaveMoreDetails = (props) => {
   const theme = Theme()
@@ -19,15 +23,40 @@ const LeaveMoreDetails = (props) => {
   }
 
   const [userDetails, setUserDetails] = useState({
-    name: 'Dilki Hansapani',
-    leaveBeginDate: '2024-02-12',
-    leaveEnddate: '2024-02-16',
-    remainingCasualityLeave: '20',
-    reamainingVacationLeave: '21',
-    noOfTotalLeaveCurrentMounth: '4',
-    requestedDate: '2024-01-21',
+    name: '',
+    leaveBeginDate: '',
+    leaveEndDate: '',
+    remainingCasualLeaves: 0,
+    remainingVacationLeave: 0,
+    totalLeaveOfTheMonth: 0,
+    requestedDate: '',
+    reason: '',
   })
+  const [rows, setRows] = useState([])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getMoreLeaveDetails(leaveId)
+        setUserDetails(data)
+      } catch (error) {
+        console.error('Error fetching leave details:', error)
+      }
+    }
+
+    const fetchRows = async (leaveId) => {
+      try {
+        var data = await getPreiousLeaveDetails(leaveId)
+        console.log(data)
+        setRows(data)
+      } catch (error) {
+        console.error('Error fetching leave details:', error)
+      }
+    }
+
+    fetchData()
+    fetchRows(leaveId)
+  }, [leaveId])
   const columns = [
     {
       field: 'leaveId',
@@ -42,20 +71,24 @@ const LeaveMoreDetails = (props) => {
       headerClassName: 'colored-data-grid',
     },
     {
-      field: 'numOfLeaveDays',
+      field: 'numberOfLeaveDays',
       headerName: 'Number of Leave Days',
       width: 200,
       headerClassName: 'colored-data-grid',
     },
     {
-      field: 'description',
+      field: 'reason',
       headerName: 'Description',
-      width: 500,
+      width: 400,
+      headerClassName: 'colored-data-grid',
+    },
+    {
+      field: 'leaveStatus',
+      headerName: 'Status',
+      width: 100,
       headerClassName: 'colored-data-grid',
     },
   ]
-
-  const row = []
 
   const totalWidth = columns.reduce((acc, column) => acc + column.width, 0)
 
@@ -95,13 +128,13 @@ const LeaveMoreDetails = (props) => {
               fullWidth
               margin="normal"
               name="leaveNo"
-              defaultValue={leaveId}
+              value={userDetails.leaveId}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="name"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -111,18 +144,18 @@ const LeaveMoreDetails = (props) => {
               Name
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="name"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.name}
+              value={userDetails.name}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="requestLeaveDate"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -132,18 +165,18 @@ const LeaveMoreDetails = (props) => {
               Leave Requested Date
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="requestLeaveDate"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.requestedDate}
+              value={userDetails.requestedDate}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="leaveBeginDate"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -153,18 +186,18 @@ const LeaveMoreDetails = (props) => {
               Starting Date of the Leave
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="leaveBeginDate"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.leaveBeginDate}
+              value={userDetails.leaveBeginDate}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="leaveEndDate"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -174,18 +207,18 @@ const LeaveMoreDetails = (props) => {
               Ending Date of the Leave
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="leaveEndDate"
               variant="outlined"
               fullWidth
               margin="normal"
               name="leaveNo"
-              defaultValue={userDetails.leaveEnddate}
+              value={userDetails.leaveEndDate}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="totalLeaveOfTheMonth"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -195,18 +228,18 @@ const LeaveMoreDetails = (props) => {
               No of Total Leave in the Mounth
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="totalLeaveOfTheMonth"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.noOfTotalLeaveCurrentMounth}
+              value={userDetails.totalLeaveOfTheMonth}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="remainingCasualLeaves"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -216,18 +249,18 @@ const LeaveMoreDetails = (props) => {
               Remaining Casuality Leave
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="learemainingCasualLeavesveId"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.remainingCasualityLeave}
+              value={userDetails.remainingCasualLeaves}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={6}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="remainingVacationLeave"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -237,18 +270,18 @@ const LeaveMoreDetails = (props) => {
               Remaining Vacational Leave
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="remainingVacationLeave"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.reamainingVacationLeave}
+              value={userDetails.remainingVacationLeave}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={12}>
             <InputLabel
-              htmlFor="leaveId"
+              htmlFor="reason"
               style={{
                 fontSize: '16px',
                 marginBottom: '1px',
@@ -258,20 +291,21 @@ const LeaveMoreDetails = (props) => {
               Reason
             </InputLabel>
             <TextField
-              id="leaveId"
+              id="reason"
               variant="outlined"
               fullWidth
               margin="normal"
               name="fullName"
-              defaultValue={userDetails.reamainingVacationLeave}
+              value={userDetails.reason}
               InputProps={{ readOnly: true }}
             />
           </Grid>
           <Grid item xs={12}>
             <DataGridComponent
               columns={columns}
-              rows={row}
+              rows={rows}
               totalWidth={totalWidth}
+              getRowId={(row) => row.leaveId}
             />
           </Grid>
         </Grid>
