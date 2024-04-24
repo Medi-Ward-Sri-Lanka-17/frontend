@@ -1,0 +1,97 @@
+/* calendarStyles.css */
+
+/* Customize the background color of the calendar */
+.react-calendar.view-schedule {
+  background-color: #ffffff;
+  margin-right: 5%;
+  width: 100%;
+  max-height: 88%;
+  border-radius: 1pc;
+}
+
+.react-calendar__year-view__header.view-schedule {
+  background-color: #196a6a;
+  color: white;
+}
+.react-calendar__navigation {
+  display: flex;
+  height: 44px;
+  margin-bottom: 1em;
+  background-color: #31757e;
+  border-top-left-radius: 1pc;
+  border-top-right-radius: 1pc;
+  color: white;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: #31757e;
+  color: white;
+  font-weight: 700;
+  border-radius: 1pc;
+}
+
+.react-calendar__tile--now {
+  background: #ffff76;
+  color: black;
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font: inherit;
+  font-size: 0.75em;
+  font-weight: bold;
+  background-color: #31757e8a;
+}
+
+/* Customize the background color and text color of the month header */
+/* .react-calendar__month-view__weekdays__weekday,
+.react-calendar__navigation__label {
+  color: #1e0202;
+} */
+
+/* Customize the text color of the calendar day */
+/* .react-calendar__tile {
+  color: #000000;
+} */
+
+.no {
+  background-color: white;
+}
+
+.half::before {
+  content: "";
+  display: inline-block;
+  width: 6px; /* Adjust the size of the dot */
+  height: 6px; /* Adjust the size of the dot */
+  border-radius: 50%; /* Make it a circle */
+  background-color: rgba(243, 178, 178, 0.982); /* Color for half status */
+  margin-right: 2px; /* Adjust the distance between dots */
+}
+
+.completed::before {
+  content: "";
+  display: inline-block;
+  width: 6px; /* Adjust the size of the dot */
+  height: 6px; /* Adjust the size of the dot */
+  border-radius: 50%; /* Make it a circle */
+  background-color: rgb(154, 249, 154); /* Color for completed status */
+  margin-right: 2px; /* Adjust the distance between dots */
+}
+
+.casualty-label {
+  background-color: #099e1d; /* Red background color */
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 10px;
+  width: 50%;
+}
+/* Example: highlight weekends in a different color */
+/* .react-calendar__tile--weekend {
+  background-color: #ffcccb;
+} */
+
+.today {
+  height: 1%;
+}
