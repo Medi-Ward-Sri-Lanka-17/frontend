@@ -12,6 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import { useAuth } from '../../Security/AuthContext.js'
 import { showInfoAlert } from '../../Component/ShowAlert'
 import { retrveCandidateList } from '../../Services/Scheduling/AddSchedulingServices.js'
+import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture.js'
 
 const CreateSchedule = () => {
   //.............................................Load Profile Picture........................................................
