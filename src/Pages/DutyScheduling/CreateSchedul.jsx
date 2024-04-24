@@ -75,7 +75,7 @@ const CreateSchedule = () => {
       showInfoAlert('Pick a date')
     }
     // Call a function to handle the shift selection
-    console.log(`Shift selected: ` + shift)
+    console.log(`Shift selected: `)
   }
 
   // Function to determine the tile content based on scheduleCreatedStatusForDay
@@ -187,7 +187,7 @@ const CreateSchedule = () => {
                 >
                   <ToggleButton
                     value="Morning"
-                    onClick={handleShiftSelection('Morning')}
+                    onClick={() => handleShiftSelection('Morning')}
                     style={{
                       backgroundColor:
                         selectedShift === 'Morning' ? '#31757e' : '#90b4b9',
@@ -198,7 +198,7 @@ const CreateSchedule = () => {
                   </ToggleButton>
                   <ToggleButton
                     value="Evening"
-                    onClick={handleShiftSelection('Evening')}
+                    onClick={() => handleShiftSelection('Evening')}
                     style={{
                       backgroundColor:
                         selectedShift === 'Evening' ? '#31757e' : '#90b4b9',
@@ -209,7 +209,7 @@ const CreateSchedule = () => {
                   </ToggleButton>
                   <ToggleButton
                     value="Night"
-                    onClick={handleShiftSelection('Night')}
+                    onClick={() => handleShiftSelection('Night')}
                     style={{
                       backgroundColor:
                         selectedShift === 'Night' ? '#31757e' : '#90b4b9',

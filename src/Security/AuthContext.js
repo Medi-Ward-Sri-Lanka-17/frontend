@@ -12,7 +12,8 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null)
   const [position, setPosition] = useState(null)
   const [username, setUsername] = useState(null)
-  const [nic,setNic]=useState(null)
+  const [nic, setNic] = useState(null)
+  const [proPicUrl, setProPicUrl] = useState(null)
 
   async function login(username, password) {
     try {
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }) => {
         setPosition(response.data.user.position)
         setUsername(response.data.user.username)
         setNic(response.data.user.nic)
+        setProPicUrl(response.data.imgUrl)
 
         apiClient.interceptors.request.use((config) => {
           console.log('intercepting and adding a token')
@@ -63,6 +65,7 @@ export const AuthProvider = ({ children }) => {
         setPosition,
         username,
         nic,
+        proPicUrl,
       }}
     >
       {children}
