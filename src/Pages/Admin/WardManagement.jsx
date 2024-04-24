@@ -10,6 +10,7 @@ import DataGridComponent from '../../Component/DataGridComponent'
 
 import AddNewWardForm from '../../Component/Forms/newWard'
 import { retriveAllWards } from '../../Services/WardDetails/WardDetailsServices'
+import { useNavigate } from 'react-router-dom'
 
 const StaffManagement = () => {
   const [isAddWardOpen, setIsAddWardOpen] = useState(false)
@@ -19,9 +20,12 @@ const StaffManagement = () => {
   const [wards, setWards] = useState([])
   const [ward, setWard] = useState('')
 
+  const naviagete = useNavigate()
+
   // More button aciton on click
   const handleEdit = (selectedRow) => {
-    seteditTrigger((prev) => !prev)
+    const wardNo = selectedRow.wardNo
+    naviagete(`/admin/ward/${wardNo}`)
   }
   // Decline button aciton on click
   const handleDeleteButton = (selectedRow) => {
@@ -76,7 +80,7 @@ const StaffManagement = () => {
       width: 100,
       renderCell: (params) => (
         <DefaultButton
-          title="More"
+          title="Edit"
           height="35px"
           width="80px"
           onClick={() => handleEdit(params.row)}
