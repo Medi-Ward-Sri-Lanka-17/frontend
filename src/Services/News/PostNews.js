@@ -1,14 +1,18 @@
 import { apiClient } from "../../Api/ApiClient";
 
-export const uploadProfilePicture = async (file, nic) => {
+export const postNews = async (values,nic) => {
   try {
     const formData = new FormData();
-    formData.append("profilePicture", file);
-    formData.append("nic", nic);
-    console.log(file)
+   
+    formData.append('newsHeader', values.newsHeader);
+    formData.append('newsDescription', values.newsDescription);
+    formData.append('newsAdderId',nic)
+    formData.append('comment',"This is comment")
+    formData.append('image', values.imgUrl);
+    console.log(values)
     console.log(nic)
     console.log(formData)
-    const response = await apiClient.post(`/profile-picture/add`, formData,{
+    const response = await apiClient.post(`/news/add`, formData,{
         headers: {
             "Content-Type": "multipart/form-data", // Set Content-Type header explicitly
           },

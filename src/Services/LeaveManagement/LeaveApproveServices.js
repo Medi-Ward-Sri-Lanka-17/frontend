@@ -6,7 +6,7 @@ export const getWardList = async (nic) => {
   try {
     const response = await apiClient.get(`/show-ward/matron/${nic}`)
     return response.data
-  } catch (error) {
+  }    catch (error) {
     if (error.response) {
       console.error('Error Response:', error.response.data)
       showUnsuccessAlert(error.response.data)

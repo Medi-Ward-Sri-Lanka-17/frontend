@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import {validationSchemaRecoveryEmail} from './Validation';
 import { validationSchemaOtp } from './Validation';
 import {sendMail} from '../../Services/ResetPassword/SendEmail'
+import { showUnsuccessAlert } from '../../Component/ShowAlert';
 
 const theme=Theme();
 
@@ -95,7 +96,10 @@ export default function Recovery({recoveryModel ,setRecoveryModel,resetPasswordM
                 resetPasswordModelOn() 
             }
         })
-        .catch(error=>{console.log(error)})
+        .catch(error=>{
+            console.log(error)
+            showUnsuccessAlert("Invalid Recovery Email")
+        })
         
 
     }
