@@ -1,5 +1,6 @@
 import { apiClient } from '../Api/ApiClient'
 import { executeJwtAuthenticationService } from '../Api/AuthenticationApi'
+import { retrieveProfilePicture } from '../Services/Home/retrieveProfilePicture'
 
 const { createContext, useContext, useState } = require('react')
 
@@ -14,6 +15,8 @@ export const AuthProvider = ({ children }) => {
   const [username, setUsername] = useState(null)
   const [nic,setNic]=useState(null)
 
+  
+
   async function login(username, password) {
     try {
       const response = await executeJwtAuthenticationService(username, password)
@@ -26,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         setPosition(response.data.user.position)
         setUsername(response.data.user.username)
         setNic(response.data.user.nic)
+        
 
         apiClient.interceptors.request.use((config) => {
           console.log('intercepting and adding a token')
@@ -50,6 +54,21 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
+  //Newly Added......................................................
+  
+  // async function refreshPropilePicture(nic){
+  //   const response= await retrieveProfilePicture(nic)
+  //   setProUrl(response)
+  // }
+
+  
+
+  // const updateCentralizeState=(newValues)=>{
+  //     setProUrl(newValues)
+  // }
+
+  //.................................................................
+
   return (
     <AuthContext.Provider
       value={{
@@ -62,7 +81,7 @@ export const AuthProvider = ({ children }) => {
         position,
         setPosition,
         username,
-        nic,
+        nic
       }}
     >
       {children}
