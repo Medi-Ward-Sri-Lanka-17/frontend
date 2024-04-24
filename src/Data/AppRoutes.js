@@ -15,6 +15,7 @@ import AddStaff from '../Pages/Admin/StaffManagement'
 import MatronManagement from '../Pages/Admin/MatronManagement'
 import WardManagement from '../Pages/Admin/WardManagement'
 import NewsManagement from '../Pages/Admin/NewsManagement'
+import WardManagementMore from '../Pages/Admin/WardManagementMore'
 
 export const AppRoutes = {
   // loginpath: { path: '/login', component: <Login /> },
@@ -56,4 +57,8 @@ export const AppRoutes = {
   Matron_Admin: { path: '/admin/matron', component: <MatronManagement /> },
   Ward_Admin: { path: '/admin/ward', component: <WardManagement /> },
   News_Admin: { path: '/admin/news', component: <NewsManagement /> },
+  Ward_More_Admin: {
+    path: '/admin/ward/:wardNo',
+    component: <WardManagementMore />,
+  },
 }
