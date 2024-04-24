@@ -5,11 +5,11 @@ import { Box, Button } from "@mui/material";
 import Calendar from "react-calendar";
 import DailyDutyGrid from "./DailyDutyGrid";
 import "react-calendar/dist/Calendar.css";
-import "./calenderStyles.css";
+import "./calenderStyleCreate.css";
 import ShiftGrid from "./ShiftGrid";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
-
+import { useAuth } from "../../Security/AuthContext.js";
 import { showInfoAlert } from "../../Component/ShowAlert";
 
 const CreateSchedule = () => {
@@ -22,10 +22,38 @@ const CreateSchedule = () => {
   const [isCasultyDay, setIsCasualtyDay] = useState(false);
   const [isViewSelected] = useState(false);
 
+  const [loggedUserPosition, setLoggedUserPosition] = useState();
+  const [loggedUserNic, setLoggedUserNic] = useState(); //LOGGEd USER NIC
+  const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
+
+  const authContext = useAuth();
+
   useEffect(() => {
+    var pos = authContext.position;
+    var nic = authContext.nic;
+
+    setLoggedUserPosition(pos);
+    setLoggedUserNic(nic);
+
+    console.log(loggedUserPosition);
+    console.log(loggedUserNic);
+    console.log(currentMonth);
+
     setScheduleCreatedStatusForDay(2);
     setIsCasualtyDay(true);
-  }, [scheduleCreatedStatusForMonth, scheduleCreatedStatusForDay]);
+  }, [
+    scheduleCreatedStatusForMonth,
+    scheduleCreatedStatusForDay,
+    loggedUserPosition,
+    loggedUserNic,
+    currentMonth,
+  ]);
+
+  const onActiveStartDateChange = ({ activeStartDate }) => {
+    setCurrentMonth(
+      activeStartDate.toLocaleString("default", { month: "long" })
+    );
+  };
 
   const onChange = (selectedDate) => {
     setDate(selectedDate);
@@ -34,6 +62,7 @@ const CreateSchedule = () => {
 
   const matronApproval = () => {
     setScheduleCreatedStatusForMonth("pending");
+    setScheduleCreatedStatusForDay(1);
     console.log(scheduleCreatedStatusForMonth);
   };
 
@@ -213,17 +242,23 @@ const CreateSchedule = () => {
             >
               <Calendar
                 onChange={onChange}
+                onActiveStartDateChange={onActiveStartDateChange}
                 value={date}
                 className="custom-calendar"
                 tileContent={getTileContent}
               />
             </Box>
           </Box>
-          <DailyDutyGrid isViewSelected={isViewSelected} data={dummyData} />
+          <DailyDutyGrid
+            isViewSelected={isViewSelected}
+            data={dummyData}
+            selectedDate={date}
+            shift={selectedShift}
+          />
           <Box
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "right",
               marginTop: "20px",
             }}
           >

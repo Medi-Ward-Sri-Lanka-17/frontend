@@ -5,28 +5,54 @@ import { Box, Button } from "@mui/material";
 import Calendar from "react-calendar";
 import DailyDutyGrid from "./DailyDutyGrid";
 import "react-calendar/dist/Calendar.css";
-import "./calenderStyles.css";
+import "./calenderStyleView.css";
 import { useAuth } from "../../Security/AuthContext.js";
+import FadeMenu from "../../Component/FadeMenu.jsx";
+import TextField from "@mui/material/TextField";
+import { retrieveShiftOfUserOnDay } from "../../Services/Scheduling/ViewSchedulingServices.js";
+import { showInfoAlert } from "../../Component/ShowAlert.jsx";
+import { Height } from "@mui/icons-material";
 
 const ViewSchedule = () => {
   const [date, setDate] = useState(new Date());
   const [scheduleCreatedStatus, setScheduleCreatedStatus] = useState(0);
   const [isViewSelected, setIsViewSelected] = useState(false);
-  const [isCasultyDay, setIsCasualtyDay] = useState(false);
-  const [hoveredDateInfo, setHoveredDateInfo] = useState(null);
-  const [loggedUserPosition, setLoggedUserPosition] = useState();
-
+  const [isCasultyDay, setIsCasualtyDay] = useState(false); //STATUS FOR CHECK THE DATE IS A CASUALTY DAY
+  const [loggedUserPosition, setLoggedUserPosition] = useState(); //lOGGED USER NIC (SISTER)
+  const [loggedUserNic, setLoggedUserNic] = useState(); //LOGGEd USER NIC
+  const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
+  const [scheduleApprove, setScheduleApprove] = useState(false);
+  const [nurseData, setNurseData] = useState({});
+  const [wardNumbers, setWardNumbers] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
+  const [selectedWard, setSelectedWard] = useState(); //SELECTED WARD OF THE DROPDOWN
+  const [userShiftOnDate, setUserShiftOnDate] = useState(""); // Shift of logged in user on selected date
   const authContext = useAuth();
 
   useEffect(() => {
-    var pos = authContext.position;
-    setLoggedUserPosition(pos);
-    console.log(loggedUserPosition);
     setIsViewSelected(true);
-    setScheduleCreatedStatus(2);
+    setScheduleCreatedStatus(0);
     setIsCasualtyDay(true);
-    console.log(isViewSelected);
-  }, [isViewSelected, loggedUserPosition]);
+
+    var pos = authContext.position;
+    var nic = authContext.nic;
+
+    setLoggedUserPosition(pos);
+    setLoggedUserNic(nic);
+
+    console.log(scheduleCreatedStatus);
+    setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
+  }, [scheduleCreatedStatus]);
+
+  //Take current calendar month
+  const onActiveStartDateChange = ({ activeStartDate }) => {
+    setCurrentMonth(
+      activeStartDate.toLocaleString("default", { month: "long" })
+    );
+  };
+
+  const handleSelectedWard = (ward) => {
+    setSelectedWard(ward);
+  };
 
   const dummyData = [
     {
@@ -66,31 +92,29 @@ const ViewSchedule = () => {
     },
   ];
 
-  useEffect(() => {
-    setIsViewSelected(true);
-    setScheduleCreatedStatus(2);
-    setIsCasualtyDay(true);
-    console.log(isViewSelected);
-  }, []);
-
   const onChange = (selectedDate) => {
+    //set the selected date
     setDate(selectedDate);
+
+    // Find the shift of the logged user on the selected date
+    // var response = retrieveShiftOfUserOnDay(loggedUserNic, date); // have to set shift to text field
+
+    //check whether schedule created or not
+    if (scheduleCreatedStatus === 1) {
+      showInfoAlert("Schedule creration is pending");
+    } else if (scheduleCreatedStatus === 0) {
+      showInfoAlert("No schedule");
+    }
   };
 
-  const handleDateHover = (date) => {
-    // Simulated backend data
-    const backendData = [
-      { username: "user1", date: "2024-04-24", shift: "Morning" },
-      { username: "user2", date: "2024-04-25", shift: "Evening" },
-      { username: "user3", date: "2024-04-26", shift: "Night" },
-    ];
+  const ApproveSchedule = () => {
+    setScheduleApprove(true);
+    setScheduleCreatedStatus(2);
+  };
 
-    // Find the hovered date information from the backend data
-    const hoveredDateInfo = backendData.find(
-      (item) => item.date === date.toISOString().slice(0, 10)
-    );
-
-    setHoveredDateInfo(hoveredDateInfo);
+  const rejectSchedule = () => {
+    setScheduleApprove(false);
+    setScheduleCreatedStatus(1);
   };
 
   // Function to determine the tile content based on scheduleCreatedStatus
@@ -121,10 +145,6 @@ const ViewSchedule = () => {
       </div>
     );
   };
-  const tileClassName = ({ date }) => {
-    const dateString = date.toISOString().slice(0, 10);
-    return dateString === hoveredDateInfo?.date ? "hovered-date" : null;
-  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -137,6 +157,7 @@ const ViewSchedule = () => {
               display: "flex",
               margin: "1%",
               padding: "2%",
+
               backgroundColor: "#243e4f1c",
             }}
           >
@@ -149,14 +170,31 @@ const ViewSchedule = () => {
                 width: "40%",
               }}
             >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center", // Align items vertically
+                }}
+              >
+                {loggedUserPosition === "Matron" && (
+                  <FadeMenu
+                    wardNumbers={[1, 2, 3, 4, 5]}
+                    onSelectWard={handleSelectedWard}
+                  />
+                )}
+                <TextField
+                  id="outlined-required"
+                  label="Shift/Shifts"
+                  defaultValue={userShiftOnDate}
+                  style={{ marginLeft: "10px" }} // Add margin to the left
+                />
+              </div>
               <Calendar
                 onChange={onChange}
+                onActiveStartDateChange={onActiveStartDateChange}
                 value={date}
-                className="custom-calendar"
+                className="custom-calendar view-schedule"
                 tileContent={getTileContent}
-                onMouseOverDay={handleDateHover} // Handle mouse over date
-                onMouseLeave={() => setHoveredDateInfo(null)} // Clear hovered date info when leaving calendar
-                tileClassName={tileClassName} // Apply custom classes to date tiles
               />
             </Box>
             <Box
@@ -170,28 +208,39 @@ const ViewSchedule = () => {
                 justifyContent: "space-between",
               }}
             >
-              <DailyDutyGrid isViewSelected={isViewSelected} data={dummyData} />
-              {hoveredDateInfo && (
-                <div>
-                  Shift: {hoveredDateInfo.shift} {/* Display shift info */}
-                </div>
-              )}
-              {loggedUserPosition === "Matron" && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                  }}
-                >
-                  <Button variant="outlined" color="primary">
-                    Approve
-                  </Button>
-                  <Button variant="outlined" color="error">
-                    Reject
-                  </Button>
-                </Box>
-              )}
+              <DailyDutyGrid
+                isViewSelected={isViewSelected}
+                data={dummyData}
+                wardNo={selectedWard}
+              />
+
+              {loggedUserPosition === "Matron" &&
+                scheduleCreatedStatus === 1 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "right",
+                      marginTop: "20px",
+                      margin: "10px",
+                    }}
+                  >
+                    <Button
+                      style={{ marginRight: "5px" }}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => ApproveSchedule()}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => rejectSchedule()}
+                    >
+                      Reject
+                    </Button>
+                  </Box>
+                )}
             </Box>
           </Box>
         </Box>
