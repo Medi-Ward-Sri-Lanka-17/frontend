@@ -11,6 +11,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import { useAuth } from '../../Security/AuthContext.js'
 import { showInfoAlert } from '../../Component/ShowAlert'
+import { retrveCandidateList } from '../../Services/Scheduling/AddSchedulingServices.js'
 
 const CreateSchedule = () => {
   const [date, setDate] = useState(null)
@@ -54,6 +55,12 @@ const CreateSchedule = () => {
       activeStartDate.toLocaleString('default', { month: 'long' })
     )
   }
+  function formatDate(dateObject) {
+    const year = dateObject.getFullYear()
+    const month = ('0' + (dateObject.getMonth() + 1)).slice(-2)
+    const day = ('0' + dateObject.getDate()).slice(-2)
+    return `${year}-${month}-${day}`
+  }
 
   const onChange = (selectedDate) => {
     setDate(selectedDate)
@@ -74,8 +81,16 @@ const CreateSchedule = () => {
       console.log('date empty')
       showInfoAlert('Pick a date')
     }
+
+    console.log(authContext.user.nic)
+
     // Call a function to handle the shift selection
-    console.log(`Shift selected: `)
+
+    // const response = retrveCandidateList(
+    //   authContext.user.nic,
+    //   formatDate(date),
+    //   shift
+    // )
   }
 
   // Function to determine the tile content based on scheduleCreatedStatusForDay
@@ -182,7 +197,7 @@ const CreateSchedule = () => {
                 <ToggleButtonGroup
                   value={selectedShift}
                   exclusive
-                  onChange={handleShiftSelection}
+                  //onChange={handleShiftSelection}
                   aria-label="Platform"
                 >
                   <ToggleButton
