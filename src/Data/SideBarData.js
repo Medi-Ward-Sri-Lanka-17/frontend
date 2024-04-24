@@ -44,16 +44,7 @@ export const menus = [
   {
     name: 'Ward Details',
     icon: <VaccinesRoundedIcon />,
-    subMenu: [
-      {
-        name: 'Add Ward Details',
-        path: '/ward_details/add',
-      },
-      {
-        name: 'View Ward Details',
-        path: '/ward_details/view',
-      },
-    ],
+    path: '/ward_details/view',
   },
   {
     name: 'News',
@@ -92,9 +83,46 @@ export const menusForAdmin = [
     icon: <LocalHospitalRoundedIcon />,
     path: '/admin/ward',
   },
+  // {
+  //   name: 'News Management',
+  //   icon: <FeedRoundedIcon />,
+  //   path: '/admin/news',
+  // },
+]
+
+export const matronsMenus = [
   {
-    name: 'News Management',
+    name: 'Home',
+    icon: <HomeRoundedIcon />,
+    path: '/home',
+  },
+  {
+    name: 'Duty Schedule',
+    icon: <EventNoteRoundedIcon />,
+    path: '/scheduling/view',
+  },
+  {
+    name: 'Leave Management',
+    icon: <ManageAccountsRoundedIcon />,
+    path: '/leave/approve',
+  },
+  {
+    name: 'Ward Details',
+    icon: <VaccinesRoundedIcon />,
+    path: '/ward_details/view',
+  },
+  {
+    name: 'News',
     icon: <FeedRoundedIcon />,
-    path: '/admin/news',
+    subMenu: [
+      {
+        name: 'Add News',
+        path: '/news/add',
+      },
+      {
+        name: 'News',
+        path: '/news/view',
+      },
+    ],
   },
 ]

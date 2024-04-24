@@ -3,11 +3,11 @@ import { showSuccessAlert, showUnsuccessAlert } from '../../Component/ShowAlert'
 
 export const retrveCandidateList = async (nic, shift, date) => {
   try {
-    // const response = await apiClient.get(`/scheduling/candidates/${nic}`, {
-    //   params: { shift: shift, date: date },
-    // })
+    const response = await apiClient.get(`/scheduling/candidates/${nic}`, {
+      params: { shift: shift, date: date },
+    })
 
-    console.log(nic, shift, date)
+    return response.data
   } catch (error) {
     if (error.response) {
       console.error('Error Response:', error.response.data)

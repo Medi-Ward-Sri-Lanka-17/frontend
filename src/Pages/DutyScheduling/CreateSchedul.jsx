@@ -26,6 +26,7 @@ const CreateSchedule = () => {
   const [loggedUserPosition, setLoggedUserPosition] = useState()
   const [loggedUserNic, setLoggedUserNic] = useState() //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState('') // CURRENT MONTH
+  const [candidate, setCandidate] = useState([])
 
   const authContext = useAuth()
 
@@ -80,17 +81,20 @@ const CreateSchedule = () => {
     if (date === null) {
       console.log('date empty')
       showInfoAlert('Pick a date')
+      setCandidate([])
+    } else {
+      console.log(authContext.user.nic)
+
+      // Call a function to handle the shift selection
+
+      const response = retrveCandidateList(
+        authContext.user.nic,
+        shift,
+        formatDate(date)
+      )
+
+      setCandidate(response)
     }
-
-    console.log(authContext.user.nic)
-
-    // Call a function to handle the shift selection
-
-    // const response = retrveCandidateList(
-    //   authContext.user.nic,
-    //   formatDate(date),
-    //   shift
-    // )
   }
 
   // Function to determine the tile content based on scheduleCreatedStatusForDay

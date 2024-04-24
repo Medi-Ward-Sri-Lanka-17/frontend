@@ -10,7 +10,7 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import mainlogo from '../Assest/mainlogo.png'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
-import { menus, menusForAdmin } from '../Data/SideBarData'
+import { matronsMenus, menus, menusForAdmin } from '../Data/SideBarData'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { auto } from '@popperjs/core'
 import { useNavigate } from 'react-router-dom'
@@ -34,8 +34,14 @@ const SideBar = () => {
     naviagate(path)
   }
 
-  const sideBarHander = authContext.position == 'Admin' ? menusForAdmin : menus
-
+  var sideBarHander //= authContext.position == 'Admin' ? menusForAdmin : menus
+  if (authContext.position == 'Admin') {
+    sideBarHander = menusForAdmin
+  } else if (authContext.position == 'Matron') {
+    sideBarHander = matronsMenus
+  } else {
+    sideBarHander = menus
+  }
   return (
     <Drawer
       sx={{
