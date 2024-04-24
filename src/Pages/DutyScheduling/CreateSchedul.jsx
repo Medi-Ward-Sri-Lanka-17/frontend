@@ -11,21 +11,19 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import { useAuth } from '../../Security/AuthContext.js'
 import { showInfoAlert } from '../../Component/ShowAlert'
-import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture.js'
+import { retrveCandidateList } from '../../Services/Scheduling/AddSchedulingServices.js'
 
 const CreateSchedule = () => {
-
-
   //.............................................Load Profile Picture........................................................
 
   const authContext = useAuth()
   const nic = authContext.nic
 
-  const [proImgUrl,setProImgUrl]=useState(null)
+  const [proImgUrl, setProImgUrl] = useState(null)
 
-  useEffect(()=>{
-    refreshPropilePicture(nic) 
- },[])
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
 
   useEffect(() => {
     refreshPropilePicture(nic)
@@ -36,8 +34,7 @@ const CreateSchedule = () => {
     setProImgUrl(response)
   }
 
-//............................................................................................................................
-
+  //............................................................................................................................
 
   const [date, setDate] = useState(null)
   const [scheduleCreatedStatusForDay, setScheduleCreatedStatusForDay] =
@@ -51,6 +48,7 @@ const CreateSchedule = () => {
   const [loggedUserPosition, setLoggedUserPosition] = useState()
   const [loggedUserNic, setLoggedUserNic] = useState() //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState('') // CURRENT MONTH
+  const [candidate, setCandidate] = useState([])
 
   // const authContext = useAuth()
 
@@ -80,6 +78,12 @@ const CreateSchedule = () => {
       activeStartDate.toLocaleString('default', { month: 'long' })
     )
   }
+  function formatDate(dateObject) {
+    const year = dateObject.getFullYear()
+    const month = ('0' + (dateObject.getMonth() + 1)).slice(-2)
+    const day = ('0' + dateObject.getDate()).slice(-2)
+    return `${year}-${month}-${day}`
+  }
 
   const onChange = (selectedDate) => {
     setDate(selectedDate)
@@ -99,9 +103,20 @@ const CreateSchedule = () => {
     if (date === null) {
       console.log('date empty')
       showInfoAlert('Pick a date')
+      setCandidate([])
+    } else {
+      console.log(authContext.user.nic)
+
+      // Call a function to handle the shift selection
+
+      const response = retrveCandidateList(
+        authContext.user.nic,
+        shift,
+        formatDate(date)
+      )
+
+      setCandidate(response)
     }
-    // Call a function to handle the shift selection
-    console.log(`Shift selected: `)
   }
 
   // Function to determine the tile content based on scheduleCreatedStatusForDay
@@ -175,7 +190,7 @@ const CreateSchedule = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <Box className="PageContent" style={{ width: '100%' }}>
-        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl}/>
+        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} />
         <Box>
           <Box
             style={{
@@ -208,7 +223,7 @@ const CreateSchedule = () => {
                 <ToggleButtonGroup
                   value={selectedShift}
                   exclusive
-                  onChange={handleShiftSelection}
+                  //onChange={handleShiftSelection}
                   aria-label="Platform"
                 >
                   <ToggleButton

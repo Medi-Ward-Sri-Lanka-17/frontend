@@ -1,10 +1,12 @@
+import { apiClient } from '../../Api/ApiClient'
 import { showSuccessAlert, showUnsuccessAlert } from '../../Component/ShowAlert'
 
 export const retrveCandidateList = async (nic, shift, date) => {
   try {
     const response = await apiClient.get(`/scheduling/candidates/${nic}`, {
-      Params: { shift: shift, date: date },
+      params: { shift: shift, date: date },
     })
+
     return response.data
   } catch (error) {
     if (error.response) {
