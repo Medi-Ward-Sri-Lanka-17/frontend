@@ -19,8 +19,35 @@ import {
   getUserDetails,
   saveLeaveRequest,
 } from "../../Services/LeaveManagement/LeaveRequestServices";
+import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture";
 
 const RequestLeave = () => {
+
+    //.............................................Load Profile Picture........................................................
+
+    const authContext = useAuth()
+    const nic = authContext.nic
+  
+    const [proImgUrl,setProImgUrl]=useState(null)
+  
+    useEffect(()=>{
+      refreshPropilePicture(nic) 
+   },[])
+  
+    useEffect(() => {
+      refreshPropilePicture(nic)
+    }, [])
+  
+    async function refreshPropilePicture(nic) {
+      const response = await retrieveProfilePicture(nic)
+      setProImgUrl(response)
+    }
+  
+  //............................................................................................................................
+
+
+
+
   const getCurrentDateTime = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -62,7 +89,7 @@ const RequestLeave = () => {
   //=================Service related functionalities===========================
 
   //Get the logged user username
-  const authContext = useAuth();
+  // const authContext = useAuth();
   const userName = authContext.username;
 
   useEffect(() => {
@@ -210,7 +237,7 @@ const RequestLeave = () => {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <div className="PageContent" style={{ width: "100%" }}>
-        <Header title="LEAVE REQUEST" />
+        <Header title="LEAVE REQUEST" proImgUrl={proImgUrl}/>
         <Container
           display="flex"
           flexDirection={{ xs: "column", sm: "column", md: "row" }}
