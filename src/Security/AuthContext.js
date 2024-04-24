@@ -1,5 +1,6 @@
 import { apiClient } from '../Api/ApiClient'
 import { executeJwtAuthenticationService } from '../Api/AuthenticationApi'
+import { retrieveProfilePicture } from '../Services/Home/retrieveProfilePicture'
 
 const { createContext, useContext, useState } = require('react')
 
@@ -14,6 +15,8 @@ export const AuthProvider = ({ children }) => {
   const [username, setUsername] = useState(null)
   const [nic, setNic] = useState(null)
   const [proPicUrl, setProPicUrl] = useState(null)
+
+  
 
   async function login(username, password) {
     try {
@@ -52,6 +55,21 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
+  //Newly Added......................................................
+  
+  // async function refreshPropilePicture(nic){
+  //   const response= await retrieveProfilePicture(nic)
+  //   setProUrl(response)
+  // }
+
+  
+
+  // const updateCentralizeState=(newValues)=>{
+  //     setProUrl(newValues)
+  // }
+
+  //.................................................................
+
   return (
     <AuthContext.Provider
       value={{
@@ -66,6 +84,7 @@ export const AuthProvider = ({ children }) => {
         username,
         nic,
         proPicUrl,
+
       }}
     >
       {children}

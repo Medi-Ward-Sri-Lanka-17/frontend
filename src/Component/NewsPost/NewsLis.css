@@ -1,0 +1,13 @@
+.post-containe{
+    display: flex;
+    flex-direction: column;
+    gap:2em;
+    width: 65em;
+    margin-left: 6em;
+}
+
+.post{
+    display: flex;
+    padding: 2em;
+    gap: 2em;
+}

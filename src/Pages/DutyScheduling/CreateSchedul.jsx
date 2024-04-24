@@ -14,6 +14,28 @@ import { showInfoAlert } from '../../Component/ShowAlert'
 import { retrveCandidateList } from '../../Services/Scheduling/AddSchedulingServices.js'
 
 const CreateSchedule = () => {
+  //.............................................Load Profile Picture........................................................
+
+  const authContext = useAuth()
+  const nic = authContext.nic
+
+  const [proImgUrl, setProImgUrl] = useState(null)
+
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
+
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
+
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic)
+    setProImgUrl(response)
+  }
+
+  //............................................................................................................................
+
   const [date, setDate] = useState(null)
   const [scheduleCreatedStatusForDay, setScheduleCreatedStatusForDay] =
     useState(0)
@@ -28,7 +50,7 @@ const CreateSchedule = () => {
   const [currentMonth, setCurrentMonth] = useState('') // CURRENT MONTH
   const [candidate, setCandidate] = useState([])
 
-  const authContext = useAuth()
+  // const authContext = useAuth()
 
   useEffect(() => {
     var pos = authContext.position
@@ -168,7 +190,7 @@ const CreateSchedule = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <Box className="PageContent" style={{ width: '100%' }}>
-        <Header title="CREATE SCHEDULE" />
+        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} />
         <Box>
           <Box
             style={{

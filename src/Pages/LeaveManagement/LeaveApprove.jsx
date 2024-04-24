@@ -26,8 +26,34 @@ import {
   getRequestLeaveDetails,
   getWardList,
 } from '../../Services/LeaveManagement/LeaveApproveServices'
+import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture'
 
 const LeaveApprove = () => {
+
+
+    //.............................................Load Profile Picture........................................................
+
+    const authContext = useAuth()
+    const nic = authContext.nic
+  
+    const [proImgUrl,setProImgUrl]=useState(null)
+  
+    useEffect(()=>{
+      refreshPropilePicture(nic) 
+   },[])
+  
+    useEffect(() => {
+      refreshPropilePicture(nic)
+    }, [])
+  
+    async function refreshPropilePicture(nic) {
+      const response = await retrieveProfilePicture(nic)
+      setProImgUrl(response)
+    }
+  
+  //............................................................................................................................
+
+
   // Load theme into the page
   const theme = Theme()
 
@@ -43,7 +69,7 @@ const LeaveApprove = () => {
   const navigate = useNavigate()
 
   //use context
-  const authContext = useAuth()
+  // const authContext = useAuth()
 
   // for select the ward no
   const handleChangeOnSelection = (event) => {
@@ -195,7 +221,7 @@ const LeaveApprove = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
-        <Header title="LEAVE APPROVE" />
+        <Header title="LEAVE APPROVE" proImgUrl={proImgUrl} />
         <Grid container spacing={2} style={{ marginTop: '4vh' }}>
           <Grid item xs={6} style={{ paddingLeft: '6vw' }}>
             <Typography variant="p" sx={{ fontWeight: '400' }}>

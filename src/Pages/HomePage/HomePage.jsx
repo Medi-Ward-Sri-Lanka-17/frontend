@@ -13,7 +13,17 @@ const HomePage = () => {
   const authContext = useAuth()
   const nic = authContext.nic
 
-  const [proImgUrl, setProImgUrl] = useState(null)
+
+  // const [proImgUrl, setProImgUrl] = useState(null)
+  // const authContext = useAuth();
+  // const nic = authContext.nic;
+ 
+
+  const [proImgUrl,setProImgUrl]=useState(null)
+
+  useEffect(()=>{
+    refreshPropilePicture(nic) 
+ },[])
 
   useEffect(() => {
     refreshPropilePicture(nic)
