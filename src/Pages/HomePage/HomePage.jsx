@@ -7,12 +7,14 @@ import Slider from '../../Component/HomeSlider/Slider'
 import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture'
 import { useAuth } from '../../Security/AuthContext'
 
-
-
-const img1 = require("../../Assest/mainlogo.png");
+const img1 = require('../../Assest/mainlogo.png')
 
 const HomePage = () => {
+  const authContext = useAuth()
+  const nic = authContext.nic
 
+
+  const [proImgUrl, setProImgUrl] = useState(null)
   const authContext = useAuth();
   const nic = authContext.nic;
  
@@ -23,26 +25,27 @@ const HomePage = () => {
     refreshPropilePicture(nic) 
  },[])
 
- async function refreshPropilePicture(nic){
-      const response= await retrieveProfilePicture(nic)
-      setProImgUrl(response)
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
 
-      
- }
-
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic)
+    setProImgUrl(response)
+  }
 
   return (
-    <Box  sx={{ display: 'flex'}}>
-        <SideBar />
-      
-      <div className="PageContent" style={{ width: '100%'}}>
+    <Box sx={{ display: 'flex' }}>
+      <SideBar />
+
+      <div className="PageContent" style={{ width: '100%' }}>
         <Header title="HOME" proImgUrl={proImgUrl} />
-        <div className='main-container'>
+        <div className="main-container">
           <div>
             <h1>Latest New</h1>
           </div>
-          <div className='news-container'>
-              <Slider/>
+          <div className="news-container">
+            <Slider />
           </div>
           <div>
             <h1>Upcomig Schedule</h1>
@@ -52,17 +55,10 @@ const HomePage = () => {
             <div className="tomorrow"></div>
             <div className="day-after-tomorrow"></div>
           </div>
-          
-              
-
-             
-
-          
-        
         </div>
       </div>
     </Box>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage

@@ -1,0 +1,21 @@
+import { showSuccessAlert, showUnsuccessAlert } from '../../Component/ShowAlert'
+
+export const retrveCandidateList = async (nic, shift, date) => {
+  try {
+    const response = await apiClient.get(`/scheduling/candidates/${nic}`, {
+      Params: { shift: shift, date: date },
+    })
+    return response.data
+  } catch (error) {
+    if (error.response) {
+      console.error('Error Response:', error.response.data)
+      showUnsuccessAlert(error.response.data)
+    } else if (error.request) {
+      console.error('Error Request:', error.request)
+      showUnsuccessAlert('No response from server')
+    } else {
+      console.error('Error Message:', error.message)
+      showUnsuccessAlert('Error: ' + error.message)
+    }
+  }
+}
