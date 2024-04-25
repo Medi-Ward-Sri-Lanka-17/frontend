@@ -208,12 +208,14 @@ const ViewSchedule = () => {
                     onSelectWard={handleSelectedWard}
                   />
                 )}
-                <TextField
-                  id="outlined-required"
-                  label="Shift/Shifts"
-                  defaultValue={userShiftOnDate}
-                  style={{ marginLeft: "10px" }} // Add margin to the left
-                />
+                {loggedUserPosition === "Nurse" && (
+                  <TextField
+                    id="outlined-required"
+                    label="Shift/Shifts"
+                    defaultValue={userShiftOnDate}
+                    style={{ marginLeft: "10px" }} // Add margin to the left
+                  />
+                )}
               </div>
               <Calendar
                 onChange={onChange}
