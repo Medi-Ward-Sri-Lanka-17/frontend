@@ -15,30 +15,27 @@ import { Height } from "@mui/icons-material";
 import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
 
 const ViewSchedule = () => {
-
   //.............................................Load Profile Picture........................................................
 
-  const authContext = useAuth()
-  const nic = authContext.nic
+  const authContext = useAuth();
+  const nic = authContext.nic;
 
-  const [proImgUrl,setProImgUrl]=useState(null)
-
-  useEffect(()=>{
-    refreshPropilePicture(nic) 
- },[])
+  const [proImgUrl, setProImgUrl] = useState(null);
 
   useEffect(() => {
-    refreshPropilePicture(nic)
-  }, [])
+    refreshPropilePicture(nic);
+  }, []);
+
+  useEffect(() => {
+    refreshPropilePicture(nic);
+  }, []);
 
   async function refreshPropilePicture(nic) {
-    const response = await retrieveProfilePicture(nic)
-    setProImgUrl(response)
+    const response = await retrieveProfilePicture(nic);
+    setProImgUrl(response);
   }
 
-//............................................................................................................................
-
-
+  //............................................................................................................................
 
   const [date, setDate] = useState(new Date());
   const [scheduleCreatedStatus, setScheduleCreatedStatus] = useState(0);
@@ -176,7 +173,7 @@ const ViewSchedule = () => {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box className="PageContent" style={{ width: "100%" }}>
-        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl}/>
+        <Header title="VIEW SCHEDULE" proImgUrl={proImgUrl} />
         <Box>
           <Box
             style={{
