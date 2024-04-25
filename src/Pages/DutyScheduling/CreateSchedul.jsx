@@ -12,6 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import { useAuth } from '../../Security/AuthContext.js'
 import { showInfoAlert } from '../../Component/ShowAlert'
 import { retrveCandidateList } from '../../Services/Scheduling/AddSchedulingServices.js'
+import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture.js'
 
 const CreateSchedule = () => {
   //.............................................Load Profile Picture........................................................
@@ -96,7 +97,7 @@ const CreateSchedule = () => {
     console.log(scheduleCreatedStatusForMonth)
   }
 
-  const handleShiftSelection = (shift) => {
+  const handleShiftSelection = async (shift) => {
     console.log(date)
     setSelectedShift(shift)
 
@@ -105,15 +106,13 @@ const CreateSchedule = () => {
       showInfoAlert('Pick a date')
       setCandidate([])
     } else {
-      console.log(authContext.user.nic)
-
-      // Call a function to handle the shift selection
-
-      const response = retrveCandidateList(
+      const response = await retrveCandidateList(
         authContext.user.nic,
         shift,
         formatDate(date)
       )
+
+      console.log(response)
 
       setCandidate(response)
     }
@@ -270,7 +269,7 @@ const CreateSchedule = () => {
                   maxHeight: '78%',
                 }}
               >
-                <ShiftGrid data={dummyData} />
+                <ShiftGrid data={candidate} />
               </Box>
             </Box>
             <Box
