@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useAuth } from "../../Security/AuthContext.js";
 import Theme from "../../Component/Theme.jsx";
+import { addDuty } from "../../Services/Scheduling/AddSchedulingServices.js";
 
 export default function ShiftGrid({ data, date, shift }) {
   const theme = Theme();
@@ -29,6 +30,8 @@ export default function ShiftGrid({ data, date, shift }) {
       date: formattedDate,
       dutyTime: shift,
     };
+    var respone = addDuty(authContext.nic, assigningData);
+    console.log(respone);
     console.log(assigningData);
   };
 
