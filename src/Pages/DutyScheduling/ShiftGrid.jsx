@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import { useAuth } from "../../Security/AuthContext.js";
 import Theme from "../../Component/Theme.jsx";
 import { addDuty } from "../../Services/Scheduling/AddSchedulingServices.js";
+import { showSuccessAlert } from "../../Component/ShowAlert.jsx";
 
 export default function ShiftGrid({ data, date, shift }) {
   const theme = Theme();
@@ -23,14 +24,15 @@ export default function ShiftGrid({ data, date, shift }) {
     console.log(data);
   }, [data]);
 
-  const handleAssign = (nic) => {
+  const handleAssign = async (nic) => {
     const formattedDate = date.toISOString().split("T")[0];
     const assigningData = {
       nurseNic: nic,
       date: formattedDate,
       dutyTime: shift,
     };
-    var respone = addDuty(authContext.nic, assigningData);
+    var respone = await addDuty(authContext.nic, assigningData);
+
     console.log(respone);
     console.log(assigningData);
   };

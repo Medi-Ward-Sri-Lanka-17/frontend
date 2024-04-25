@@ -29,7 +29,8 @@ export const addDuty = async (nic, value) => {
   console.log(nic);
   console.log(value);
   try {
-    const response = await apiClient.get(`/scheduling/add/${nic}`, value);
+    const response = await apiClient.put(`/scheduling/add/${nic}`, value);
+    showSuccessAlert(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
