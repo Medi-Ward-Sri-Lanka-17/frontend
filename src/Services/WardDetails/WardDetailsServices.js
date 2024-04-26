@@ -48,7 +48,7 @@ export const addStaff = async (value) => {
   try {
     const response = await apiClient.post('/add-staff', value)
   } catch (err) {
-    throw new Error("Couldn't add a new staff member")
+    console.error(err)
   }
 }
 

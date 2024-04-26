@@ -27,32 +27,30 @@ import {
   getWardList,
 } from '../../Services/LeaveManagement/LeaveApproveServices'
 import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture'
+import { showSuccessAlert } from '../../Component/ShowAlert'
 
 const LeaveApprove = () => {
+  //.............................................Load Profile Picture........................................................
 
+  const authContext = useAuth()
+  const nic = authContext.nic
 
-    //.............................................Load Profile Picture........................................................
+  const [proImgUrl, setProImgUrl] = useState(null)
 
-    const authContext = useAuth()
-    const nic = authContext.nic
-  
-    const [proImgUrl,setProImgUrl]=useState(null)
-  
-    useEffect(()=>{
-      refreshPropilePicture(nic) 
-   },[])
-  
-    useEffect(() => {
-      refreshPropilePicture(nic)
-    }, [])
-  
-    async function refreshPropilePicture(nic) {
-      const response = await retrieveProfilePicture(nic)
-      setProImgUrl(response)
-    }
-  
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
+
+  useEffect(() => {
+    refreshPropilePicture(nic)
+  }, [])
+
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic)
+    setProImgUrl(response)
+  }
+
   //............................................................................................................................
-
 
   // Load theme into the page
   const theme = Theme()
@@ -84,19 +82,20 @@ const LeaveApprove = () => {
   }
   // Decline button aciton on click
   const handleDeclineButton = async (selectedRow) => {
-    declineLeaveRequest(selectedRow.leaveId).then(() => {
+    var response = await declineLeaveRequest(selectedRow.leaveId).then(() => {
+      showSuccessAlert(response)
       setIsDeclineBtnTrigger((Prev) => !Prev)
     })
   }
   // Approve button aciton on click
   const handleApproveButton = async (selectedRow) => {
     if (authContext.position === 'Sister') {
-      approveLeaveBySister(selectedRow.leaveId).then(() => {
+      await approveLeaveBySister(selectedRow.leaveId).then(() => {
         setIsApprovedBtnTrigger((Prev) => !Prev)
       })
       setIsApprovedBtnTrigger((Prev) => !Prev)
     } else if (authContext.position === 'Matron') {
-      approveLeaveByMatron(selectedRow.leaveId).then(() => {
+      await approveLeaveByMatron(selectedRow.leaveId).then(() => {
         setIsApprovedBtnTrigger((Prev) => !Prev)
       })
       setIsApprovedBtnTrigger((Prev) => !Prev)
@@ -223,68 +222,72 @@ const LeaveApprove = () => {
       <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
         <Header title="LEAVE APPROVE" proImgUrl={proImgUrl} />
         <Grid container spacing={2} style={{ marginTop: '4vh' }}>
-          <Grid item xs={6} style={{ paddingLeft: '6vw' }}>
-            <Typography variant="p" sx={{ fontWeight: '400' }}>
-              Filter By Ward No:
-            </Typography>
-            <FormControl
-              sx={{ minWidth: 160 }}
-              style={{ marginLeft: '3vh', marginTop: '-1vh' }}
-              size="small"
-            >
-              <InputLabel id="ward-no-label">Select Ward No</InputLabel>
-              <Select
-                labelId="ward-no-label"
-                id="ward-no"
-                value={wardNo}
-                label="Select Ward No"
-                onChange={handleChangeOnSelection}
+          {authContext.position == 'Matron' && (
+            <Grid item xs={6} style={{ paddingLeft: '6vw' }}>
+              <Typography variant="p" sx={{ fontWeight: '400' }}>
+                Filter By Ward No:
+              </Typography>
+              <FormControl
+                sx={{ minWidth: 160 }}
+                style={{ marginLeft: '3vh', marginTop: '-1vh' }}
+                size="small"
               >
-                <MenuItem value="All">
-                  <em>All</em>
-                </MenuItem>
-                {wards.map((ward) => (
-                  <MenuItem key={ward} value={ward}>
-                    {ward}
+                <InputLabel id="ward-no-label">Select Ward No</InputLabel>
+                <Select
+                  labelId="ward-no-label"
+                  id="ward-no"
+                  value={wardNo}
+                  label="Select Ward No"
+                  onChange={handleChangeOnSelection}
+                >
+                  <MenuItem value="All">
+                    <em>All</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid
-            item
-            xs={5}
-            sx={{ marginLeft: 'auto', textAlign: 'right' }}
-            style={{ paddingRight: '6vw' }}
-          >
-            <Typography variant="p" sx={{ fontWeight: '400' }}>
-              Filter by Position:
-            </Typography>
-            <FormControl
-              sx={{ minWidth: 160 }}
-              style={{ marginLeft: '3vh', marginTop: '-1vh' }}
-              size="small"
+                  {wards.map((ward) => (
+                    <MenuItem key={ward} value={ward}>
+                      {ward}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          {authContext.position === 'Matron' && (
+            <Grid
+              item
+              xs={5}
+              sx={{ marginLeft: 'auto', textAlign: 'right' }}
+              style={{ paddingRight: '6vw' }}
             >
-              <InputLabel id="ward-no-label">Select Position</InputLabel>
-              <Select
-                labelId="ward-no-label"
-                id="ward-no"
-                value={position}
-                label="Select Ward No"
-                onChange={handlePositionChange}
+              <Typography variant="p" sx={{ fontWeight: '400' }}>
+                Filter by Position:
+              </Typography>
+              <FormControl
+                sx={{ minWidth: 160 }}
+                style={{ marginLeft: '3vh', marginTop: '-1vh' }}
+                size="small"
               >
-                <MenuItem value="All" defaultChecked>
-                  <em>All</em>
-                </MenuItem>
-                <MenuItem value="Sister">
-                  <em>Sisters</em>
-                </MenuItem>
-                <MenuItem value="Nurse">
-                  <em>Nurses</em>
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
+                <InputLabel id="ward-no-label">Select Position</InputLabel>
+                <Select
+                  labelId="ward-no-label"
+                  id="ward-no"
+                  value={position}
+                  label="Select Ward No"
+                  onChange={handlePositionChange}
+                >
+                  <MenuItem value="All" defaultChecked>
+                    <em>All</em>
+                  </MenuItem>
+                  <MenuItem value="Sister">
+                    <em>Sisters</em>
+                  </MenuItem>
+                  <MenuItem value="Nurse">
+                    <em>Nurses</em>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
           <Grid item xs={12} sx={{ marginTop: '1vh' }}>
             <Paper
               style={{
