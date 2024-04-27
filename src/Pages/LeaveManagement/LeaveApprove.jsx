@@ -82,7 +82,7 @@ const LeaveApprove = () => {
   }
   // Decline button aciton on click
   const handleDeclineButton = async (selectedRow) => {
-    var response = await declineLeaveRequest(selectedRow.leaveId).then(() => {
+    await declineLeaveRequest(selectedRow.leaveId).then((response) => {
       showSuccessAlert(response)
       setIsDeclineBtnTrigger((Prev) => !Prev)
     })

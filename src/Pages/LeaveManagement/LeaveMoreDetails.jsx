@@ -50,6 +50,7 @@ const LeaveMoreDetails = (props) => {
         console.log(data)
         setRows(data)
       } catch (error) {
+        setRows([])
         console.error('Error fetching leave details:', error)
       }
     }
@@ -301,12 +302,25 @@ const LeaveMoreDetails = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <DataGridComponent
-              columns={columns}
-              rows={rows}
-              totalWidth={totalWidth}
-              getRowId={(row) => row.leaveId}
-            />
+            {rows && rows.length > 0 ? (
+              <DataGridComponent
+                columns={columns}
+                rows={rows}
+                totalWidth={totalWidth}
+                getRowId={(row) => row.leaveId}
+              />
+            ) : (
+              <Typography
+                sx={{
+                  color: theme.palette.primary.main,
+                  textAlign: 'center',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                }}
+              >
+                No previous leave data available
+              </Typography>
+            )}
           </Grid>
         </Grid>
       </Box>
