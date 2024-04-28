@@ -162,8 +162,7 @@ const EditStaffMemberForm = ({ open, handleClose, nic }) => {
             name="nic"
             value={formikEditNurse.values.nic}
             required
-            onChange={formikEditNurse.handleChange}
-            onBlur={formikEditNurse.handleBlur}
+            disabled={true}
             error={
               formikEditNurse.touched.nic && Boolean(formikEditNurse.errors.nic)
             }
@@ -219,9 +218,7 @@ const EditStaffMemberForm = ({ open, handleClose, nic }) => {
             name="position"
             value={formikEditNurse.values.position}
             required
-            select
-            onChange={formikEditNurse.handleChange}
-            onBlur={formikEditNurse.handleBlur}
+            disabled={true}
             error={
               formikEditNurse.touched.position &&
               Boolean(formikEditNurse.errors.position)
@@ -230,12 +227,7 @@ const EditStaffMemberForm = ({ open, handleClose, nic }) => {
               formikEditNurse.touched.position &&
               formikEditNurse.errors.position
             }
-          >
-            <MenuItem value="Nurse">Nurse</MenuItem>
-            <MenuItem value="Sister" disabled={loggedUserPosition === "sister"}>
-              Sister
-            </MenuItem>
-          </TextField>
+          />
 
           <label>Ward Number</label>
           <TextField
@@ -245,8 +237,7 @@ const EditStaffMemberForm = ({ open, handleClose, nic }) => {
             name="wardNo"
             value={formikEditNurse.values.wardNo}
             required
-            onChange={formikEditNurse.handleChange}
-            onBlur={formikEditNurse.handleBlur}
+            disabled={true}
             error={
               formikEditNurse.touched.wardNo &&
               Boolean(formikEditNurse.errors.wardNo)
@@ -264,8 +255,7 @@ const EditStaffMemberForm = ({ open, handleClose, nic }) => {
             name="leaveNo"
             value={formikEditNurse.values.leaveNo}
             required
-            onChange={formikEditNurse.handleChange}
-            onBlur={formikEditNurse.handleBlur}
+            disabled={true}
             error={
               formikEditNurse.touched.leaveNo &&
               Boolean(formikEditNurse.errors.leaveNo)
