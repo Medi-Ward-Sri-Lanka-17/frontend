@@ -11,10 +11,19 @@ import {
 } from "@mui/material";
 import { addSisterValidation } from "../../Validation/wardDetailsValidation";
 import { useAuth } from "../../Security/AuthContext";
-import { retrieveSisterDetails } from "../../Services/WardDetails/WardDetailsServices";
+import {
+  retrieveNurseData,
+  retrieveSisterDetails,
+} from "../../Services/WardDetails/WardDetailsServices";
 import { sendEditedSisterDetailsForMatron } from "../../Services/WardDetails/WardDetailsServices";
 
-const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
+const StaffDetailsForm = ({
+  open,
+  handleClose,
+  sisterWardNo,
+  isPressMore,
+  onUpdateSisterName,
+}) => {
   const [formValues, setFormValues] = useState({
     fullName: "",
     firstName: "",
@@ -67,6 +76,16 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
     }
   };
 
+  const handleChangeFullName = (event) => {
+    const { value } = event.target;
+    setFormValues({
+      ...formValues,
+      fullName: value,
+    });
+    // Call the callback function to update sister name in WardManagement component
+    onUpdateSisterName(value);
+  };
+
   const showSuccessAlert = () => {
     let alertText = "";
     if (loggedUserPosition === "Sister") {
@@ -104,6 +123,9 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
 
       if (loggedUserPosition === "Matron") {
         const response = await sendEditedSisterDetailsForMatron(valuesToUpdate);
+        var newValues = await retrieveSisterDetails(sisterWardNo);
+        setFormValues(newValues);
+        sisterFormik.resetForm();
         if (response == true) {
           showSuccessAlert();
         } else {
@@ -148,7 +170,7 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
             margin="normal"
             fullWidth
             name="fullName"
-            onChange={sisterFormik.handleChange}
+            onChange={handleChangeFullName}
             value={sisterFormik.values.fullName}
             required
             disabled={!editMode}
@@ -241,7 +263,11 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
                 onChange={sisterFormik.handleChange}
                 value={sisterFormik.values.nic}
                 required
-                disabled={!editMode}
+                disabled={
+                  !editMode ||
+                  loggedUserPosition === "Sister" ||
+                  loggedUserPosition === "Matron"
+                }
                 error={
                   sisterFormik.touched.nic && Boolean(sisterFormik.errors.nic)
                 }
@@ -276,7 +302,11 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
                 onChange={sisterFormik.handleChange}
                 value={sisterFormik.values.position}
                 required
-                disabled={!editMode}
+                disabled={
+                  !editMode ||
+                  loggedUserPosition === "Sister" ||
+                  loggedUserPosition === "Matron"
+                }
                 error={
                   sisterFormik.touched.position &&
                   Boolean(sisterFormik.errors.position)
@@ -294,7 +324,11 @@ const StaffDetailsForm = ({ open, handleClose, sisterWardNo, isPressMore }) => {
                 onChange={sisterFormik.handleChange}
                 value={sisterFormik.values.leaveNo}
                 required
-                disabled={!editMode}
+                disabled={
+                  !editMode ||
+                  loggedUserPosition === "Sister" ||
+                  loggedUserPosition === "Matron"
+                }
                 error={
                   sisterFormik.touched.leaveNo &&
                   Boolean(sisterFormik.errors.leaveNo)

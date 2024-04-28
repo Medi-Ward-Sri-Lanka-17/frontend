@@ -296,6 +296,7 @@ export default function WardManagement() {
         open={isAddNurseFormOpen}
         handleClose={() => setAddNurseFormOpen(false)}
         handleAddNurse={handleAddNurse}
+        wardNoOfSisterOrMatron={wardNo}
       />
 
       {/* Integrate edit and show sister details form as a popup */}
@@ -305,6 +306,7 @@ export default function WardManagement() {
         sisterWardNo={wardNo}
         isPressMore={isPressMore}
         isWardSelect={isWardSelect}
+        onUpdateSisterName={(newSisterName) => setSisterName(newSisterName)}
       />
 
       {/* Integrate AddWardDetailsForm as a popup */}

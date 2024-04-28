@@ -142,6 +142,7 @@ const AddWardDetailsForm = ({
         handleSubmit,
         touched, //touched property in Formik, it is a state variable that keeps track of which fields have been "touched" or interacted with.
         errors,
+        resetForm,
       }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
@@ -157,7 +158,10 @@ const AddWardDetailsForm = ({
                 required
                 onChange={handleChange}
                 value={values.wardName}
-                disabled={loggedUserPosition === "Sister"}
+                disabled={
+                  loggedUserPosition === "Sister" ||
+                  loggedUserPosition === "Matron"
+                }
                 error={touched.wardName && Boolean(errors.wardName)}
                 helperText={touched.wardName && errors.wardName}
               />
@@ -172,7 +176,10 @@ const AddWardDetailsForm = ({
                 required
                 onChange={handleChange}
                 value={values.wardNo}
-                disabled={loggedUserPosition === "Sister"}
+                disabled={
+                  loggedUserPosition === "Sister" ||
+                  loggedUserPosition === "Matron"
+                }
                 error={touched.wardNo && Boolean(errors.wardNo)}
                 helperText={touched.wardNo && errors.wardNo}
               />
@@ -276,7 +283,13 @@ const AddWardDetailsForm = ({
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => handleCancel()} color="primary">
+              <Button
+                onClick={() => {
+                  handleCancel();
+                  resetForm(); // Reset the form to its initial values
+                }}
+                color="primary"
+              >
                 Cancel
               </Button>
               <Button

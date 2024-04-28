@@ -13,6 +13,8 @@ import { retrieveShiftOfUserOnDay } from "../../Services/Scheduling/ViewScheduli
 import { showInfoAlert } from "../../Component/ShowAlert.jsx";
 import { Height } from "@mui/icons-material";
 import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
+import { retriveSchduleOtherStaff } from "../../Services/Scheduling/ViewSchedulingServices.js";
+import { retriveSchduleMatron } from "../../Services/Scheduling/ViewSchedulingServices.js";
 
 const ViewSchedule = () => {
   //.............................................Load Profile Picture........................................................
@@ -49,22 +51,36 @@ const ViewSchedule = () => {
   const [wardNumbers, setWardNumbers] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
   const [selectedWard, setSelectedWard] = useState(); //SELECTED WARD OF THE DROPDOWN
   const [userShiftOnDate, setUserShiftOnDate] = useState(""); // Shift of logged in user on selected date
+  const [scheduleData, setScheduleData] = useState([]);
   // const authContext = useAuth();
 
   useEffect(() => {
+    // const fetchData = async () => {
+    //   var date1 = formatDate(date);
+    //   if (authContext.position === "Matron") {
+    //     var data = await retriveSchduleMatron(selectedWard, date1);
+    //     setScheduleData(data);
+    //   } else {
+    //     var data = await retriveSchduleOtherStaff(nic, date1);
+    //     console.log(data);
+    //     setScheduleData(data);
+    //   }
+    // };
+    function formatDate(dateObject) {
+      const year = dateObject.getFullYear();
+      const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
+      const day = ("0" + dateObject.getDate()).slice(-2);
+      return `${year}-${month}-${day}`;
+    }
+
     setIsViewSelected(true);
     setScheduleCreatedStatus(0);
     setIsCasualtyDay(true);
-
-    var pos = authContext.position;
-    var nic = authContext.nic;
-
-    setLoggedUserPosition(pos);
-    setLoggedUserNic(nic);
+    // fetchData();
 
     console.log(scheduleCreatedStatus);
     setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
-  }, [scheduleCreatedStatus]);
+  }, [scheduleCreatedStatus, scheduleData, loggedUserNic]);
 
   //Take current calendar month
   const onActiveStartDateChange = ({ activeStartDate }) => {
@@ -235,7 +251,7 @@ const ViewSchedule = () => {
             >
               <DailyDutyGrid
                 isViewSelected={isViewSelected}
-                data={dummyData}
+                data={scheduleData}
                 wardNo={selectedWard}
               />
 
