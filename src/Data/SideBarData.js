@@ -126,3 +126,40 @@ export const matronsMenus = [
     ],
   },
 ]
+
+export const NurseMenus = [
+  {
+    name: 'Home',
+    icon: <HomeRoundedIcon />,
+    path: '/home',
+  },
+  {
+    name: 'Duty Schedule',
+    icon: <EventNoteRoundedIcon />,
+    path: '/scheduling/view',
+  },
+  {
+    name: 'Leave Management',
+    icon: <ManageAccountsRoundedIcon />,
+    path: '/leave/approve',
+  },
+  {
+    name: 'Ward Details',
+    icon: <VaccinesRoundedIcon />,
+    path: '/ward_details/view',
+  },
+  {
+    name: 'News',
+    icon: <FeedRoundedIcon />,
+    subMenu: [
+      {
+        name: 'Add News',
+        path: '/news/add',
+      },
+      {
+        name: 'News',
+        path: '/news/view',
+      },
+    ],
+  },
+]

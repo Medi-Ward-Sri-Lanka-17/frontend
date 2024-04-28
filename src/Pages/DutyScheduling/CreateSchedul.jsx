@@ -12,27 +12,28 @@ import ToggleButton from "@mui/material/ToggleButton";
 import { useAuth } from "../../Security/AuthContext.js";
 import { showInfoAlert } from "../../Component/ShowAlert";
 import { retrveCandidateList } from "../../Services/Scheduling/AddSchedulingServices.js";
+import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
 
 const CreateSchedule = () => {
   //.............................................Load Profile Picture........................................................
 
   const authContext = useAuth();
-  // const nic = authContext.nic
+  const nic = authContext.nic;
 
-  // const [proImgUrl, setProImgUrl] = useState(null)
+  const [proImgUrl, setProImgUrl] = useState(null);
 
-  // useEffect(() => {
-  //   refreshPropilePicture(nic)
-  // }, [])
+  useEffect(() => {
+    refreshPropilePicture(nic);
+  }, []);
 
-  // useEffect(() => {
-  //   refreshPropilePicture(nic)
-  // }, [])
+  useEffect(() => {
+    refreshPropilePicture(nic);
+  }, []);
 
-  // async function refreshPropilePicture(nic) {
-  //   const response = await retrieveProfilePicture(nic)
-  //   setProImgUrl(response)
-  // }
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic);
+    setProImgUrl(response);
+  }
 
   //............................................................................................................................
 
@@ -49,11 +50,10 @@ const CreateSchedule = () => {
   const [loggedUserNic, setLoggedUserNic] = useState(); //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
   const [candidate, setCandidate] = useState([]);
-  cosnt[(dailyShedule, setDailySchedule)] = useState([]);
+
+  // const authContext = useAuth()
 
   useEffect(() => {
-    const data = retriveSchdule(loggedUserPosition, date);
-
     var pos = authContext.position;
     var nic = authContext.nic;
 
@@ -72,7 +72,6 @@ const CreateSchedule = () => {
     loggedUserPosition,
     loggedUserNic,
     currentMonth,
-    candidate,
   ]);
 
   const onActiveStartDateChange = ({ activeStartDate }) => {
@@ -107,23 +106,15 @@ const CreateSchedule = () => {
       showInfoAlert("Pick a date");
       setCandidate([]);
     } else {
-      console.log(authContext.user.nic);
+      const response = await retrveCandidateList(
+        authContext.user.nic,
+        shift,
+        formatDate(date)
+      );
 
-      try {
-        // Call the asynchronous function and wait for its response
-        const response = await retrveCandidateList(
-          authContext.user.nic,
-          shift,
-          formatDate(date)
-        );
+      console.log(response);
 
-        // Set the candidate state with the response
-        setCandidate(response);
-        console.log(response);
-      } catch (error) {
-        console.error("Error retrieving candidate list:", error);
-        // Handle the error if needed
-      }
+      setCandidate(response);
     }
   };
 
@@ -198,8 +189,7 @@ const CreateSchedule = () => {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box className="PageContent" style={{ width: "100%" }}>
-        {/* <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} /> */}
-        {<Header title="CREATE SCHEDULE" />}
+        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} />
         <Box>
           <Box
             style={{
@@ -279,7 +269,7 @@ const CreateSchedule = () => {
                   maxHeight: "78%",
                 }}
               >
-                <ShiftGrid data={candidate} date={date} shift={selectedShift} />
+                <ShiftGrid data={candidate} />
               </Box>
             </Box>
             <Box
