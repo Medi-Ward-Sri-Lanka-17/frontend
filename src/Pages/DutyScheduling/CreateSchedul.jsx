@@ -49,8 +49,11 @@ const CreateSchedule = () => {
   const [loggedUserNic, setLoggedUserNic] = useState(); //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
   const [candidate, setCandidate] = useState([]);
+  cosnt[(dailyShedule, setDailySchedule)] = useState([]);
 
   useEffect(() => {
+    const data = retriveSchdule(loggedUserPosition, date);
+
     var pos = authContext.position;
     var nic = authContext.nic;
 
