@@ -99,7 +99,7 @@ export const approveLeaveByMatron = async (leaveID) => {
 export const declineLeaveRequest = async (leaveID) => {
   try {
     const response = await apiClient.put(`/leaveApprove/decline`, leaveID)
-    showSuccessAlert(response.data)
+    return response.data
   } catch (error) {
     if (error.response) {
       console.error('Error Response:', error.response.data)
