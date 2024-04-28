@@ -16,13 +16,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { addSatffValidation } from "../../Validation/wardDetailsValidation";
 import { useAuth } from "../../Security/AuthContext";
 import { addStaff } from "../../Services/WardDetails/WardDetailsServices";
-import { retrieveWardNumbers } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveExistingUser } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveAllUserNics } from "../../Services/WardDetails/WardDetailsServices";
+import { showSuccessAlert, showUnsuccessAlert } from "../ShowAlert";
 
-const AddStaffMemberForm = ({ open, handleClose }) => {
+const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
-  const [WardNumbers, setWardNumbers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [allUserNics, setAllUserNics] = useState([]);
   const [isMessageChange, setIsMessageChange] = useState(false);
@@ -38,7 +37,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
     leaveNum: "",
     mobileNo: "",
     serviceStartedDate: "",
-    wardNo: "",
+    wardNo: wardNoOfSisterOrMatron,
     remainingVacationLeave: "",
     remainingCasualLeaves: "",
   });
@@ -53,10 +52,6 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
 
         const nics = await retrieveAllUserNics();
         setAllUserNics(nics);
-
-        const response = await retrieveWardNumbers();
-        const wardNumbersArray = response.wardNumbers;
-        setWardNumbers(wardNumbersArray);
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -68,14 +63,6 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
   useEffect(() => {
     console.log("Nurse Data Updated:", nurseData);
   }, [nurseData]);
-
-  const showSuccessAlert = () => {
-    Swal.fire({
-      text: "Staff member successfully added!",
-      icon: "success",
-      confirmButtonColor: "#243e4f",
-    });
-  };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -102,6 +89,16 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
     }
   };
 
+  const add = (values) => {
+    var response = addStaff(values);
+    console.log(response);
+    if (response === 200) {
+      showSuccessAlert("Staff member successfully added");
+    } else {
+      showUnsuccessAlert("Staff member adding failed");
+    }
+  };
+
   const handleManualSubmit = () => {
     console.log(formikAddNurse.errors);
     formikAddNurse.submitForm();
@@ -119,8 +116,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
     validationSchema: addSatffValidation,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
-        addStaff(values);
-        showSuccessAlert();
+        add(values);
         handleClose();
         actions.resetForm();
         actions.setSubmitting(false);
@@ -319,10 +315,8 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
               margin="normal"
               fullWidth
               name="wardNo"
-              select
-              value={formikAddNurse.values.wardNo}
-              onChange={formikAddNurse.handleChange}
-              onBlur={formikAddNurse.handleBlur}
+              value={wardNoOfSisterOrMatron}
+              disabled={true}
               error={
                 formikAddNurse.touched.wardNo &&
                 Boolean(formikAddNurse.errors.wardNo)
@@ -330,13 +324,7 @@ const AddStaffMemberForm = ({ open, handleClose }) => {
               helperText={
                 formikAddNurse.touched.wardNo && formikAddNurse.errors.wardNo
               }
-            >
-              {WardNumbers.map((wardNumber) => (
-                <MenuItem key={wardNumber} value={wardNumber}>
-                  {wardNumber}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
 
             <label>Leave No</label>
             <TextField
