@@ -15,6 +15,7 @@ import { Height } from "@mui/icons-material";
 import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
 import { retriveSchduleOtherStaff } from "../../Services/Scheduling/ViewSchedulingServices.js";
 import { retriveSchduleMatron } from "../../Services/Scheduling/ViewSchedulingServices.js";
+import { retrieveWardNames } from "../../Services/WardDetails/WardDetailsServices.js";
 
 const ViewSchedule = () => {
   //.............................................Load Profile Picture........................................................
@@ -48,24 +49,27 @@ const ViewSchedule = () => {
   const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
   const [scheduleApprove, setScheduleApprove] = useState(false);
   const [nurseData, setNurseData] = useState({});
-  const [wardNumbers, setWardNumbers] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
+  const [wardNames, setWardNames] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
   const [selectedWard, setSelectedWard] = useState(); //SELECTED WARD OF THE DROPDOWN
   const [userShiftOnDate, setUserShiftOnDate] = useState(""); // Shift of logged in user on selected date
   const [scheduleData, setScheduleData] = useState([]);
+
   // const authContext = useAuth();
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   var date1 = formatDate(date);
-    //   if (authContext.position === "Matron") {
-    //     var data = await retriveSchduleMatron(selectedWard, date1);
-    //     setScheduleData(data);
-    //   } else {
-    //     var data = await retriveSchduleOtherStaff(nic, date1);
-    //     console.log(data);
-    //     setScheduleData(data);
-    //   }
-    // };
+    const fetchData = async () => {
+      var date1 = formatDate(date);
+      if (authContext.position === "Matron") {
+        var wardNames = await retrieveWardNames(authContext.username);
+        setWardNames(wardNames);
+        var data = await retriveSchduleMatron(selectedWard, date1);
+        setScheduleData(data);
+      } else {
+        var data = await retriveSchduleOtherStaff(nic, date1);
+        console.log(data);
+        setScheduleData(data);
+      }
+    };
     function formatDate(dateObject) {
       const year = dateObject.getFullYear();
       const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
@@ -217,7 +221,7 @@ const ViewSchedule = () => {
               >
                 {loggedUserPosition === "Matron" && (
                   <FadeMenu
-                    wardNumbers={[1, 2, 3, 4, 5]}
+                    wardNames={wardNames}
                     onSelectWard={handleSelectedWard}
                   />
                 )}

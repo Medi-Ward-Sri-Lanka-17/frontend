@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-export default function FadeMenu({ wardNumbers, onSelectWard }) {
+export default function FadeMenu({ wardNames, onSelectWard }) {
   const [selectedWard, setSelectedWard] = useState("");
 
   const handleChange = (event) => {
@@ -26,9 +26,9 @@ export default function FadeMenu({ wardNumbers, onSelectWard }) {
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          {wardNumbers.map((wardNumber) => (
-            <MenuItem key={wardNumber} value={wardNumber}>
-              {wardNumber}
+          {wardNames.map((ward) => (
+            <MenuItem key={ward} value={ward}>
+              {ward}
             </MenuItem>
           ))}
         </Select>
