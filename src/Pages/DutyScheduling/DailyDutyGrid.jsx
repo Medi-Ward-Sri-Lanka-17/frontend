@@ -10,70 +10,22 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Theme from "../../Component/Theme.jsx";
 
-export default function DailyDutyGrid({ isViewSelected, wardNo }) {
+export default function DailyDutyGrid({ isViewSelected, wardNo, schedule }) {
   const theme = Theme();
   const [tableData, setTableData] = useState([]);
   const [loggedUserPosition, setLoggedUserPosition] = useState();
 
   useEffect(() => {
-    // Simulated backend data
-    const rawStaffData = [
-      {
-        fullName: "John Doe",
-        shift: "Morning",
-      },
-      {
-        fullName: "Jane Smith",
-        shift: "Morning",
-      },
-      {
-        fullName: "Alice Johnson",
-        shift: "Morning",
-      },
-      {
-        fullName: "Ali John",
-        shift: "Evening",
-      },
-      {
-        fullName: "Jadne kenet",
-        shift: "Evening",
-      },
-      {
-        fullName: "sam henry",
-        shift: "Evening",
-      },
-      {
-        fullName: "harry Smith",
-        shift: "Night",
-      },
-      {
-        fullName: "Ray beiber",
-        shift: "Night",
-      },
-      {
-        fullName: "shreak park",
-        shift: "Night",
-      },
-      {
-        fullName: "kate villiam",
-        shift: "Morning",
-      },
-      {
-        fullName: "rose haper",
-        shift: "Evening",
-      },
-      {
-        fullName: "soya lander",
-        shift: "Night",
-      },
-    ];
+    const fetchData = async () => {
+      setTableData(schedule);
+      console.log("Schedule data:", schedule); // Log the schedule data here
+    };
 
-    setTableData(rawStaffData);
-
+    fetchData();
     // Simulated authentication context
     const position = "Matron";
     setLoggedUserPosition(position);
-  }, []);
+  }, [loggedUserPosition, schedule]);
 
   const handleRemove = (index) => {
     // Remove the data at the specified index
@@ -120,37 +72,40 @@ export default function DailyDutyGrid({ isViewSelected, wardNo }) {
           </TableHead>
 
           <TableBody>
-            {tableData.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  {data.shift === "Morning" && data.fullName}
-                  {!isViewSelected && data.shift === "Morning" && (
-                    // Conditionally render delete icon
-                    <IconButton onClick={() => handleRemove(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {data.shift === "Evening" && data.fullName}
-                  {!isViewSelected && data.shift === "Evening" && (
-                    // Conditionally render delete icon
-                    <IconButton onClick={() => handleRemove(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {data.shift === "Night" && data.fullName}
-                  {!isViewSelected && data.shift === "Night" && (
-                    // Conditionally render delete icon
-                    <IconButton onClick={() => handleRemove(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+            {schedule &&
+              schedule.map((data, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    {data.morning}
+                    {!isViewSelected ||
+                      (!data.morning === null && (
+                        <IconButton onClick={() => handleRemove(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    {data.evening}
+                    {!isViewSelected ||
+                      (!data.evening === "" && (
+                        // Conditionally render delete icon
+                        <IconButton onClick={() => handleRemove(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    {data.night}
+                    {!isViewSelected ||
+                      (!data.night === "" && (
+                        // Conditionally render delete icon
+                        <IconButton onClick={() => handleRemove(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      ))}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

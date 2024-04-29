@@ -68,6 +68,7 @@ const ViewSchedule = () => {
         setWardNames(wardNames.wardName);
         var data = await retriveSchduleMatron(selectedWard, date1);
         setScheduleData(data);
+        console.log("schedule data : ", scheduleData);
       } else {
         var data = await retriveSchduleOtherStaff(nic, date1);
         console.log(data);
@@ -85,6 +86,7 @@ const ViewSchedule = () => {
     setScheduleCreatedStatus(0);
     setIsCasualtyDay(true);
     fetchData();
+    console.log(scheduleData);
 
     console.log(scheduleCreatedStatus);
     setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
@@ -100,44 +102,6 @@ const ViewSchedule = () => {
   const handleSelectedWard = (ward) => {
     setSelectedWard(ward);
   };
-
-  const dummyData = [
-    {
-      fullName: "John Doe",
-      serviceTime: "Morning",
-      workingHours: 40,
-    },
-    {
-      fullName: "Jane Smith",
-      serviceTime: "Evening",
-      workingHours: 36,
-    },
-    {
-      fullName: "Alice Johnson",
-      serviceTime: "Night",
-      workingHours: 48,
-    },
-    {
-      fullName: "Ali John",
-      serviceTime: "Morning",
-      workingHours: 50,
-    },
-    {
-      fullName: "Jaden Suith",
-      serviceTime: "Evening",
-      workingHours: 51,
-    },
-    {
-      fullName: "Nan Smith",
-      serviceTime: "Evening",
-      workingHours: 36,
-    },
-    {
-      fullName: "Sam Smith",
-      serviceTime: "Evening",
-      workingHours: 36,
-    },
-  ];
 
   const onChange = (selectedDate) => {
     //set the selected date
@@ -260,7 +224,7 @@ const ViewSchedule = () => {
             >
               <DailyDutyGrid
                 isViewSelected={isViewSelected}
-                data={scheduleData}
+                schedule={scheduleData}
                 wardNo={selectedWard}
                 date={date}
               />

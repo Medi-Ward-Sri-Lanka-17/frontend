@@ -25,8 +25,14 @@ export default function ShiftGrid({ data, date, shift }) {
   }, [data]);
 
   const handleAssign = async (nic) => {
+    console.log(date);
     if (date) {
-      const formattedDate = date.toISOString().split("T")[0];
+      const year = date.getFullYear();
+      // Month is zero-based, so add 1 to get the correct month
+      const month = date.getMonth() + 1;
+      // Pad the day with leading zero if needed
+      const day = date.getDate().toString().padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
       const assigningData = {
         nurseNic: nic,
         date: formattedDate,
