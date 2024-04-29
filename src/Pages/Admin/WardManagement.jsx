@@ -133,7 +133,7 @@ const StaffManagement = () => {
           <Grid item xs={12}>
             <DataGridComponent
               totalWidth={totalWidth}
-              rows={rows}
+              rows={rows || []}
               columns={columns}
               getRowId={(row) => row.wardNo}
             />
