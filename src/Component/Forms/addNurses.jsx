@@ -99,8 +99,6 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
     console.log(response);
     if (response === 200) {
       showSuccessAlert("Staff member successfully added");
-    } else {
-      showUnsuccessAlert("Staff member adding failed");
     }
   };
 

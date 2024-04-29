@@ -269,7 +269,7 @@ const CreateSchedule = () => {
                   maxHeight: "78%",
                 }}
               >
-                <ShiftGrid data={candidate} />
+                <ShiftGrid data={candidate} date={date} shift={selectedShift} />
               </Box>
             </Box>
             <Box

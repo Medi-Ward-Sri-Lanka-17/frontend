@@ -88,7 +88,7 @@ const ViewSchedule = () => {
 
     console.log(scheduleCreatedStatus);
     setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
-  }, [scheduleCreatedStatus, scheduleData, loggedUserNic, loggedUserPosition]);
+  }, [scheduleCreatedStatus, loggedUserNic, loggedUserPosition, date]);
 
   //Take current calendar month
   const onActiveStartDateChange = ({ activeStartDate }) => {
@@ -262,6 +262,7 @@ const ViewSchedule = () => {
                 isViewSelected={isViewSelected}
                 data={scheduleData}
                 wardNo={selectedWard}
+                date={date}
               />
 
               {loggedUserPosition === "Matron" &&
