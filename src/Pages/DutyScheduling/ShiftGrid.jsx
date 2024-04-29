@@ -25,16 +25,20 @@ export default function ShiftGrid({ data, date, shift }) {
   }, [data]);
 
   const handleAssign = async (nic) => {
-    const formattedDate = date.toISOString().split("T")[0];
-    const assigningData = {
-      nurseNic: nic,
-      date: formattedDate,
-      dutyTime: shift,
-    };
-    var respone = await addDuty(authContext.nic, assigningData);
+    if (date) {
+      const formattedDate = date.toISOString().split("T")[0];
+      const assigningData = {
+        nurseNic: nic,
+        date: formattedDate,
+        dutyTime: shift,
+      };
+      var respone = await addDuty(authContext.nic, assigningData);
 
-    console.log(respone);
-    console.log(assigningData);
+      console.log(respone);
+      console.log(assigningData);
+    } else {
+      console.error("Date is undefined or null");
+    }
   };
 
   return (

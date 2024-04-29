@@ -107,6 +107,7 @@ export const retrieveAllUserNics = async () => {
 export const retrieveWardNames = async (username) => {
   try {
     const response = await apiClient.get(`/get-ward-names/${username}`)
+    console.log('wardnames : ', response.data)
     return response.data
   } catch (err) {
     throw new Error("Couldn't retrieve ward names")
@@ -182,6 +183,11 @@ export const retrieveBasicWardData = async (wardName) => {
     throw new Error("Couldn't retrieve selected ward data")
   }
 }
+
+// const updateSisterName = (newFullName) => {
+//   const firstName = newFullName.split(" ")[0];
+//   setSisterName(firstName);
+// };
 
 //retrive full ward details for edit when sister log
 export const retrieveBasicWardDataSister = async (username) => {

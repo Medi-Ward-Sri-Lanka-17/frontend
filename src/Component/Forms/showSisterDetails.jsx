@@ -162,7 +162,9 @@ const StaffDetailsForm = ({
   return (
     <form>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Sister details</DialogTitle>
+        <DialogTitle style={{ backgroundColor: "#acc8eb" }}>
+          Sister details
+        </DialogTitle>
         <DialogContent>
           <label>Full Name</label>
           <TextField

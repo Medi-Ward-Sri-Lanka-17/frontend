@@ -258,8 +258,6 @@ export const addSatffValidation = Yup.object().shape({
 
   position: Yup.string().required("*Position is required"),
 
-  wardNo: Yup.string().required("*Ward number is required"),
-
   leaveNum: Yup.string().required("*Leave number is required"),
 
   mobileNo: Yup.string()
