@@ -92,7 +92,9 @@ const AddNewWardForm = ({ open, handleClose }) => {
       }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add ward details</DialogTitle>
+            <DialogTitle style={{ backgroundColor: "#acc8eb" }}>
+              Add ward details
+            </DialogTitle>
             <DialogContent>
               <label>Ward Name</label>
               <Field

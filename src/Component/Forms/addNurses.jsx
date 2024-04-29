@@ -19,11 +19,13 @@ import { addStaff } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveExistingUser } from "../../Services/WardDetails/WardDetailsServices";
 import { retrieveAllUserNics } from "../../Services/WardDetails/WardDetailsServices";
 import { showSuccessAlert, showUnsuccessAlert } from "../ShowAlert";
+import { retrieveWardNumbers } from "../../Services/WardDetails/WardDetailsServices";
 
 const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
   const [loggedUserPosition, setLoggedUserPosition] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [allUserNics, setAllUserNics] = useState([]);
+
   const [isMessageChange, setIsMessageChange] = useState(false);
 
   const [nurseData, setNurseData] = useState({
@@ -61,8 +63,11 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Nurse Data Updated:", nurseData);
-  }, [nurseData]);
+    setNurseData((prevNurseData) => ({
+      ...prevNurseData,
+      wardNo: wardNoOfSisterOrMatron,
+    }));
+  }, [wardNoOfSisterOrMatron]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -116,6 +121,7 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
     validationSchema: addSatffValidation,
     onSubmit: async (values, actions) => {
       setTimeout(() => {
+        console.log("====================", values.wardNo);
         add(values);
         handleClose();
         actions.resetForm();
@@ -127,7 +133,9 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
   return (
     <form autoComplete="off">
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Staff Member</DialogTitle>
+        <DialogTitle style={{ backgroundColor: "#acc8eb" }}>
+          Add Staff Member to ward {nurseData.wardNo}
+        </DialogTitle>
         <DialogContent>
           <Paper
             elevation={3}
@@ -308,23 +316,6 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
                 Sister
               </MenuItem>
             </TextField>
-
-            <label>Ward Number</label>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="wardNo"
-              value={wardNoOfSisterOrMatron}
-              disabled={true}
-              error={
-                formikAddNurse.touched.wardNo &&
-                Boolean(formikAddNurse.errors.wardNo)
-              }
-              helperText={
-                formikAddNurse.touched.wardNo && formikAddNurse.errors.wardNo
-              }
-            />
 
             <label>Leave No</label>
             <TextField

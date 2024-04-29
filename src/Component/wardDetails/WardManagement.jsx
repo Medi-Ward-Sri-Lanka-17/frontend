@@ -48,6 +48,7 @@ export default function WardManagement() {
           setWard(allWards);
           if (isWardSelect === true) {
             const response = await retrieveWardData(selectedWard);
+            console.log("hhhhhhhhhhhhhhhhhh", response);
             setWardName(response.wardName);
             setwardNo(response.wardNo);
             setSisterName(response.sisterName);
@@ -67,7 +68,7 @@ export default function WardManagement() {
     };
 
     fetchData();
-  }, [position, isAddNewSubmitted, isWardDataEdited]); //dependency array empty means useEffeect
+  }, [position, isAddNewSubmitted, isWardDataEdited, selectedWard]); //dependency array empty means useEffeect
 
   {
     /*=======================Add a staff member form=============================*/
