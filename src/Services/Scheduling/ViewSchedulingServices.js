@@ -6,10 +6,11 @@ import {
 
 export const retriveSchduleOtherStaff = async (nic, date) => {
   try {
-    const response = await apiClient.get(`/scheduling//view/${nic}`, {
+    console.log("llllllllllll", nic, date);
+    const response = await apiClient.get(`/scheduling/view/${nic}`, {
       params: { date: date },
     });
-
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
