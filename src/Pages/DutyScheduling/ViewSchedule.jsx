@@ -57,11 +57,15 @@ const ViewSchedule = () => {
   // const authContext = useAuth();
 
   useEffect(() => {
+    var position = authContext.position;
+    setLoggedUserPosition(position);
+
     const fetchData = async () => {
       var date1 = formatDate(date);
       if (authContext.position === "Matron") {
         var wardNames = await retrieveWardNames(authContext.username);
-        setWardNames(wardNames);
+        console.log(wardNames.wardName);
+        setWardNames(wardNames.wardName);
         var data = await retriveSchduleMatron(selectedWard, date1);
         setScheduleData(data);
       } else {
@@ -80,11 +84,11 @@ const ViewSchedule = () => {
     setIsViewSelected(true);
     setScheduleCreatedStatus(0);
     setIsCasualtyDay(true);
-    // fetchData();
+    fetchData();
 
     console.log(scheduleCreatedStatus);
     setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
-  }, [scheduleCreatedStatus, scheduleData, loggedUserNic]);
+  }, [scheduleCreatedStatus, scheduleData, loggedUserNic, loggedUserPosition]);
 
   //Take current calendar month
   const onActiveStartDateChange = ({ activeStartDate }) => {
@@ -216,7 +220,8 @@ const ViewSchedule = () => {
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center", // Align items vertically
+                  alignItems: "center",
+                  marginBottom: "2%", // Align items vertically
                 }}
               >
                 {loggedUserPosition === "Matron" && (

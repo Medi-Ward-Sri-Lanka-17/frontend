@@ -92,7 +92,9 @@ const EditStaffMemberForm = ({ open, handleClose, nic }) => {
   return (
     <form autoComplete="off">
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Nurse Details</DialogTitle>
+        <DialogTitle style={{ backgroundColor: "#acc8eb" }}>
+          Edit Nurse Details
+        </DialogTitle>
         <DialogContent>
           <label>First Name</label>
           <TextField

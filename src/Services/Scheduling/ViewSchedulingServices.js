@@ -27,7 +27,7 @@ export const retriveSchduleOtherStaff = async (nic, date) => {
 
 export const retriveSchduleMatron = async (wardNo, date) => {
   try {
-    const response = await apiClient.get(`/scheduling//view/${wardNo}`, {
+    const response = await apiClient.get(`/scheduling/view/${wardNo}`, {
       params: { date: date },
     });
 

@@ -146,7 +146,9 @@ const AddWardDetailsForm = ({
       }) => (
         <Form>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Edit ward details</DialogTitle>
+            <DialogTitle style={{ backgroundColor: "#acc8eb" }}>
+              Edit ward details
+            </DialogTitle>
             <DialogContent>
               <label>Ward Name</label>
               <Field
