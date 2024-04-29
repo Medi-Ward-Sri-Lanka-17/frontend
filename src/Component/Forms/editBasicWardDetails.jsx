@@ -92,7 +92,7 @@ const AddWardDetailsForm = ({
   const showSuccessAlert = () => {
     handleClose();
     Swal.fire({
-      text: "Staff member successfully added!",
+      text: "Ward details successfully editted",
       icon: "success",
       confirmButtonColor: "#243e4f",
     });
