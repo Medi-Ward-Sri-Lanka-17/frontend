@@ -22,6 +22,7 @@ import {
   updateWardDetailsMore,
 } from '../../Services/WardDetails/WardDetailsServices'
 import { getAllMatron } from '../../Services/Admin/AdminMatronServices'
+import { useAuth } from '../../Security/AuthContext'
 
 const WardManagementMore = () => {
   //..................................Profile Picture...........................................................
