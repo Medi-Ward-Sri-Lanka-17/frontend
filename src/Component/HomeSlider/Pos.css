@@ -14,6 +14,7 @@
     flex: "30%";
     gap:1rem;
     align-items: center;
+    margin-top: 0.5em;
     
 }
 .details{
@@ -33,13 +34,13 @@
 
 .left{
     flex: 35%;
-    height:55vh;
+    height:57vh;
     background-color: rgb(231, 245, 245);
 }
 
 .right{
     flex: 65%;
-    height: 55vh;
+    height: 57vh;
     background-color: rgb(221, 232, 232);
 }
 

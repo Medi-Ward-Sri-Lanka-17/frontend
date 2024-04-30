@@ -3,8 +3,19 @@ import Header from '../../Component/Header'
 import { Box, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import SideBar from '../../Component/SideBar'
+import { useAuth } from '../../Security/AuthContext'
 
 const AdminPanel = () => {
+
+
+//..................................Profile Picture...........................................................
+
+const authContext=useAuth();
+const proImgUrl=authContext.proPicUrl;
+
+//............................................................................................................
+
+
   // Set use Navigate
   const navigate = useNavigate()
 
@@ -15,7 +26,7 @@ const AdminPanel = () => {
 
   return (
     <Box>
-      <Header title="Admin Panel" />
+      <Header title="Admin Panel" proImgUrl={proImgUrl} />
       <SideBar />
       <Button onClick={() => handleSubmit()}>Add Staff</Button>
     </Box>
