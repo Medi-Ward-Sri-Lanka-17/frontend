@@ -11,8 +11,21 @@ import DataGridComponent from '../../Component/DataGridComponent'
 import AddNewWardForm from '../../Component/Forms/newWard'
 import { retriveAllWards } from '../../Services/WardDetails/WardDetailsServices'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../Security/AuthContext'
 
 const StaffManagement = () => {
+
+
+
+//..................................Profile Picture...........................................................
+
+const authContext=useAuth();
+const proImgUrl=authContext.proPicUrl;
+
+//............................................................................................................
+
+
+
   const [isAddWardOpen, setIsAddWardOpen] = useState(false)
   const [rows, setRows] = useState([])
   const [deleteTrigger, setDeleteTrigger] = useState(false)
@@ -119,7 +132,7 @@ const StaffManagement = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
-        <Header title="Admin - Matron Management" />
+        <Header title="Admin - Matron Management" proImgUrl={proImgUrl}/>
         <Grid container spacing={2} style={{ padding: '3vh' }}>
           <Grid item xs={6}>
             <DefaultButton

@@ -38,6 +38,14 @@ const CreateSchedule = () => {
 
   //............................................................................................................................
 
+
+  
+//..................................Profile Picture...........................................................
+
+const proImgUrl=authContext.proPicUrl;
+
+//............................................................................................................
+
   const [date, setDate] = useState(null);
   const [scheduleCreatedStatusForDay, setScheduleCreatedStatusForDay] =
     useState(0);
@@ -202,7 +210,8 @@ const CreateSchedule = () => {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box className="PageContent" style={{ width: "100%" }}>
-        <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} />
+        {/* <Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} /> */}
+        {<Header title="CREATE SCHEDULE" proImgUrl={proImgUrl} />}
         <Box>
           <Box
             style={{

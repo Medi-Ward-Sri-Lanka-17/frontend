@@ -14,8 +14,13 @@ import {
   getMatronDetails,
 } from '../../Services/Admin/AdminMatronServices'
 import { showSuccessAlert, showUnsuccessAlert } from '../../Component/ShowAlert'
+import { useAuth } from '../../Security/AuthContext'
 
 const MatronManagement = () => {
+
+  const authContext=useAuth();
+  const proImgUrl=authContext.proPicUrl;
+
   const [isAddMatronOpen, setIsAddMatronOpen] = useState(false)
   const [rows, setRows] = useState([])
   const [deleteTrigger, setDeleteTrigger] = useState(false)
@@ -127,7 +132,7 @@ const MatronManagement = () => {
     <Box sx={{ display: 'flex' }}>
       <SideBar />
       <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
-        <Header title="Admin - Matron Management" />
+        <Header title="Admin - Matron Management" proImgUrl={proImgUrl}/>
         <Grid
           container
           spacing={2}
