@@ -49,6 +49,7 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("rrrrrrrrrrrrrrrrrrrrrr", wardNoOfSisterOrMatron);
         const positionData = authContext.position;
         setLoggedUserPosition(positionData);
 
@@ -95,6 +96,7 @@ const AddStaffMemberForm = ({ open, handleClose, wardNoOfSisterOrMatron }) => {
   };
 
   const add = (values) => {
+    values.wardNo = wardNoOfSisterOrMatron;
     var response = addStaff(values);
     console.log(response);
     if (response === 200) {
