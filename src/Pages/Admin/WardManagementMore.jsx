@@ -24,6 +24,13 @@ import {
 import { getAllMatron } from '../../Services/Admin/AdminMatronServices'
 
 const WardManagementMore = () => {
+  //..................................Profile Picture...........................................................
+
+  const authContext = useAuth()
+  const proImgUrl = authContext.proPicUrl
+
+  //............................................................................................................
+
   const theme = Theme()
   const { wardNo } = useParams()
   const navigate = useNavigate()
@@ -118,7 +125,7 @@ const WardManagementMore = () => {
       <Box sx={{ display: 'flex' }}>
         <SideBar />
         <Box className="PageContent" sx={{ width: '100%', overflowX: 'auto' }}>
-          <Header title="Admin - Ward Management" />
+          <Header title="Admin - Ward Management" proImgUrl={proImgUrl} />
           <Grid
             container
             spacing={2}

@@ -27,7 +27,7 @@ export const addWard = async (value) => {
     const response = await apiClient.post('/ward/add-ward', value)
     return response.status
   } catch (err) {
-    throw new Error("Couldn't add a new ward")
+    console.log('error')
   }
 }
 

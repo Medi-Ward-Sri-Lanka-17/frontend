@@ -13,12 +13,6 @@ const HomePage = () => {
   const authContext = useAuth()
   const nic = authContext.nic
 
-
-  // const [proImgUrl, setProImgUrl] = useState(null)
-  // const authContext = useAuth();
-  // const nic = authContext.nic;
- 
-
   const [proImgUrl,setProImgUrl]=useState(null)
 
   useEffect(()=>{
@@ -42,18 +36,66 @@ const HomePage = () => {
         <Header title="HOME" proImgUrl={proImgUrl} />
         <div className="main-container">
           <div>
-            <h1>Latest New</h1>
+            <h1 className='Latest-News'>Latest New</h1>
           </div>
           <div className="news-container">
             <Slider />
           </div>
           <div>
-            <h1>Upcomig Schedule</h1>
+            <h1 className='Latest-News'>Upcomig Schedule</h1>
           </div>
           <div className="schedule-container">
-            <div className="today"></div>
-            <div className="tomorrow"></div>
-            <div className="day-after-tomorrow"></div>
+            <div className="today">
+              <div>
+                 <h3>Today Schedule</h3>
+              </div>
+              <div className='t-content'>
+                <div>
+                  Morning-:
+                </div>
+                <div>
+                  Evening-:
+                </div>
+                <div>
+                  Night-:
+                </div>
+              </div>
+            </div>
+            <div className="tomorrow">
+              <div>
+                 <h3>Today Schedule</h3>
+              </div>
+              <div className='t-content'>
+                <div>
+                  Morning-:
+                </div>
+                <div>
+                  Evening-:
+                </div>
+                <div>
+                  Night-:
+                </div>
+              </div>
+            </div>
+            <div className="day-after-tomorrow">
+               <div>
+                 <h3>Today Schedule</h3>
+              </div>
+              <div className='t-content'>
+                <div>
+                  Morning-:
+                </div>
+                <div>
+                  Evening-:
+                </div>
+                <div>
+                  Night-:
+                </div>
+              </div>
+            <div>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>

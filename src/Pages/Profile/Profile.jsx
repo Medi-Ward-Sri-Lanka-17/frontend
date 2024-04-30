@@ -326,6 +326,7 @@ const [formErrors, setFormErrors] = useState({});
                 margin="normal"
                 name="nic"
                 value={userData.nic}
+                disabled
                 onChange={handleInputChange}
               />
               <TextField
@@ -369,6 +370,7 @@ const [formErrors, setFormErrors] = useState({});
                 fullWidth
                 margin="normal"
                 value={userData.position}
+                disabled
                 onChange={handleInputChange}
               />
               <TextField
@@ -378,6 +380,7 @@ const [formErrors, setFormErrors] = useState({});
                 fullWidth
                 margin="normal"
                 value={userData.serviceStartedDate}
+                disabled
                 onChange={handleInputChange}
               />
               <TextField
@@ -386,6 +389,7 @@ const [formErrors, setFormErrors] = useState({});
                 fullWidth
                 margin="normal"
                 value={userData.remainingCasualLeaves}
+                disabled
                 onChange={handleInputChange}
               />
               <TextField
@@ -394,6 +398,7 @@ const [formErrors, setFormErrors] = useState({});
                 fullWidth
                 margin="normal"
                 value={userData.remainingVacationLeave}
+                disabled
                 onChange={handleInputChange}
               />
               <Button
