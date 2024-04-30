@@ -43,7 +43,7 @@ const WardManagementMore = () => {
   })
 
   const [casualtyDays, setCasualtyDays] = useState({
-    monday: false,
+    monday: true,
     tuesday: false,
     wednesday: false,
     thursday: false,

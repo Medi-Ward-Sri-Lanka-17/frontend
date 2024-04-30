@@ -338,7 +338,8 @@ export const updateWardDetailsMore = async (wardNo, value) => {
 
 export const getCasualtyDaysForWard = async (wardNo) => {
   try {
-    const response = await apiClient.put(`/casualtyDay/${wardNo}`)
+    const response = await apiClient.get(`/casualtyDay/${wardNo}`)
+    console.log(response)
     return response.data
   } catch (error) {
     if (error.response) {
