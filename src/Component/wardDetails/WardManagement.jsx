@@ -48,6 +48,7 @@ export default function WardManagement() {
           setWard(allWards);
           if (isWardSelect === true) {
             const response = await retrieveWardData(selectedWard);
+            console.log("hhhhhhhhhhhhhhhhhh", response);
             setWardName(response.wardName);
             setwardNo(response.wardNo);
             setSisterName(response.sisterName);
@@ -67,7 +68,7 @@ export default function WardManagement() {
     };
 
     fetchData();
-  }, [position, isAddNewSubmitted, isWardDataEdited]); //dependency array empty means useEffeect
+  }, [position, isAddNewSubmitted, isWardDataEdited, selectedWard]); //dependency array empty means useEffeect
 
   {
     /*=======================Add a staff member form=============================*/
@@ -296,6 +297,7 @@ export default function WardManagement() {
         open={isAddNurseFormOpen}
         handleClose={() => setAddNurseFormOpen(false)}
         handleAddNurse={handleAddNurse}
+        wardNoOfSisterOrMatron={wardNo}
       />
 
       {/* Integrate edit and show sister details form as a popup */}
@@ -305,6 +307,7 @@ export default function WardManagement() {
         sisterWardNo={wardNo}
         isPressMore={isPressMore}
         isWardSelect={isWardSelect}
+        onUpdateSisterName={(newSisterName) => setSisterName(newSisterName)}
       />
 
       {/* Integrate AddWardDetailsForm as a popup */}

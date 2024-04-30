@@ -13,6 +13,9 @@ import { retrieveShiftOfUserOnDay } from "../../Services/Scheduling/ViewScheduli
 import { showInfoAlert } from "../../Component/ShowAlert.jsx";
 import { Height } from "@mui/icons-material";
 import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
+import { retriveSchduleOtherStaff } from "../../Services/Scheduling/ViewSchedulingServices.js";
+import { retriveSchduleMatron } from "../../Services/Scheduling/ViewSchedulingServices.js";
+import { retrieveWardNames } from "../../Services/WardDetails/WardDetailsServices.js";
 
 const ViewSchedule = () => {
   //.............................................Load Profile Picture........................................................
@@ -46,25 +49,48 @@ const ViewSchedule = () => {
   const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
   const [scheduleApprove, setScheduleApprove] = useState(false);
   const [nurseData, setNurseData] = useState({});
-  const [wardNumbers, setWardNumbers] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
+  const [wardNames, setWardNames] = useState([]); //WARD NUMBER LIST TO PASS TO THEFADEDmENU COMPONENT
   const [selectedWard, setSelectedWard] = useState(); //SELECTED WARD OF THE DROPDOWN
   const [userShiftOnDate, setUserShiftOnDate] = useState(""); // Shift of logged in user on selected date
+  const [scheduleData, setScheduleData] = useState([]);
+
   // const authContext = useAuth();
 
   useEffect(() => {
+    var position = authContext.position;
+    setLoggedUserPosition(position);
+
+    const fetchData = async () => {
+      var date1 = formatDate(date);
+      if (authContext.position === "Matron") {
+        var wardNames = await retrieveWardNames(authContext.username);
+        console.log(wardNames.wardName);
+        setWardNames(wardNames.wardName);
+        var data = await retriveSchduleMatron(selectedWard, date1);
+        setScheduleData(data);
+        console.log("schedule data : ", scheduleData);
+      } else {
+        var data = await retriveSchduleOtherStaff(nic, date1);
+        console.log(data);
+        setScheduleData(data);
+      }
+    };
+    function formatDate(dateObject) {
+      const year = dateObject.getFullYear();
+      const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
+      const day = ("0" + dateObject.getDate()).slice(-2);
+      return `${year}-${month}-${day}`;
+    }
+
     setIsViewSelected(true);
     setScheduleCreatedStatus(0);
     setIsCasualtyDay(true);
-
-    var pos = authContext.position;
-    var nic = authContext.nic;
-
-    setLoggedUserPosition(pos);
-    setLoggedUserNic(nic);
+    fetchData();
+    console.log(scheduleData);
 
     console.log(scheduleCreatedStatus);
     setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
-  }, [scheduleCreatedStatus]);
+  }, [scheduleCreatedStatus, loggedUserNic, loggedUserPosition, date]);
 
   //Take current calendar month
   const onActiveStartDateChange = ({ activeStartDate }) => {
@@ -76,44 +102,6 @@ const ViewSchedule = () => {
   const handleSelectedWard = (ward) => {
     setSelectedWard(ward);
   };
-
-  const dummyData = [
-    {
-      fullName: "John Doe",
-      serviceTime: "Morning",
-      workingHours: 40,
-    },
-    {
-      fullName: "Jane Smith",
-      serviceTime: "Evening",
-      workingHours: 36,
-    },
-    {
-      fullName: "Alice Johnson",
-      serviceTime: "Night",
-      workingHours: 48,
-    },
-    {
-      fullName: "Ali John",
-      serviceTime: "Morning",
-      workingHours: 50,
-    },
-    {
-      fullName: "Jaden Suith",
-      serviceTime: "Evening",
-      workingHours: 51,
-    },
-    {
-      fullName: "Nan Smith",
-      serviceTime: "Evening",
-      workingHours: 36,
-    },
-    {
-      fullName: "Sam Smith",
-      serviceTime: "Evening",
-      workingHours: 36,
-    },
-  ];
 
   const onChange = (selectedDate) => {
     //set the selected date
@@ -196,12 +184,13 @@ const ViewSchedule = () => {
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center", // Align items vertically
+                  alignItems: "center",
+                  marginBottom: "2%", // Align items vertically
                 }}
               >
                 {loggedUserPosition === "Matron" && (
                   <FadeMenu
-                    wardNumbers={[1, 2, 3, 4, 5]}
+                    wardNames={wardNames}
                     onSelectWard={handleSelectedWard}
                   />
                 )}
@@ -235,8 +224,9 @@ const ViewSchedule = () => {
             >
               <DailyDutyGrid
                 isViewSelected={isViewSelected}
-                data={dummyData}
+                schedule={scheduleData}
                 wardNo={selectedWard}
+                date={date}
               />
 
               {loggedUserPosition === "Matron" &&

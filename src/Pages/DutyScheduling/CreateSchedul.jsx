@@ -12,27 +12,29 @@ import ToggleButton from "@mui/material/ToggleButton";
 import { useAuth } from "../../Security/AuthContext.js";
 import { showInfoAlert } from "../../Component/ShowAlert";
 import { retrveCandidateList } from "../../Services/Scheduling/AddSchedulingServices.js";
+import { retrieveProfilePicture } from "../../Services/Home/retrieveProfilePicture.js";
+import { retriveSchduleOtherStaff } from "../../Services/Scheduling/ViewSchedulingServices.js";
 
 const CreateSchedule = () => {
   //.............................................Load Profile Picture........................................................
 
   const authContext = useAuth();
-  // const nic = authContext.nic
+  const nic = authContext.nic;
 
-  // const [proImgUrl, setProImgUrl] = useState(null)
+  const [proImgUrl, setProImgUrl] = useState(null);
 
-  // useEffect(() => {
-  //   refreshPropilePicture(nic)
-  // }, [])
+  useEffect(() => {
+    refreshPropilePicture(nic);
+  }, []);
 
-  // useEffect(() => {
-  //   refreshPropilePicture(nic)
-  // }, [])
+  useEffect(() => {
+    refreshPropilePicture(nic);
+  }, []);
 
-  // async function refreshPropilePicture(nic) {
-  //   const response = await retrieveProfilePicture(nic)
-  //   setProImgUrl(response)
-  // }
+  async function refreshPropilePicture(nic) {
+    const response = await retrieveProfilePicture(nic);
+    setProImgUrl(response);
+  }
 
   //............................................................................................................................
 
@@ -57,8 +59,18 @@ const proImgUrl=authContext.proPicUrl;
   const [loggedUserNic, setLoggedUserNic] = useState(); //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState(""); // CURRENT MONTH
   const [candidate, setCandidate] = useState([]);
+  const [scheduleData, setScheduleData] = useState([]);
+
+  // const authContext = useAuth()
 
   useEffect(() => {
+    const fetchData = async () => {
+      var date1 = formatDate(date);
+      var data = await retriveSchduleOtherStaff(nic, date1);
+      console.log(data);
+      setScheduleData(data);
+    };
+
     var pos = authContext.position;
     var nic = authContext.nic;
 
@@ -71,26 +83,29 @@ const proImgUrl=authContext.proPicUrl;
 
     setScheduleCreatedStatusForDay(2);
     setIsCasualtyDay(true);
+    fetchData();
   }, [
     scheduleCreatedStatusForMonth,
     scheduleCreatedStatusForDay,
     loggedUserPosition,
     loggedUserNic,
     currentMonth,
-    candidate,
+    date,
   ]);
+
+  function formatDate(dateObject) {
+    if (!dateObject) return ""; // Return an empty string if dateObject is null
+    const year = dateObject.getFullYear();
+    const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
+    const day = ("0" + dateObject.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
 
   const onActiveStartDateChange = ({ activeStartDate }) => {
     setCurrentMonth(
       activeStartDate.toLocaleString("default", { month: "long" })
     );
   };
-  function formatDate(dateObject) {
-    const year = dateObject.getFullYear();
-    const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
-    const day = ("0" + dateObject.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
 
   const onChange = (selectedDate) => {
     setDate(selectedDate);
@@ -112,23 +127,15 @@ const proImgUrl=authContext.proPicUrl;
       showInfoAlert("Pick a date");
       setCandidate([]);
     } else {
-      console.log(authContext.user.nic);
+      const response = await retrveCandidateList(
+        authContext.user.nic,
+        shift,
+        formatDate(date)
+      );
 
-      try {
-        // Call the asynchronous function and wait for its response
-        const response = await retrveCandidateList(
-          authContext.user.nic,
-          shift,
-          formatDate(date)
-        );
+      console.log(response);
 
-        // Set the candidate state with the response
-        setCandidate(response);
-        console.log(response);
-      } catch (error) {
-        console.error("Error retrieving candidate list:", error);
-        // Handle the error if needed
-      }
+      setCandidate(response);
     }
   };
 
@@ -307,7 +314,7 @@ const proImgUrl=authContext.proPicUrl;
           </Box>
           <DailyDutyGrid
             isViewSelected={isViewSelected}
-            data={dummyData}
+            schedule={scheduleData}
             selectedDate={date}
             shift={selectedShift}
           />
