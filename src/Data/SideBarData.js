@@ -69,11 +69,6 @@ export const menusForAdmin = [
     path: '/admin',
   },
   {
-    name: 'Staff Management',
-    icon: <ManageAccountsRoundedIcon />,
-    path: '/admin/staff',
-  },
-  {
     name: 'Matrons Management',
     icon: <AdminPanelSettingsRoundedIcon />,
     path: '/admin/matron',
@@ -152,10 +147,6 @@ export const NurseMenus = [
     name: 'News',
     icon: <FeedRoundedIcon />,
     subMenu: [
-      {
-        name: 'Add News',
-        path: '/news/add',
-      },
       {
         name: 'News',
         path: '/news/view',

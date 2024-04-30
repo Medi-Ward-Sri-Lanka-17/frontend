@@ -5,6 +5,10 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material'
 import React, { useState, useEffect } from 'react'
 import SideBar from '../../Component/SideBar'
@@ -13,14 +17,19 @@ import Theme from '../../Component/Theme'
 import { useNavigate, useParams } from 'react-router-dom'
 import DefaultButton from '../../Component/Button/DefaultButton'
 import {
+  getCasualtyDaysForWard,
   retrieveWardDetailsMore,
   updateWardDetailsMore,
 } from '../../Services/WardDetails/WardDetailsServices'
+import { getAllMatron } from '../../Services/Admin/AdminMatronServices'
 
 const WardManagementMore = () => {
   const theme = Theme()
   const { wardNo } = useParams()
   const navigate = useNavigate()
+
+  const [editMatron, setEditMatron] = useState(false)
+  const [matrons, setMatrons] = useState([])
 
   // Initialize state
   const [wardDetails, setWardDetails] = useState({
@@ -33,16 +42,52 @@ const WardManagementMore = () => {
     nightShiftNurses: '',
   })
 
+  const [casualtyDays, setCasualtyDays] = useState({
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+  })
+
+  const handleCasualtyDayChange = (event) => {
+    const { name, checked } = event.target
+    setCasualtyDays((prevDays) => ({
+      ...prevDays,
+      [name]: checked,
+    }))
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setWardDetails((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
+    if (name === 'matronNic') {
+      const selectedMatron = matrons.find((matron) => matron.nic === value)
+      if (selectedMatron) {
+        setWardDetails((prevState) => ({
+          ...prevState,
+          matronNic: value,
+          matronName: selectedMatron.name,
+        }))
+      }
+    } else {
+      setWardDetails((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }))
+    }
   }
 
   const handleUpdateWard = async () => {
     await updateWardDetailsMore(wardNo, wardDetails)
+  }
+
+  const onClickMatronNic = async () => {
+    setEditMatron(true)
+    await getAllMatron().then((respone) => {
+      setMatrons(respone.data)
+      console.log(respone.data)
+    })
   }
 
   const handleBackButton = () => {
@@ -57,8 +102,17 @@ const WardManagementMore = () => {
         setWardDetails(response)
       }
     }
+
+    const fetchCasuatudays = async (wardNo) => {
+      const response = await getCasualtyDaysForWard(wardNo)
+      if (response != null) {
+        setCasualtyDays(response)
+      }
+    }
+
     fetchWardDetails(wardNo)
-  }, [])
+    fetchCasuatudays(wardNo)
+  }, [wardNo])
   return (
     <div>
       <Box sx={{ display: 'flex' }}>
@@ -105,14 +159,35 @@ const WardManagementMore = () => {
                   onChange={handleInputChange}
                   sx={{ marginBottom: '15px' }}
                 />
-                <TextField
-                  label="Matron NIC"
-                  fullWidth
-                  name="matronNic"
-                  value={wardDetails.matronNic}
-                  onChange={handleInputChange}
-                  sx={{ marginBottom: '15px' }}
-                />
+                {editMatron ? (
+                  <FormControl fullWidth sx={{ marginBottom: '15px' }}>
+                    <InputLabel id="matron-nic-label">Matron NIC</InputLabel>
+                    <Select
+                      labelId="matron-nic-label"
+                      id="matron-nic-select"
+                      value={wardDetails.matronNic}
+                      label="Matron NIC"
+                      onChange={handleInputChange}
+                      name="matronNic"
+                    >
+                      {matrons.map((matron, index) => (
+                        <MenuItem key={index} value={matron.nic}>
+                          {matron.nic}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <TextField
+                    label="Matron NIC"
+                    fullWidth
+                    name="matronNic"
+                    value={wardDetails.matronNic}
+                    onChange={handleInputChange}
+                    onClick={onClickMatronNic}
+                    sx={{ marginBottom: '15px' }}
+                  />
+                )}
                 <TextField
                   label="Number of Nurses (Ward)"
                   fullWidth
@@ -199,18 +274,17 @@ const WardManagementMore = () => {
                   Casualty Days
                 </Typography>
                 <Grid container spacing={1} justifyContent="center">
-                  {[
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
-                    'Saturday',
-                  ].map((day, index) => (
-                    <Grid item xs={4} key={index}>
+                  {Object.entries(casualtyDays).map(([day, isChecked]) => (
+                    <Grid item xs={4} key={day}>
                       <FormControlLabel
-                        control={<Checkbox />}
-                        label={day}
+                        control={
+                          <Checkbox
+                            checked={isChecked}
+                            onChange={handleCasualtyDayChange}
+                            name={day}
+                          />
+                        }
+                        label={day.charAt(0).toUpperCase() + day.slice(1)}
                         sx={{ marginTop: '5px' }}
                       />
                     </Grid>
