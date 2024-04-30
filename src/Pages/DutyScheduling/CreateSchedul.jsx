@@ -13,6 +13,7 @@ import { useAuth } from '../../Security/AuthContext.js'
 import { showInfoAlert } from '../../Component/ShowAlert'
 import { retrveCandidateList } from '../../Services/Scheduling/AddSchedulingServices.js'
 import { retrieveProfilePicture } from '../../Services/Home/retrieveProfilePicture.js'
+import { retriveSchduleOtherStaff } from '../../Services/Scheduling/ViewSchedulingServices.js'
 
 const CreateSchedule = () => {
   //.............................................Load Profile Picture........................................................
@@ -50,10 +51,18 @@ const CreateSchedule = () => {
   const [loggedUserNic, setLoggedUserNic] = useState() //LOGGEd USER NIC
   const [currentMonth, setCurrentMonth] = useState('') // CURRENT MONTH
   const [candidate, setCandidate] = useState([])
+  const [scheduleData, setScheduleData] = useState([])
 
   // const authContext = useAuth()
 
   useEffect(() => {
+    const fetchData = async () => {
+      var date1 = formatDate(date)
+      var data = await retriveSchduleOtherStaff(nic, date1)
+      console.log(data)
+      setScheduleData(data)
+    }
+
     var pos = authContext.position
     var nic = authContext.nic
 
@@ -66,24 +75,28 @@ const CreateSchedule = () => {
 
     setScheduleCreatedStatusForDay(2)
     setIsCasualtyDay(true)
+    fetchData()
   }, [
     scheduleCreatedStatusForMonth,
     scheduleCreatedStatusForDay,
     loggedUserPosition,
     loggedUserNic,
     currentMonth,
+    date,
   ])
+
+  function formatDate(dateObject) {
+    if (!dateObject) return '' // Return an empty string if dateObject is null
+    const year = dateObject.getFullYear()
+    const month = ('0' + (dateObject.getMonth() + 1)).slice(-2)
+    const day = ('0' + dateObject.getDate()).slice(-2)
+    return `${year}-${month}-${day}`
+  }
 
   const onActiveStartDateChange = ({ activeStartDate }) => {
     setCurrentMonth(
       activeStartDate.toLocaleString('default', { month: 'long' })
     )
-  }
-  function formatDate(dateObject) {
-    const year = dateObject.getFullYear()
-    const month = ('0' + (dateObject.getMonth() + 1)).slice(-2)
-    const day = ('0' + dateObject.getDate()).slice(-2)
-    return `${year}-${month}-${day}`
   }
 
   const onChange = (selectedDate) => {
@@ -292,7 +305,7 @@ const CreateSchedule = () => {
           </Box>
           <DailyDutyGrid
             isViewSelected={isViewSelected}
-            data={dummyData}
+            schedule={scheduleData}
             selectedDate={date}
             shift={selectedShift}
           />
